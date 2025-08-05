@@ -6,8 +6,11 @@ import DashboardPage from './pages/DashboardPage';
 function App() {
 	return (
 		<Routes>
-			<Route path="/login" element={<LoginPage />}></Route>
+			{/* Public routes */}
+			<Route path="/login" element={<LoginPage />} />
+			{/* <Route path="/register" element={<RegisterPage />} /> */}
 
+			{/* Protected routes */}
             <Route
                 path="/dashboard"
                 element={
@@ -17,6 +20,8 @@ function App() {
                 }
             />
 
+            {/* Default redirect */}
+			<Route path="/" element={<LoginPage />} />
             {/* <Route path="*" element={<NotFoundPage />} /> */}
 		</Routes>
 	);

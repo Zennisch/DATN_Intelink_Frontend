@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LoginRequest, LoginResponse, User } from '../models/User';
+import type { LoginRequest, LoginResponse, User, RegisterRequest, ValidateTokenRequest, ValidateTokenResponse } from '../models/User';
 
 export class AuthService {
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
@@ -24,8 +24,10 @@ export class AuthService {
 
 	static async refreshToken(refreshToken: string): Promise<LoginResponse> {
 		try {
-			const response = await axios.post<LoginResponse>('/auth/refresh', {
-				token: refreshToken
+			const response = await axios.post<LoginResponse>('/auth/refresh', {}, {
+				headers: {
+					Authorization: `Bearer ${refreshToken}`
+				}
 			});
 			return response.data;
 		} catch (error) {
@@ -42,12 +44,31 @@ export class AuthService {
 		}
 	}
 
-	static async validateToken(): Promise<boolean> {
+	static async validateToken(token: string): Promise<ValidateTokenResponse> {
 		try {
-			await axios.get('/auth/validate');
-			return true;
+			const response = await axios.post<ValidateTokenResponse>('/auth/validate', {
+				token
+			});
+			return response.data;
 		} catch (error) {
-			return false;
+			console.error('Validate token failed:', error);
+			return {
+				valid: false,
+				message: 'Token validation failed'
+			};
+		}
+	}
+
+	/**
+	 * Đăng ký người dùng mới
+	 */
+	static async register(credentials: RegisterRequest): Promise<LoginResponse> {
+		try {
+			const response = await axios.post<LoginResponse>('/auth/register', credentials);
+			return response.data;
+		} catch (error) {
+			console.error('Register failed:', error);
+			throw error;
 		}
 	}
 }

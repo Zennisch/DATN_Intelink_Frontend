@@ -51,7 +51,11 @@ export const setupAxios = async () => {
 				const refreshToken = AuthStorage.getRefreshToken();
 				if (refreshToken) {
 					return axios
-						.post(`${API_URL}/auth/refresh`, {token: refreshToken})
+						.post(`${API_URL}/auth/refresh`, {}, {
+							headers: {
+								Authorization: `Bearer ${refreshToken}`
+							}
+						})
 						.then((response) => {
 							AuthStorage.setAccessToken(response.data.token);
 							originalRequest.headers.Authorization = `Bearer ${response.data.token}`;

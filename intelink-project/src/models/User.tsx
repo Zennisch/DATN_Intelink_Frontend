@@ -14,6 +14,12 @@ export interface LoginRequest {
 	password: string;
 }
 
+export interface RegisterRequest {
+	username: string;
+	email: string;
+	password: string;
+}
+
 export interface LoginResponse {
 	token: string;
 	refreshToken: string;
@@ -21,6 +27,23 @@ export interface LoginResponse {
 	email: string;
 	role: 'USER' | 'ADMIN';
 	expiresIn: number;
+}
+
+export interface LogoutResponse {
+	success: boolean;
+	message: string;
+}
+
+export interface ValidateTokenRequest {
+	token: string;
+}
+
+export interface ValidateTokenResponse {
+	valid: boolean;
+	username?: string;
+	role?: 'USER' | 'ADMIN';
+	expiresIn?: number;
+	message: string;
 }
 
 export interface AuthState {
