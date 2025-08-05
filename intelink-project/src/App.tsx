@@ -4,27 +4,27 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
 
 function App() {
-	return (
-		<Routes>
-			{/* Public routes */}
-			<Route path="/login" element={<LoginPage />} />
-			{/* <Route path="/register" element={<RegisterPage />} /> */}
+    return (
+        <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<LoginPage/>}/>
+            {/* <Route path="/register" element={<RegisterPage />} /> */}
 
-			{/* Protected routes */}
+            {/* Protected routes */}
             <Route
                 path="/dashboard"
                 element={
                     <ProtectedRoute>
-                        <DashboardPage />
+                        <DashboardPage/>
                     </ProtectedRoute>
                 }
             />
 
             {/* Default redirect */}
-			<Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage/>}/>
             {/* <Route path="*" element={<NotFoundPage />} /> */}
-		</Routes>
-	);
+        </Routes>
+    );
 }
 
 export default App;
