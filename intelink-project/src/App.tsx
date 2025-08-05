@@ -1,15 +1,24 @@
-import {useState} from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import {Route, Routes} from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
-		<>
-			<div className="flex flex-col items-center justify-center min-h-screen bg-blue-100"></div>
-		</>
+		<Routes>
+			<Route path="/login" element={<LoginPage />}></Route>
+
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <DashboardPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* <Route path="*" element={<NotFoundPage />} /> */}
+		</Routes>
 	);
 }
 
