@@ -1,75 +1,90 @@
-import axios from 'axios';
-import type {LoginRequest, LoginResponse, RegisterRequest, User, ValidateTokenResponse} from '../models/User';
+import axios from "axios";
+import type {
+	LoginRequest,
+	LoginResponse,
+	RegisterRequest,
+	User,
+	ValidateTokenResponse,
+} from "../models/User";
 
 export class AuthService {
-    static async login(credentials: LoginRequest): Promise<LoginResponse> {
-        try {
-            const response = await axios.post<LoginResponse>('/auth/login', credentials);
-            return response.data;
-        } catch (error) {
-            console.error('Login failed:', error);
-            throw error;
-        }
-    }
+	static async login(credentials: LoginRequest): Promise<LoginResponse> {
+		try {
+			const response = await axios.post<LoginResponse>(
+				"/auth/login",
+				credentials,
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Login failed:", error);
+			throw error;
+		}
+	}
 
-    static async getProfile(): Promise<User> {
-        try {
-            const response = await axios.get<User>('/auth/profile');
-            return response.data;
-        } catch (error) {
-            console.error('Get profile failed:', error);
-            throw error;
-        }
-    }
+	static async getProfile(): Promise<User> {
+		try {
+			const response = await axios.get<User>("/auth/profile");
+			return response.data;
+		} catch (error) {
+			console.error("Get profile failed:", error);
+			throw error;
+		}
+	}
 
-    static async refreshToken(refreshToken: string): Promise<LoginResponse> {
-        try {
-            const response = await axios.post<LoginResponse>(
-                '/auth/refresh',
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${refreshToken}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error) {
-            console.error('Refresh token failed:', error);
-            throw error;
-        }
-    }
+	static async refreshToken(refreshToken: string): Promise<LoginResponse> {
+		try {
+			const response = await axios.post<LoginResponse>(
+				"/auth/refresh",
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${refreshToken}`,
+					},
+				},
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Refresh token failed:", error);
+			throw error;
+		}
+	}
 
-    static async logout(): Promise<void> {
-        try {
-            await axios.post('/auth/logout');
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    }
+	static async logout(): Promise<void> {
+		try {
+			await axios.post("/auth/logout");
+		} catch (error) {
+			console.error("Logout failed:", error);
+		}
+	}
 
-    static async validateToken(token: string): Promise<ValidateTokenResponse> {
-        try {
-            const response = await axios.post<ValidateTokenResponse>('/auth/validate', {
-                token,
-            });
-            return response.data;
-        } catch (error) {
-            console.error('Validate token failed:', error);
-            return {
-                valid: false,
-                message: 'Token validation failed',
-            };
-        }
-    }
+	static async validateToken(token: string): Promise<ValidateTokenResponse> {
+		try {
+			const response = await axios.post<ValidateTokenResponse>(
+				"/auth/validate",
+				{
+					token,
+				},
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Validate token failed:", error);
+			return {
+				valid: false,
+				message: "Token validation failed",
+			};
+		}
+	}
 
-    static async register(credentials: RegisterRequest): Promise<LoginResponse> {
-        try {
-            const response = await axios.post<LoginResponse>('/auth/register', credentials);
-            return response.data;
-        } catch (error) {
-            console.error('Register failed:', error);
-            throw error;
-        }
-    }
+	static async register(credentials: RegisterRequest): Promise<LoginResponse> {
+		try {
+			const response = await axios.post<LoginResponse>(
+				"/auth/register",
+				credentials,
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Register failed:", error);
+			throw error;
+		}
+	}
 }
