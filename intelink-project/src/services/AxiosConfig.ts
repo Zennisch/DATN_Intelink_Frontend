@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AuthStorage } from "../storage/AuthStorage";
+import { getGlobalNavigateToLogin } from "../contexts/AxiosNavigationContext";
 
 const getApi = () => {
 	const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -76,7 +77,16 @@ export const setupAxios = async () => {
 						.catch((refreshError) => {
 							console.error(`[Axios Refresh Token Error]: ${refreshError}`);
 							AuthStorage.clearTokens();
-							window.location.href = import.meta.env.VITE_FRONTEND_URL || "/";
+							
+							// Use global navigation function instead of window.location.href
+							const navigate = getGlobalNavigateToLogin();
+							if (navigate) {
+								navigate();
+							} else {
+								// Fallback to window.location if navigation context is not available
+								window.location.href = "/login";
+							}
+							
 							return Promise.reject(refreshError);
 						});
 				}

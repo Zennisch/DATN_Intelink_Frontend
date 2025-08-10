@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
 	children: ReactNode;
@@ -18,8 +19,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 	}
 
 	if (!isAuthenticated) {
-		window.location.href = "/login";
-		return <>{fallback}</>;
+		return <Navigate to="/login" replace />;
 	}
 
 	return <>{children}</>;

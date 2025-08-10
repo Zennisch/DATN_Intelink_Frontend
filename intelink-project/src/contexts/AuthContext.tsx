@@ -6,7 +6,7 @@ import type { AuthState, LoginRequest, User } from "../models/User";
 
 interface AuthContextType extends AuthState {
 	login: (credentials: LoginRequest) => Promise<void>;
-	logout: () => Promise<void>;
+	logout: (onLogoutComplete?: () => void) => Promise<void>;
 	refreshUser: () => Promise<void>;
 }
 
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		}
 	};
 
-	const logout = async (): Promise<void> => {
+	const logout = async (onLogoutComplete?: () => void): Promise<void> => {
 		try {
 			await AuthService.logout();
 		} catch (error) {
@@ -106,7 +106,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				isLoading: false,
 			});
 
-			window.location.href = "/login";
+			// Use callback for navigation instead of direct window.location
+			if (onLogoutComplete) {
+				onLogoutComplete();
+			}
 		}
 	};
 
@@ -115,7 +118,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			await fetchUserProfile();
 		} catch (error) {
 			console.error("Failed to refresh user:", error);
-			logout();
+			// Use callback for navigation on refresh failure
+			await logout();
 		}
 	};
 

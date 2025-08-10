@@ -1,29 +1,48 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
+import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 
 function App() {
 	return (
-		<Routes>
-			{/* Public routes */}
-			<Route path="/login" element={<LoginPage />} />
-			{/* <Route path="/register" element={<RegisterPage />} /> */}
+		<>
+			<AxiosNavigationSetup />
+			<Routes>
+				{/* Public routes - redirect to dashboard if already authenticated */}
+				<Route 
+					path="/login" 
+					element={
+						<AuthenticatedRoute>
+							<LoginPage />
+						</AuthenticatedRoute>
+					} 
+				/>
+				{/* <Route path="/register" element={<RegisterPage />} /> */}
 
-			{/* Protected routes */}
-			<Route
-				path="/dashboard"
-				element={
-					<ProtectedRoute>
-						<DashboardPage />
-					</ProtectedRoute>
-				}
-			/>
+				{/* Protected routes */}
+				<Route
+					path="/dashboard"
+					element={
+						<ProtectedRoute>
+							<DashboardPage />
+						</ProtectedRoute>
+					}
+				/>
 
-			{/* Default redirect */}
-			<Route path="/" element={<LoginPage />} />
-			{/* <Route path="*" element={<NotFoundPage />} /> */}
-		</Routes>
+				{/* Default redirect */}
+				<Route 
+					path="/" 
+					element={
+						<AuthenticatedRoute>
+							<LoginPage />
+						</AuthenticatedRoute>
+					} 
+				/>
+				{/* <Route path="*" element={<NotFoundPage />} /> */}
+			</Routes>
+		</>
 	);
 }
 
