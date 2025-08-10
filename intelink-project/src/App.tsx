@@ -1,14 +1,47 @@
-import {useState} from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import DashboardPage from "./pages/DashboardPage";
+import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
-			<div className="flex flex-col items-center justify-center min-h-screen bg-blue-100"></div>
+			<AxiosNavigationSetup />
+			<Routes>
+				{/* Public routes - redirect to dashboard if already authenticated */}
+				<Route 
+					path="/login" 
+					element={
+						<AuthenticatedRoute>
+							<LoginPage />
+						</AuthenticatedRoute>
+					} 
+				/>
+				{/* <Route path="/register" element={<RegisterPage />} /> */}
+
+				{/* Protected routes */}
+				<Route
+					path="/dashboard"
+					element={
+						<ProtectedRoute>
+							<DashboardPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				{/* Default redirect */}
+				<Route 
+					path="/" 
+					element={
+						<AuthenticatedRoute>
+							<LoginPage />
+						</AuthenticatedRoute>
+					} 
+				/>
+				{/* <Route path="*" element={<NotFoundPage />} /> */}
+			</Routes>
 		</>
 	);
 }
