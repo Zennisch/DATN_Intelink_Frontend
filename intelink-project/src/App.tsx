@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
+import StatisticsPage from "./pages/StatisticsPage";
 
 function App() {
 	return (
@@ -20,7 +21,7 @@ function App() {
 					} 
 				/>
 				{/* <Route path="/register" element={<RegisterPage />} /> */}
-
+					
 				{/* Protected routes */}
 				<Route
 					path="/dashboard"
@@ -41,6 +42,16 @@ function App() {
 					} 
 				/>
 				{/* <Route path="*" element={<NotFoundPage />} /> */}
+
+				<Route
+					path="/statistics"
+					element={
+						<ProtectedRoute>
+							<StatisticsPage />
+						</ProtectedRoute>
+					}
+				/>
+
 			</Routes>
 		</>
 	);
