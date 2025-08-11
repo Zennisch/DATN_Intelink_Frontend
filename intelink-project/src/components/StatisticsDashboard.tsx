@@ -7,6 +7,7 @@ import { useStatistics } from "../hooks/useStatistics"
 import { StatisticsChart } from "./StatisticsChart"
 import { DimensionSelector } from "./DimensionSelector"
 import { StatisticsTable } from "./StatisticsTable"
+import { CountryMapChart } from "./CountryMapChart" // Import the new map component
 
 interface StatisticsDashboardProps {
   shortcode: string
@@ -138,14 +139,27 @@ export const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ shortc
 
                 {/* Charts Grid - 2 charts per row */}
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                  {Object.entries(data).map(([dimensionType, dimensionData]) => (
-                    <StatisticsChart
-                      key={dimensionType}
-                      data={dimensionData.data}
-                      title={getDimensionTitle(dimensionType as DimensionType)}
-                      chartType={chartType}
-                    />
-                  ))}
+                  {Object.entries(data).map(([dimensionType, dimensionData]) => {
+                    if (dimensionType === DimensionType.COUNTRY && dimensionData.data.length > 0) {
+                      return (
+                        <CountryMapChart
+                          key={dimensionType}
+                          data={dimensionData.data}
+                          title="Biểu đồ quốc gia truy cập"
+                        />
+                      )
+                    } else if (dimensionData.data.length > 0) {
+                      return (
+                        <StatisticsChart
+                          key={dimensionType}
+                          data={dimensionData.data}
+                          title={getDimensionTitle(dimensionType as DimensionType)}
+                          chartType={chartType}
+                        />
+                      )
+                    }
+                    return null
+                  })}
                 </div>
 
                 {/* Tables */}

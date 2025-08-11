@@ -59,3 +59,8 @@ export const DIMENSION_CATEGORIES = {
   ],
   Custom: [DimensionType.CUSTOM],
 } as const
+export interface StatisticsData {
+  name: string
+  clicks: number
+  // Add other properties if your data includes them
+}
