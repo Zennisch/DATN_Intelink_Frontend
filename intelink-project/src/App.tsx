@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
+import StatisticsPage from "./pages/StatisticsPage";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 
 function App() {
@@ -20,12 +21,12 @@ function App() {
 						</AuthenticatedRoute>
 					} 
 				/>
+        
+        <Route 
+            path="/auth/oauth2/callback" 
+            element={<OAuth2CallbackPage />}
+        />
 				{/* <Route path="/register" element={<RegisterPage />} /> */}
-
-				<Route 
-                    path="/auth/oauth2/callback" 
-                    element={<OAuth2CallbackPage />}
-                />
 
 				{/* Protected routes */}
 				<Route
@@ -47,6 +48,16 @@ function App() {
 					} 
 				/>
 				{/* <Route path="*" element={<NotFoundPage />} /> */}
+
+				<Route
+					path="/statistics"
+					element={
+						<ProtectedRoute>
+							<StatisticsPage />
+						</ProtectedRoute>
+					}
+				/>
+
 			</Routes>
 		</>
 	);
