@@ -5,6 +5,7 @@ import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 import StatisticsPage from "./pages/StatisticsPage";
+import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 
 function App() {
 	return (
@@ -20,8 +21,13 @@ function App() {
 						</AuthenticatedRoute>
 					} 
 				/>
+        
+        <Route 
+            path="/auth/oauth2/callback" 
+            element={<OAuth2CallbackPage />}
+        />
 				{/* <Route path="/register" element={<RegisterPage />} /> */}
-					
+
 				{/* Protected routes */}
 				<Route
 					path="/dashboard"

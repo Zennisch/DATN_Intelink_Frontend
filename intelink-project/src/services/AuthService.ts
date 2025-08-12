@@ -87,4 +87,16 @@ export class AuthService {
 			throw error;
 		}
 	}
+
+	static async handleOAuth2Callback(token: string): Promise<LoginResponse> {
+        try {
+            const response = await axios.get<LoginResponse>(
+                `/auth/oauth/callback?token=${token}`
+            );
+            return response.data;
+        } catch (error) {
+            console.error("OAuth2 callback failed:", error);
+            throw error;
+        }
+    }
 }
