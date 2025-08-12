@@ -24,7 +24,7 @@ function App() {
 
 				<Route 
                     path="/auth/oauth2/callback" 
-                    element={<OAuth2CallbackPage />} 
+                    element={<OAuth2CallbackPage />}
                 />
 
 				{/* Protected routes */}
