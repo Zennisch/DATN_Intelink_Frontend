@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LoginForm } from "../components/auth/LoginForm";
-import { SocialLoginSection } from "../components/auth/SocialLogin";
+import { handleOAuth2Login, SocialLoginSection } from "../components/auth/SocialLogin";
 import { Header } from "../components/layout/Header";
 import { Button } from "../components/ui/Button";
 import { Divider } from "../components/ui/Divider";
@@ -21,7 +21,6 @@ function LoginPage() {
 
 			await login(credentials);
 
-			// Use auth navigation hook instead of direct navigate
 			redirectToDashboard();
 		} catch (err: any) {
 			setError(
@@ -33,14 +32,19 @@ function LoginPage() {
 		}
 	};
 
-	const handleSocialLogin = (provider: string) => {
-		console.log(`${provider} login clicked`);
-		setError(`${provider} login is not implemented yet.`);
-	};
+	const handleGoogleLogin = () => {
+        setError(null);
+        handleOAuth2Login('google');
+    };
+
+    const handleGitHubLogin = () => {
+        setError(null);
+        handleOAuth2Login('github');
+    };
 
 	const handleSignUp = () => {
-		console.log("Sign up clicked");
-	};
+        console.log("Sign up clicked");
+    };
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
@@ -67,8 +71,8 @@ function LoginPage() {
 						{/* Social Login */}
 						<div className="mb-6">
 							<SocialLoginSection
-								onGoogleLogin={() => handleSocialLogin("Google")}
-								onGitHubLogin={() => handleSocialLogin("GitHub")}
+								onGoogleLogin={() => handleGoogleLogin()}
+								onGitHubLogin={() => handleGitHubLogin()}
 								loading={loading}
 							/>
 						</div>

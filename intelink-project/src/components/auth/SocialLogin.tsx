@@ -72,6 +72,13 @@ interface SocialLoginSectionProps {
 	loading?: boolean;
 }
 
+export const handleOAuth2Login = (provider: 'google' | 'github') => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+    const oauth2Url = `${backendUrl}/oauth2/authorization/${provider}`;
+    
+    window.location.href = oauth2Url;
+};
+
 export const SocialLoginSection: React.FC<SocialLoginSectionProps> = ({
 	onGoogleLogin,
 	onGitHubLogin,
