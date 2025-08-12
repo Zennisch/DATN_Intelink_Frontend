@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LoginForm } from "../components/auth/LoginForm";
-import { handleOAuth2Login, SocialLoginSection } from "../components/auth/SocialLogin";
+import { SocialLoginSection } from "../components/auth/SocialLogin";
 import { Header } from "../components/layout/Header";
 import { Button } from "../components/ui/Button";
 import { Divider } from "../components/ui/Divider";
@@ -30,6 +30,13 @@ function LoginPage() {
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleOAuth2Login = (provider: 'google' | 'github') => {
+		const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+		const oauth2Url = `${backendUrl}/oauth2/authorization/${provider}`;
+		
+		window.location.href = oauth2Url;
 	};
 
 	const handleGoogleLogin = () => {
