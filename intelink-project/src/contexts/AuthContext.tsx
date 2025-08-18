@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthStorage } from "../storage/AuthStorage";
+import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 import type { AuthState, LoginRequest, User } from "../models/User";
 

@@ -40,7 +40,7 @@ export interface StatisticsResponse {
 }
 
 export const DIMENSION_CATEGORIES = {
-  Sources: [
+  sources: [
     DimensionType.REFERRER,
     DimensionType.REFERRER_TYPE,
     DimensionType.UTM_SOURCE,
@@ -49,13 +49,13 @@ export const DIMENSION_CATEGORIES = {
     DimensionType.UTM_TERM,
     DimensionType.UTM_CONTENT,
   ],
-  Geometrics: [DimensionType.COUNTRY, DimensionType.REGION, DimensionType.CITY, DimensionType.TIMEZONE],
-  Technologies: [
+  geometrics: [DimensionType.COUNTRY, DimensionType.REGION, DimensionType.CITY, DimensionType.TIMEZONE],
+  technologies: [
     DimensionType.BROWSER,
     DimensionType.OS,
     DimensionType.DEVICE_TYPE,
     DimensionType.ISP,
     DimensionType.LANGUAGE,
   ],
-  Custom: [DimensionType.CUSTOM],
+  custom: [DimensionType.CUSTOM],
 } as const

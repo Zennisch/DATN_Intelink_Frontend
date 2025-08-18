@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
-import { AuthStorage } from "../storage/AuthStorage";
+import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 
 function OAuth2CallbackPage() {

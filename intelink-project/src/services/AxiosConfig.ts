@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthStorage } from "../storage/AuthStorage";
+import { AuthStorage } from "../storages/AuthStorage";
 import { getGlobalNavigateToLogin } from "../contexts/AxiosNavigationContext";
 
 const getApi = () => {
