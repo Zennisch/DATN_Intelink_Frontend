@@ -6,7 +6,7 @@ import { Button } from "../components/ui/Button";
 import { Divider } from "../components/ui/Divider";
 import { useAuth } from "../contexts/AuthContext";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
-import type { LoginRequest } from "../models/User";
+import type { LoginRequest } from "../models/User.ts";
 
 function LoginPage() {
 	const { login } = useAuth();
@@ -32,26 +32,27 @@ function LoginPage() {
 		}
 	};
 
-	const handleOAuth2Login = (provider: 'google' | 'github') => {
-		const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+	const handleOAuth2Login = (provider: "google" | "github") => {
+		const backendUrl =
+			import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 		const oauth2Url = `${backendUrl}/oauth2/authorization/${provider}`;
-		
+
 		window.location.href = oauth2Url;
 	};
 
 	const handleGoogleLogin = () => {
-        setError(null);
-        handleOAuth2Login('google');
-    };
+		setError(null);
+		handleOAuth2Login("google");
+	};
 
-    const handleGitHubLogin = () => {
-        setError(null);
-        handleOAuth2Login('github');
-    };
+	const handleGitHubLogin = () => {
+		setError(null);
+		handleOAuth2Login("github");
+	};
 
 	const handleSignUp = () => {
-        console.log("Sign up clicked");
-    };
+		console.log("Sign up clicked");
+	};
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">

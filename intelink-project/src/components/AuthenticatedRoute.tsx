@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import type { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 interface AuthenticatedRouteProps {
 	children: ReactNode;
@@ -13,7 +13,7 @@ interface AuthenticatedRouteProps {
  */
 export const AuthenticatedRoute: React.FC<AuthenticatedRouteProps> = ({
 	children,
-	redirectTo = '/dashboard'
+	redirectTo = "/dashboard",
 }) => {
 	const { isAuthenticated, isLoading } = useAuth();
 

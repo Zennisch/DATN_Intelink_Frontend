@@ -1,5 +1,8 @@
-import { useEffect } from 'react';
-import { useAxiosNavigation, setGlobalNavigateToLogin } from '../contexts/AxiosNavigationContext';
+import { useEffect } from "react";
+import {
+	useAxiosNavigation,
+	setGlobalNavigateToLogin,
+} from "../contexts/AxiosNavigationContext";
 
 export const AxiosNavigationSetup: React.FC = () => {
 	const { navigateToLogin } = useAxiosNavigation();

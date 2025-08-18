@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { LoginRequest } from "../../models/User";
-import { Button } from "../ui/Button";
-import { Checkbox } from "../ui/Checkbox";
-import { Input } from "../ui/Input";
+import type { LoginRequest } from "../../models/User.ts";
+import { Button } from "../ui";
+import { Checkbox } from "../ui";
+import { Input } from "../ui";
 
 interface LoginFormProps {
 	onSubmit: (credentials: LoginRequest) => Promise<void>;

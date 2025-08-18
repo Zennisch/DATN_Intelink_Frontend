@@ -13,19 +13,16 @@ function App() {
 			<AxiosNavigationSetup />
 			<Routes>
 				{/* Public routes - redirect to dashboard if already authenticated */}
-				<Route 
-					path="/login" 
+				<Route
+					path="/login"
 					element={
 						<AuthenticatedRoute>
 							<LoginPage />
 						</AuthenticatedRoute>
-					} 
+					}
 				/>
-        
-        <Route 
-            path="/auth/oauth2/callback" 
-            element={<OAuth2CallbackPage />}
-        />
+
+				<Route path="/auth/oauth2/callback" element={<OAuth2CallbackPage />} />
 				{/* <Route path="/register" element={<RegisterPage />} /> */}
 
 				{/* Protected routes */}
@@ -39,13 +36,13 @@ function App() {
 				/>
 
 				{/* Default redirect */}
-				<Route 
-					path="/" 
+				<Route
+					path="/"
 					element={
 						<AuthenticatedRoute>
 							<LoginPage />
 						</AuthenticatedRoute>
-					} 
+					}
 				/>
 				{/* <Route path="*" element={<NotFoundPage />} /> */}
 
@@ -57,7 +54,6 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
-
 			</Routes>
 		</>
 	);

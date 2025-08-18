@@ -3,7 +3,14 @@ import GoogleIconComponent from "../../assets/google.svg";
 import GitHubIconComponent from "../../assets/github.svg";
 
 const getIcon = (iconComponent: string) => {
-	return <img src={iconComponent} alt={`${iconComponent} Icon`} width="20" height="20" />;
+	return (
+		<img
+			src={iconComponent}
+			alt={`${iconComponent} Icon`}
+			width="20"
+			height="20"
+		/>
+	);
 };
 
 interface SocialLoginButtonProps {
