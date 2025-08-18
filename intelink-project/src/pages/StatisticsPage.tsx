@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { StatisticsDashboard } from "../components/StatisticsDashboard"
+import { StatisticsDashboard } from "../components/statistic/StatisticsDashboard.tsx"
 
 function StatisticsPage() {
   const [shortcode, setShortcode] = useState<string>("")

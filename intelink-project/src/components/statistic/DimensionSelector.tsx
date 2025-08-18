@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { type DimensionType, DIMENSION_CATEGORIES } from "../types/statistics"
+import { type DimensionType, DIMENSION_CATEGORIES } from "../../types/statistics.ts"
 
 interface DimensionSelectorProps {
   selectedDimensions: DimensionType[]

@@ -2,12 +2,12 @@
 
 import type React from "react"
 import { useState } from "react"
-import { DimensionType, DIMENSION_CATEGORIES } from "../types/statistics"
-import { useStatistics } from "../hooks/useStatistics"
-import { StatisticsChart } from "./StatisticsChart"
-import { DimensionSelector } from "./DimensionSelector"
-import { StatisticsTable } from "./StatisticsTable"
-import { CountryMapChart } from "./CountryMapChart" // Import the new map component
+import { DimensionType, DIMENSION_CATEGORIES } from "../../types/statistics.ts"
+import { useStatistics } from "../../hooks/useStatistics.ts"
+import { StatisticsChart } from "./StatisticsChart.tsx"
+import { DimensionSelector } from "./DimensionSelector.tsx"
+import { StatisticsTable } from "./StatisticsTable.tsx"
+import { CountryMapChart } from "./CountryMapChart.tsx" // Import the new map component
 
 interface StatisticsDashboardProps {
   shortcode: string

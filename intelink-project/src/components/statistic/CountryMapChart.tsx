@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps"
 import { scaleQuantize } from "d3-scale"
-import type { StatisticsData } from "../types/statistics"
+import type { StatisticsData } from "../../types/statistics.ts"
 
 interface CountryMapChartProps {
   data: StatisticsData[]

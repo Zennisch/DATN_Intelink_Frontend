@@ -1,5 +1,5 @@
 import type React from "react"
-import type { StatisticsData } from "../types/statistics"
+import type { StatisticsData } from "../../types/statistics.ts"
 
 interface StatisticsTableProps {
   data: StatisticsData[]

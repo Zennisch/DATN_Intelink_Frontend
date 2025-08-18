@@ -11,7 +11,7 @@ import {
   type ChartOptions,
 } from "chart.js"
 import { Bar, Doughnut } from "react-chartjs-2"
-import type { StatisticsData } from "../types/statistics"
+import type { StatisticsData } from "../../types/statistics.ts"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend)
 
