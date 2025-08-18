@@ -1,16 +1,18 @@
-import { Button } from "../ui/Button";
-import GoogleIconComponent from "../../assets/google.svg";
-import GitHubIconComponent from "../../assets/github.svg";
+import { Button } from "../ui";
+import GoogleIcon from "../../assets/google.svg";
+import GitHubIcon from "../../assets/github.svg";
+import React from "react";
+import {IconComponent} from "../Icon";
 
-const getIcon = (iconComponent: string) => {
-	return (
-		<img
-			src={iconComponent}
-			alt={`${iconComponent} Icon`}
-			width="20"
-			height="20"
-		/>
-	);
+const configs = {
+	google: {
+		icon: IconComponent(GoogleIcon),
+		text: "Continue with Google",
+	},
+	github: {
+		icon: IconComponent(GitHubIcon),
+		text: "Continue with GitHub",
+	},
 };
 
 interface SocialLoginButtonProps {
@@ -24,17 +26,6 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
 	onClick,
 	loading = false,
 }) => {
-	const configs = {
-		google: {
-			icon: getIcon(GoogleIconComponent),
-			text: "Continue with Google",
-		},
-		github: {
-			icon: getIcon(GitHubIconComponent),
-			text: "Continue with GitHub",
-		},
-	};
-
 	const config = configs[provider];
 
 	return (
