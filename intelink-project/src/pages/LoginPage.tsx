@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { LoginForm } from "../components/auth/LoginForm";
-import { SocialLoginSection } from "../components/auth/SocialLogin";
+import { LoginForm } from "../components/auth";
+import { SocialLoginSection } from "../components/auth";
 import { Header } from "../components/layout/Header";
-import { Button } from "../components/ui/Button";
-import { Divider } from "../components/ui/Divider";
+import { Button } from "../components/ui";
+import { Divider } from "../components/ui";
 import { useAuth } from "../contexts/AuthContext";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
-import type { LoginRequest } from "../models/User.ts";
+import { BACKEND_URL } from "../types/environment.ts";
+import type { LoginRequest } from "../dto/request/UserRequest.ts";
 
 function LoginPage() {
 	const { login } = useAuth();
@@ -33,11 +34,7 @@ function LoginPage() {
 	};
 
 	const handleOAuth2Login = (provider: "google" | "github") => {
-		const backendUrl =
-			import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
-		const oauth2Url = `${backendUrl}/oauth2/authorization/${provider}`;
-
-		window.location.href = oauth2Url;
+		window.location.href = `${BACKEND_URL}/oauth2/authorization/${provider}`;
 	};
 
 	const handleGoogleLogin = () => {

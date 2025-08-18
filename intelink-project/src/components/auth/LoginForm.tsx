@@ -1,69 +1,34 @@
 import { useState } from "react";
-import type { LoginRequest } from "../../models/User.ts";
-import { Button } from "../ui";
-import { Checkbox } from "../ui";
-import { Input } from "../ui";
+import { Button, Checkbox, Input } from "../ui";
+import type { LoginRequest } from "../../dto/request/UserRequest.ts";
+import { useForm } from "../../hooks/useForm.ts";
 
 interface LoginFormProps {
 	onSubmit: (credentials: LoginRequest) => Promise<void>;
 	loading?: boolean;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-	onSubmit,
-	loading = false,
-}) => {
-	const [formData, setFormData] = useState<LoginRequest>({
-		username: "",
-		password: "",
-	});
+export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [keepSignedIn, setKeepSignedIn] = useState(false);
-	const [errors, setErrors] = useState<Partial<LoginRequest>>({});
 
-	const validateForm = (): boolean => {
-		const newErrors: Partial<LoginRequest> = {};
-
-		if (!formData.username.trim()) {
-			newErrors.username = "Username is required";
-		}
-
-		if (!formData.password) {
-			newErrors.password = "Password is required";
-		} else if (formData.password.length < 6) {
-			newErrors.password = "Password must be at least 6 characters";
-		}
-
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (!validateForm()) return;
-
-		try {
-			await onSubmit(formData);
-		} catch (error) {
-			console.error("Login failed:", error);
-		}
-	};
-
-	const handleInputChange =
-		(field: keyof LoginRequest) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			setFormData((prev) => ({
-				...prev,
-				[field]: e.target.value,
-			}));
-
-			if (errors[field]) {
-				setErrors((prev) => ({
-					...prev,
-					[field]: undefined,
-				}));
-			}
-		};
+	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
+		useForm<LoginRequest>(
+			{ username: "", password: "" },
+			(values) => {
+				const formError: Partial<LoginRequest> = {};
+				if (!values.username.trim()) {
+					formError.username = "Username is required";
+				}
+				if (!values.password) {
+					formError.password = "Password is required";
+				} else if (values.password.length < 6) {
+					formError.password = "Password must be at least 6 characters";
+				}
+				return formError;
+			},
+			onSubmit,
+		);
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
@@ -121,7 +86,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 				variant="primary"
 				fullWidth
 				size="lg"
-				loading={loading}
+				loading={loading || isSubmitting}
 			>
 				Log in
 			</Button>

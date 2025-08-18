@@ -1,11 +1,10 @@
 import axios from "axios";
+import type { User } from "../models/User.ts";
 import type {
 	LoginRequest,
-	LoginResponse,
 	RegisterRequest,
-	User,
-	ValidateTokenResponse,
-} from "../models/User.ts";
+} from "../dto/request/UserRequest.ts";
+import type { LoginResponse } from "../dto/response/UserResponse.ts";
 
 export class AuthService {
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
@@ -54,24 +53,6 @@ export class AuthService {
 			await axios.post("/auth/logout");
 		} catch (error) {
 			console.error("Logout failed:", error);
-		}
-	}
-
-	static async validateToken(token: string): Promise<ValidateTokenResponse> {
-		try {
-			const response = await axios.post<ValidateTokenResponse>(
-				"/auth/validate",
-				{
-					token,
-				},
-			);
-			return response.data;
-		} catch (error) {
-			console.error("Validate token failed:", error);
-			return {
-				valid: false,
-				message: "Token validation failed",
-			};
 		}
 	}
 
