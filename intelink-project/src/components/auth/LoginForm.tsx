@@ -28,6 +28,7 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 				return formError;
 			},
 			onSubmit,
+			500,
 		);
 
 	return (
