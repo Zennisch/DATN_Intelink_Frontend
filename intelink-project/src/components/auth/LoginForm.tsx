@@ -8,6 +8,19 @@ interface LoginFormProps {
 	loading?: boolean;
 }
 
+const validateLogin = (values: LoginRequest): Partial<LoginRequest> => {
+	const errors: Partial<LoginRequest> = {};
+	if (!values.username.trim()) {
+		errors.username = "Username is required";
+	}
+	if (!values.password) {
+		errors.password = "Password is required";
+	} else if (values.password.length < 6) {
+		errors.password = "Password must be at least 6 characters";
+	}
+	return errors;
+}
+
 export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [keepSignedIn, setKeepSignedIn] = useState(false);
@@ -15,18 +28,7 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
 		useForm<LoginRequest>(
 			{ username: "", password: "" },
-			(values) => {
-				const formError: Partial<LoginRequest> = {};
-				if (!values.username.trim()) {
-					formError.username = "Username is required";
-				}
-				if (!values.password) {
-					formError.password = "Password is required";
-				} else if (values.password.length < 6) {
-					formError.password = "Password must be at least 6 characters";
-				}
-				return formError;
-			},
+			validateLogin,
 			onSubmit,
 			500,
 		);
@@ -37,7 +39,7 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 				<Input
 					type="text"
 					label="Username"
-					placeholder="Enter your Username"
+					placeholder="Username/Email"
 					value={formData.username}
 					onChange={handleInputChange("username")}
 					error={errors.username}
@@ -48,8 +50,8 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 				<div className="relative">
 					<Input
 						type={showPassword ? "text" : "password"}
-						label="Your password"
-						placeholder="Enter your password"
+						label="Password"
+						placeholder="Password"
 						value={formData.password}
 						onChange={handleInputChange("password")}
 						error={errors.password}

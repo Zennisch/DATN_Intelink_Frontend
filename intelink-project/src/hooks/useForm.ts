@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { DEV } from "../types/environment.ts";
+import {developmentLog} from "../utils/LogUtil.ts";
 
 export function useForm<T extends Record<keyof T, string>>(
 	initialValues: T,
 	validateCallback?: (values: T) => Partial<Record<keyof T, string>>,
 	submitCallback?: (values: T) => Promise<void>,
-	debounceMs?: number = 300,
+	debounceMs: number = 300,
 ) {
 	const [formData, setFormData] = useState<T>(initialValues);
 	const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
@@ -43,11 +43,13 @@ export function useForm<T extends Record<keyof T, string>>(
 					}
 
 					setIsValidating(true);
+					developmentLog(`Validating field: ${field.toString()}`);
 
 					// Set a new debounce timer and let it validate after the specified delay
 					debounceTimer.current = setTimeout(() => {
 						setErrors(validateCallback(newFormData));
 						setIsValidating(false);
+						developmentLog(`Validation completed for field: ${field.toString()}`);
 					}, debounceMs);
 				} else if (validateCallback) {
 					setErrors(validateCallback(newFormData));
@@ -82,9 +84,7 @@ export function useForm<T extends Record<keyof T, string>>(
 			}
 		} catch (error) {
 			setIsSubmitting(false);
-			if (DEV) {
-				console.error("Form submission failed:", error);
-			}
+			developmentLog(`Form submission failed: ${error}`, "error");
 		}
 	};
 
