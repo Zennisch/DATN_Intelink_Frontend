@@ -19,7 +19,7 @@ const validateLogin = (values: LoginRequest): Partial<LoginRequest> => {
 		errors.password = "Password must be at least 6 characters";
 	}
 	return errors;
-}
+};
 
 export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 	const [showPassword, setShowPassword] = useState(false);

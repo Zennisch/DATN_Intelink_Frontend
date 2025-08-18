@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {developmentLog} from "../utils/LogUtil.ts";
+import { developmentLog } from "../utils/LogUtil.ts";
 
 export function useForm<T extends Record<keyof T, string>>(
 	initialValues: T,
@@ -49,7 +49,9 @@ export function useForm<T extends Record<keyof T, string>>(
 					debounceTimer.current = setTimeout(() => {
 						setErrors(validateCallback(newFormData));
 						setIsValidating(false);
-						developmentLog(`Validation completed for field: ${field.toString()}`);
+						developmentLog(
+							`Validation completed for field: ${field.toString()}`,
+						);
 					}, debounceMs);
 				} else if (validateCallback) {
 					setErrors(validateCallback(newFormData));

@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
-import type { AuthState, LoginRequest, User } from "../models/User.ts";
+import type { AuthState, User } from "../models/User.ts";
+import type { LoginRequest } from "../dto/request/UserRequest.ts";
 
 interface AuthContextType extends AuthState {
 	login: (credentials: LoginRequest) => Promise<void>;

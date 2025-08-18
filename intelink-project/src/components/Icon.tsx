@@ -1,12 +1,17 @@
-import React from "react";
+export interface IconProps {
+	width?: number;
+	height?: number;
+	className?: string;
+}
 
-export const IconComponent = (iconSrc: string): React.ReactElement => {
-	return (
+export const IconComponent = (src: string) => {
+	return ({ className, width = 20, height = 20 }: IconProps) => (
 		<img
-			src={iconSrc}
-			alt={`${iconSrc} icon`}
-			width={20}
-			height={20}
+			src={src}
+			alt={`Icon`}
+			width={width}
+			height={height}
+			className={className || ""}
 		/>
 	);
 };
