@@ -29,8 +29,8 @@ export const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({
 			{/* Sidebar */}
 			<Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
-			{/* Main content area */}
-			<div className="md:ml-64">
+			{/* Main content area - with left margin for sidebar on desktop */}
+			<div className="md:ml-64 min-h-screen">
 				{/* Header */}
 				<AuthenticatedHeader
 					onSidebarToggle={toggleSidebar}
@@ -38,7 +38,7 @@ export const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({
 				/>
 
 				{/* Page content */}
-				<main className="pt-16 min-h-screen">
+				<main className="pt-16">
 					<div className="p-6">{children}</div>
 				</main>
 			</div>

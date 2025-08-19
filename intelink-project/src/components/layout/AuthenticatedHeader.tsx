@@ -37,7 +37,7 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 	const userInitials = user?.username ? getInitials(user.username) : "U";
 
 	return (
-		<header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-30 h-16">
+		<header className="fixed top-0 left-0 md:left-64 right-0 bg-white border-b border-gray-200 z-30 h-16">
 			<div className="flex items-center justify-between px-4 h-full">
 				{/* Left side - Menu button and greeting */}
 				<div className="flex items-center space-x-4">
