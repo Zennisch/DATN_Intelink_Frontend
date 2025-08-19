@@ -13,15 +13,15 @@ interface ResetPasswordFormData extends ResetPasswordRequest {
 const validateResetPassword = (values: ResetPasswordFormData): Partial<ResetPasswordFormData> => {
 	const errors: Partial<ResetPasswordFormData> = {};
 	
-	if (!values.newPassword) {
-		errors.newPassword = "New password is required";
-	} else if (values.newPassword.length < 6) {
-		errors.newPassword = "Password must be at least 6 characters";
+	if (!values.password) {
+		errors.password = "New password is required";
+	} else if (values.password.length < 6) {
+		errors.password = "Password must be at least 6 characters";
 	}
 
 	if (!values.confirmPassword) {
 		errors.confirmPassword = "Please confirm your password";
-	} else if (values.newPassword !== values.confirmPassword) {
+	} else if (values.password !== values.confirmPassword) {
 		errors.confirmPassword = "Passwords do not match";
 	}
 
@@ -63,7 +63,7 @@ export function ResetPasswordPage() {
 			setError(null);
 
 			const request: ResetPasswordRequest = {
-				newPassword: formData.newPassword,
+				password: formData.password,
 				confirmPassword: formData.confirmPassword,
 			};
 
@@ -84,7 +84,7 @@ export function ResetPasswordPage() {
 
 	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
 		useForm<ResetPasswordFormData>(
-			{ newPassword: "", confirmPassword: "" },
+			{ password: "", confirmPassword: "" },
 			validateResetPassword,
 			handleResetPassword,
 			500,
@@ -235,9 +235,9 @@ export function ResetPasswordPage() {
 									type={showPassword ? "text" : "password"}
 									label="New Password"
 									placeholder="Enter your new password"
-									value={formData.newPassword}
-									onChange={handleInputChange("newPassword")}
-									error={errors.newPassword}
+									value={formData.password}
+									onChange={handleInputChange("password")}
+									error={errors.password}
 									fullWidth
 									required
 								/>

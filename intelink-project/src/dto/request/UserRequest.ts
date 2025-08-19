@@ -10,7 +10,7 @@ export interface LoginRequest {
 }
 
 export interface ResetPasswordRequest {
-	newPassword: string;
+	password: string;
 	confirmPassword: string;
 }
 
