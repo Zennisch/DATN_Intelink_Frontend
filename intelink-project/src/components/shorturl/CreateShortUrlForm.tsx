@@ -1,9 +1,9 @@
-import React from 'react';
-import { useForm } from '../../hooks/useForm';
-import { Input } from '../ui/Input';
-import { Button } from '../ui/Button';
-import { Checkbox } from '../ui/Checkbox';
-import type { CreateShortUrlRequest } from '../../dto/request/ShortUrlRequest';
+import React from "react";
+import { useForm } from "../../hooks/useForm";
+import { Input } from "../ui/Input";
+import { Button } from "../ui/Button";
+import { Checkbox } from "../ui/Checkbox";
+import type { CreateShortUrlRequest } from "../../dto/request/ShortUrlRequest";
 
 interface CreateShortUrlFormProps {
 	onSubmit: (data: CreateShortUrlRequest) => Promise<void>;
@@ -21,11 +21,11 @@ interface FormData {
 }
 
 const initialData: FormData = {
-	originalUrl: '',
-	description: '',
-	password: '',
-	maxUsage: '',
-	availableDays: '30',
+	originalUrl: "",
+	description: "",
+	password: "",
+	maxUsage: "",
+	availableDays: "30",
 };
 
 export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
@@ -37,45 +37,49 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 	const [hasPassword, setHasPassword] = React.useState(false);
 	const [hasMaxUsage, setHasMaxUsage] = React.useState(false);
 
-	const { formData, errors, handleInputChange, handleSubmit } = useForm<FormData>(
-		initialData,
-		(data) => {
-			const errors: Partial<Record<keyof FormData, string>> = {};
+	const { formData, errors, handleInputChange, handleSubmit } =
+		useForm<FormData>(
+			initialData,
+			(data) => {
+				const errors: Partial<Record<keyof FormData, string>> = {};
 
-			// Required field validation
-			if (!data.originalUrl.trim()) {
-				errors.originalUrl = 'URL gốc là bắt buộc';
-			} else if (!isValidUrl(data.originalUrl)) {
-				errors.originalUrl = 'URL không hợp lệ';
-			}
+				// Required field validation
+				if (!data.originalUrl.trim()) {
+					errors.originalUrl = "URL gốc là bắt buộc";
+				} else if (!isValidUrl(data.originalUrl)) {
+					errors.originalUrl = "URL không hợp lệ";
+				}
 
-			// Conditional validations
-			if (hasPassword && !data.password.trim()) {
-				errors.password = 'Mật khẩu là bắt buộc khi bật bảo vệ';
-			}
+				// Conditional validations
+				if (hasPassword && !data.password.trim()) {
+					errors.password = "Mật khẩu là bắt buộc khi bật bảo vệ";
+				}
 
-			if (hasMaxUsage && (!data.maxUsage.trim() || parseInt(data.maxUsage) <= 0)) {
-				errors.maxUsage = 'Số lần sử dụng tối đa phải lớn hơn 0';
-			}
+				if (
+					hasMaxUsage &&
+					(!data.maxUsage.trim() || parseInt(data.maxUsage) <= 0)
+				) {
+					errors.maxUsage = "Số lần sử dụng tối đa phải lớn hơn 0";
+				}
 
-			if (!data.availableDays.trim() || parseInt(data.availableDays) <= 0) {
-				errors.availableDays = 'Số ngày có hiệu lực phải lớn hơn 0';
-			}
+				if (!data.availableDays.trim() || parseInt(data.availableDays) <= 0) {
+					errors.availableDays = "Số ngày có hiệu lực phải lớn hơn 0";
+				}
 
-			return errors;
-		},
-		async (data) => {
-			const request: CreateShortUrlRequest = {
-				originalUrl: data.originalUrl.trim(),
-				description: data.description.trim() || undefined,
-				password: hasPassword ? data.password.trim() : undefined,
-				maxUsage: hasMaxUsage ? parseInt(data.maxUsage) : undefined,
-				availableDays: parseInt(data.availableDays),
-			};
+				return errors;
+			},
+			async (data) => {
+				const request: CreateShortUrlRequest = {
+					originalUrl: data.originalUrl.trim(),
+					description: data.description.trim() || undefined,
+					password: hasPassword ? data.password.trim() : undefined,
+					maxUsage: hasMaxUsage ? parseInt(data.maxUsage) : undefined,
+					availableDays: parseInt(data.availableDays),
+				};
 
-			await onSubmit(request);
-		}
-	);
+				await onSubmit(request);
+			},
+		);
 
 	// URL validation helper
 	const isValidUrl = (url: string): boolean => {
@@ -97,8 +101,18 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 						className="text-gray-400 hover:text-gray-600 transition-colors"
 						type="button"
 					>
-						<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+						<svg
+							className="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M6 18L18 6M6 6l12 12"
+							/>
 						</svg>
 					</button>
 				)}
@@ -111,7 +125,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 						label="URL gốc *"
 						type="url"
 						value={formData.originalUrl}
-						onChange={handleInputChange('originalUrl')}
+						onChange={handleInputChange("originalUrl")}
 						error={errors.originalUrl}
 						placeholder="https://example.com"
 						required
@@ -123,7 +137,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 					<Input
 						label="Mô tả"
 						value={formData.description}
-						onChange={handleInputChange('description')}
+						onChange={handleInputChange("description")}
 						error={errors.description}
 						placeholder="Mô tả ngắn gọn về URL này..."
 					/>
@@ -136,7 +150,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 						type="number"
 						min="1"
 						value={formData.availableDays}
-						onChange={handleInputChange('availableDays')}
+						onChange={handleInputChange("availableDays")}
 						error={errors.availableDays}
 						placeholder="30"
 						required
@@ -157,7 +171,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 								label="Mật khẩu"
 								type="password"
 								value={formData.password}
-								onChange={handleInputChange('password')}
+								onChange={handleInputChange("password")}
 								error={errors.password}
 								placeholder="Nhập mật khẩu bảo vệ"
 							/>
@@ -180,7 +194,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 								type="number"
 								min="1"
 								value={formData.maxUsage}
-								onChange={handleInputChange('maxUsage')}
+								onChange={handleInputChange("maxUsage")}
 								error={errors.maxUsage}
 								placeholder="100"
 							/>

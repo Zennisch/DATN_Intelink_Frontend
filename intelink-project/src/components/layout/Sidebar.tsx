@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useDashboard } from "../../contexts/DashboardContext";
 import icon from "../../assets/icon.png";
 
 interface SidebarProps {
@@ -13,31 +14,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 	const location = useLocation();
 	const { logout } = useAuth();
 
+	// Try to get dashboard context, but don't fail if not available
+	let dashboardContext;
+	try {
+		dashboardContext = useDashboard();
+	} catch {
+		dashboardContext = null;
+	}
+
 	const menuItems = [
 		{
 			icon: "📊",
 			label: "Dashboard",
 			path: "/dashboard",
+			dashboardView: "overview" as const,
 		},
 		{
 			icon: "🔗",
 			label: "Short URLs",
 			path: "/short-urls",
+			dashboardView: "short-urls" as const,
 		},
-		// {
-		// 	icon: "📱",
-		// 	label: "QR Codes",
-		// 	path: "/qr-codes",
-		// },
-		// {
-		// 	icon: "📄",
-		// 	label: "Pages",
-		// 	path: "/pages",
-		// },
 		{
-			icon: "📈",
+			icon: "�",
 			label: "Statistics",
 			path: "/statistics",
+			dashboardView: "statistics" as const,
 		},
 		{
 			icon: "🌐",
@@ -56,8 +58,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 		},
 	];
 
-	const handleNavigation = (path: string) => {
-		navigate(path);
+	const handleNavigation = (item: (typeof menuItems)[0]) => {
+		// If we're on dashboard and have dashboard context, use it for certain views
+		if (
+			location.pathname === "/dashboard" &&
+			dashboardContext &&
+			item.dashboardView
+		) {
+			dashboardContext.setActiveView(item.dashboardView);
+		} else {
+			// Otherwise, navigate normally
+			navigate(item.path);
+		}
+
 		if (window.innerWidth < 768) {
 			onClose();
 		}
@@ -100,11 +113,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 					<nav className="flex-1 px-4 py-6">
 						<ul className="space-y-2">
 							{menuItems.map((item) => {
-								const isActive = location.pathname === item.path;
+								// Enhanced active state logic
+								let isActive = location.pathname === item.path;
+
+								// If we're on dashboard and have dashboard context, check dashboard view
+								if (
+									location.pathname === "/dashboard" &&
+									dashboardContext &&
+									item.dashboardView
+								) {
+									isActive = dashboardContext.activeView === item.dashboardView;
+								}
+
 								return (
 									<li key={item.path}>
 										<button
-											onClick={() => handleNavigation(item.path)}
+											onClick={() => handleNavigation(item)}
 											className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
 												isActive
 													? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
@@ -127,7 +151,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 								2/10 links available
 							</div>
 							<div className="text-xs opacity-90 mb-3">
-								Enjoying Intelink? Consider upgrading your plan so you can go limitless.
+								Enjoying Intelink? Consider upgrading your plan so you can go
+								limitless.
 							</div>
 							<button className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors">
 								Upgrade now →

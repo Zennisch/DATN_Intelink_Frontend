@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useShortUrls } from '../hooks/useShortUrls';
-import { CreateShortUrlForm } from '../components/shorturl/CreateShortUrlForm';
-import { ShortUrlList } from '../components/shorturl/ShortUrlList';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
-import type { SearchShortUrlRequest } from '../dto/request/ShortUrlRequest';
-import type { ShortUrlListResponse } from '../dto/response/ShortUrlResponse';
+import React, { useState, useEffect } from "react";
+import { useShortUrls } from "../hooks/useShortUrls";
+import { CreateShortUrlForm } from "../components/shorturl/CreateShortUrlForm";
+import { ShortUrlList } from "../components/shorturl/ShortUrlList";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import type { SearchShortUrlRequest } from "../dto/request/ShortUrlRequest";
+import type { ShortUrlListResponse } from "../dto/response/ShortUrlResponse";
 
 export const ShortUrlPage: React.FC = () => {
 	const [showCreateForm, setShowCreateForm] = useState(false);
-	const [searchQuery, setSearchQuery] = useState('');
-	const [statusFilter, setStatusFilter] = useState('');
+	const [searchQuery, setSearchQuery] = useState("");
+	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
 
 	const {
@@ -34,8 +34,8 @@ export const ShortUrlPage: React.FC = () => {
 			size: 10,
 			query: searchQuery || undefined,
 			status: statusFilter || undefined,
-			sortBy: 'createdAt',
-			sortDirection: 'desc',
+			sortBy: "createdAt",
+			sortDirection: "desc",
 		};
 		fetchShortUrls(searchParams);
 	}, [currentPage, searchQuery, statusFilter, fetchShortUrls]);
@@ -58,13 +58,16 @@ export const ShortUrlPage: React.FC = () => {
 	};
 
 	const handleDeleteShortUrl = async (shortCode: string) => {
-		if (window.confirm('Bạn có chắc chắn muốn xóa Short URL này?')) {
+		if (window.confirm("Bạn có chắc chắn muốn xóa Short URL này?")) {
 			await deleteShortUrl(shortCode);
 		}
 	};
 
-	const handleToggleStatus = async (shortCode: string, currentStatus: string) => {
-		if (currentStatus === 'ACTIVE') {
+	const handleToggleStatus = async (
+		shortCode: string,
+		currentStatus: string,
+	) => {
+		if (currentStatus === "ACTIVE") {
 			await disableShortUrl(shortCode);
 		} else {
 			await enableShortUrl(shortCode);
@@ -73,12 +76,12 @@ export const ShortUrlPage: React.FC = () => {
 
 	const handleEditShortUrl = (shortUrl: ShortUrlListResponse) => {
 		// TODO: Implement edit functionality
-		console.log('Edit short URL:', shortUrl);
+		console.log("Edit short URL:", shortUrl);
 	};
 
 	const handleViewStats = (shortCode: string) => {
 		// TODO: Implement stats view
-		console.log('View stats for short URL:', shortCode);
+		console.log("View stats for short URL:", shortCode);
 	};
 
 	return (
@@ -89,14 +92,26 @@ export const ShortUrlPage: React.FC = () => {
 					<div className="flex justify-between items-center">
 						<div>
 							<h1 className="text-3xl font-bold text-gray-900">Short URLs</h1>
-							<p className="mt-2 text-gray-600">Quản lý và theo dõi các Short URL của bạn</p>
+							<p className="mt-2 text-gray-600">
+								Quản lý và theo dõi các Short URL của bạn
+							</p>
 						</div>
 						<Button
 							onClick={() => setShowCreateForm(true)}
 							className="flex items-center gap-2"
 						>
-							<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+							<svg
+								className="w-5 h-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+								/>
 							</svg>
 							Tạo Short URL
 						</Button>
@@ -139,12 +154,14 @@ export const ShortUrlPage: React.FC = () => {
 					<div className="mt-4 pt-4 border-t border-gray-200">
 						<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
 							<div className="text-center">
-								<div className="text-2xl font-bold text-blue-600">{totalElements}</div>
+								<div className="text-2xl font-bold text-blue-600">
+									{totalElements}
+								</div>
 								<div className="text-gray-500">Tổng Short URLs</div>
 							</div>
 							<div className="text-center">
 								<div className="text-2xl font-bold text-green-600">
-									{shortUrls.filter(url => url.status === 'ACTIVE').length}
+									{shortUrls.filter((url) => url.status === "ACTIVE").length}
 								</div>
 								<div className="text-gray-500">Đang hoạt động</div>
 							</div>
@@ -167,8 +184,18 @@ export const ShortUrlPage: React.FC = () => {
 								onClick={clearError}
 								className="text-red-400 hover:text-red-600"
 							>
-								<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+								<svg
+									className="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M6 18L18 6M6 6l12 12"
+									/>
 								</svg>
 							</button>
 						</div>
@@ -190,30 +217,37 @@ export const ShortUrlPage: React.FC = () => {
 					{totalPages > 1 && (
 						<div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
 							<div className="text-sm text-gray-500">
-								Hiển thị {currentPage * 10 + 1} - {Math.min((currentPage + 1) * 10, totalElements)} của {totalElements} kết quả
+								Hiển thị {currentPage * 10 + 1} -{" "}
+								{Math.min((currentPage + 1) * 10, totalElements)} của{" "}
+								{totalElements} kết quả
 							</div>
-							
+
 							<div className="flex gap-2">
 								<Button
 									variant="secondary"
-									onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+									onClick={() =>
+										setCurrentPage((prev) => Math.max(0, prev - 1))
+									}
 									disabled={currentPage === 0 || loading}
 								>
 									Trước
 								</Button>
-								
+
 								{/* Page Numbers */}
 								<div className="flex gap-1">
 									{[...Array(Math.min(5, totalPages))].map((_, index) => {
-										const pageNum = Math.max(0, Math.min(currentPage - 2 + index, totalPages - 1));
+										const pageNum = Math.max(
+											0,
+											Math.min(currentPage - 2 + index, totalPages - 1),
+										);
 										return (
 											<button
 												key={pageNum}
 												onClick={() => setCurrentPage(pageNum)}
 												className={`px-3 py-1 text-sm rounded-md ${
 													pageNum === currentPage
-														? 'bg-blue-600 text-white'
-														: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+														? "bg-blue-600 text-white"
+														: "bg-gray-100 text-gray-700 hover:bg-gray-200"
 												}`}
 											>
 												{pageNum + 1}
@@ -221,10 +255,12 @@ export const ShortUrlPage: React.FC = () => {
 										);
 									})}
 								</div>
-								
+
 								<Button
 									variant="secondary"
-									onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+									onClick={() =>
+										setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+									}
 									disabled={currentPage >= totalPages - 1 || loading}
 								>
 									Sau

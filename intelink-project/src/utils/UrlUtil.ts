@@ -8,7 +8,7 @@
  */
 export const fixShortUrlFormat = (shortUrl: string): string => {
 	// Remove {shortCode}/ pattern from the URL
-	return shortUrl.replace(/{shortCode}\//, '');
+	return shortUrl.replace(/{shortCode}\//, "");
 };
 
 /**
@@ -29,9 +29,11 @@ export const isValidUrl = (url: string): boolean => {
 export const extractShortCode = (shortUrl: string): string => {
 	try {
 		const url = new URL(fixShortUrlFormat(shortUrl));
-		const pathSegments = url.pathname.split('/').filter(segment => segment.length > 0);
-		return pathSegments[pathSegments.length - 1] || '';
+		const pathSegments = url.pathname
+			.split("/")
+			.filter((segment) => segment.length > 0);
+		return pathSegments[pathSegments.length - 1] || "";
 	} catch {
-		return '';
+		return "";
 	}
 };

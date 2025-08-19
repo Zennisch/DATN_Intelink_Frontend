@@ -62,7 +62,8 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 
 					<div className="hidden md:block">
 						<h1 className="text-lg text-gray-600">
-							<span className="text-yellow-500">☀️</span> Good morning, {user?.username || "User"}
+							<span className="text-yellow-500">☀️</span> Good morning,{" "}
+							{user?.username || "User"}
 						</h1>
 						<p className="text-sm text-gray-500">Mon, July 22</p>
 					</div>

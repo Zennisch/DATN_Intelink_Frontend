@@ -1,16 +1,16 @@
-import axios from 'axios';
-import type { 
-	CreateShortUrlRequest, 
-	UpdateShortUrlRequest, 
-	SearchShortUrlRequest 
-} from '../dto/request/ShortUrlRequest';
-import type { 
-	CreateShortUrlResponse, 
-	ShortUrlListResponse, 
-	ShortUrlDetailResponse, 
+import axios from "axios";
+import type {
+	CreateShortUrlRequest,
+	UpdateShortUrlRequest,
+	SearchShortUrlRequest,
+} from "../dto/request/ShortUrlRequest";
+import type {
+	CreateShortUrlResponse,
+	ShortUrlListResponse,
+	ShortUrlDetailResponse,
 	UpdateShortUrlResponse,
-	PagedResponse 
-} from '../dto/response/ShortUrlResponse';
+	PagedResponse,
+} from "../dto/response/ShortUrlResponse";
 
 export class ShortUrlService {
 	/**
@@ -18,12 +18,14 @@ export class ShortUrlService {
 	 * @param request CreateShortUrlRequest
 	 * @returns CreateShortUrlResponse
 	 */
-	static async createShortUrl(request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> {
+	static async createShortUrl(
+		request: CreateShortUrlRequest,
+	): Promise<CreateShortUrlResponse> {
 		try {
-			const response = await axios.post('/url', request);
+			const response = await axios.post("/url", request);
 			return response.data;
 		} catch (error) {
-			console.error('Error creating short URL:', error);
+			console.error("Error creating short URL:", error);
 			throw error;
 		}
 	}
@@ -33,21 +35,23 @@ export class ShortUrlService {
 	 * @param search SearchShortUrlRequest
 	 * @returns PagedResponse<ShortUrlListResponse>
 	 */
-	static async getShortUrls(search: SearchShortUrlRequest = {}): Promise<PagedResponse<ShortUrlListResponse>> {
+	static async getShortUrls(
+		search: SearchShortUrlRequest = {},
+	): Promise<PagedResponse<ShortUrlListResponse>> {
 		try {
 			const params = new URLSearchParams();
-			
+
 			if (search.page !== undefined) {
-				params.append('page', search.page.toString());
+				params.append("page", search.page.toString());
 			}
 			if (search.size !== undefined) {
-				params.append('size', search.size.toString());
+				params.append("size", search.size.toString());
 			}
 
 			const response = await axios.get(`/url?${params.toString()}`);
 			return response.data;
 		} catch (error) {
-			console.error('Error fetching short URLs:', error);
+			console.error("Error fetching short URLs:", error);
 			throw error;
 		}
 	}
@@ -57,33 +61,35 @@ export class ShortUrlService {
 	 * @param search SearchShortUrlRequest
 	 * @returns PagedResponse<ShortUrlListResponse>
 	 */
-	static async searchShortUrls(search: SearchShortUrlRequest): Promise<PagedResponse<ShortUrlListResponse>> {
+	static async searchShortUrls(
+		search: SearchShortUrlRequest,
+	): Promise<PagedResponse<ShortUrlListResponse>> {
 		try {
 			const params = new URLSearchParams();
-			
+
 			if (search.page !== undefined) {
-				params.append('page', search.page.toString());
+				params.append("page", search.page.toString());
 			}
 			if (search.size !== undefined) {
-				params.append('size', search.size.toString());
+				params.append("size", search.size.toString());
 			}
 			if (search.query) {
-				params.append('query', search.query);
+				params.append("query", search.query);
 			}
 			if (search.status) {
-				params.append('status', search.status);
+				params.append("status", search.status);
 			}
 			if (search.sortBy) {
-				params.append('sortBy', search.sortBy);
+				params.append("sortBy", search.sortBy);
 			}
 			if (search.sortDirection) {
-				params.append('sortDirection', search.sortDirection);
+				params.append("sortDirection", search.sortDirection);
 			}
 
 			const response = await axios.get(`/url/search?${params.toString()}`);
 			return response.data;
 		} catch (error) {
-			console.error('Error searching short URLs:', error);
+			console.error("Error searching short URLs:", error);
 			throw error;
 		}
 	}
@@ -93,12 +99,14 @@ export class ShortUrlService {
 	 * @param shortCode string
 	 * @returns ShortUrlDetailResponse
 	 */
-	static async getShortUrlByCode(shortCode: string): Promise<ShortUrlDetailResponse> {
+	static async getShortUrlByCode(
+		shortCode: string,
+	): Promise<ShortUrlDetailResponse> {
 		try {
 			const response = await axios.get(`/url/${shortCode}`);
 			return response.data;
 		} catch (error) {
-			console.error('Error fetching short URL by code:', error);
+			console.error("Error fetching short URL by code:", error);
 			throw error;
 		}
 	}
@@ -109,12 +117,15 @@ export class ShortUrlService {
 	 * @param request UpdateShortUrlRequest
 	 * @returns UpdateShortUrlResponse
 	 */
-	static async updateShortUrl(shortCode: string, request: UpdateShortUrlRequest): Promise<UpdateShortUrlResponse> {
+	static async updateShortUrl(
+		shortCode: string,
+		request: UpdateShortUrlRequest,
+	): Promise<UpdateShortUrlResponse> {
 		try {
 			const response = await axios.put(`/url/${shortCode}`, request);
 			return response.data;
 		} catch (error) {
-			console.error('Error updating short URL:', error);
+			console.error("Error updating short URL:", error);
 			throw error;
 		}
 	}
@@ -124,12 +135,14 @@ export class ShortUrlService {
 	 * @param shortCode string
 	 * @returns UpdateShortUrlResponse
 	 */
-	static async deleteShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
+	static async deleteShortUrl(
+		shortCode: string,
+	): Promise<UpdateShortUrlResponse> {
 		try {
 			const response = await axios.delete(`/url/${shortCode}`);
 			return response.data;
 		} catch (error) {
-			console.error('Error deleting short URL:', error);
+			console.error("Error deleting short URL:", error);
 			throw error;
 		}
 	}
@@ -139,12 +152,14 @@ export class ShortUrlService {
 	 * @param shortCode string
 	 * @returns UpdateShortUrlResponse
 	 */
-	static async enableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
+	static async enableShortUrl(
+		shortCode: string,
+	): Promise<UpdateShortUrlResponse> {
 		try {
 			const response = await axios.put(`/url/${shortCode}/enable`);
 			return response.data;
 		} catch (error) {
-			console.error('Error enabling short URL:', error);
+			console.error("Error enabling short URL:", error);
 			throw error;
 		}
 	}
@@ -154,12 +169,14 @@ export class ShortUrlService {
 	 * @param shortCode string
 	 * @returns UpdateShortUrlResponse
 	 */
-	static async disableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
+	static async disableShortUrl(
+		shortCode: string,
+	): Promise<UpdateShortUrlResponse> {
 		try {
 			const response = await axios.put(`/url/${shortCode}/disable`);
 			return response.data;
 		} catch (error) {
-			console.error('Error disabling short URL:', error);
+			console.error("Error disabling short URL:", error);
 			throw error;
 		}
 	}
@@ -171,15 +188,19 @@ export class ShortUrlService {
 	 * @param newPassword string
 	 * @returns UpdateShortUrlResponse
 	 */
-	static async updatePassword(shortCode: string, currentPassword: string, newPassword: string): Promise<UpdateShortUrlResponse> {
+	static async updatePassword(
+		shortCode: string,
+		currentPassword: string,
+		newPassword: string,
+	): Promise<UpdateShortUrlResponse> {
 		try {
 			const response = await axios.put(`/url/${shortCode}/password`, {
 				currentPassword,
-				newPassword
+				newPassword,
 			});
 			return response.data;
 		} catch (error) {
-			console.error('Error updating short URL password:', error);
+			console.error("Error updating short URL password:", error);
 			throw error;
 		}
 	}

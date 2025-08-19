@@ -4,14 +4,12 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
-import StatisticsPage from "./pages/StatisticsPage";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RegisterSuccessPage } from "./pages/RegisterSuccessPage";
 import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
-import { ShortUrlPage } from "./pages/ShortUrlPage";
 
 function App() {
 	return (
@@ -60,24 +58,6 @@ function App() {
 					element={
 						<ProtectedRoute>
 							<DashboardPage />
-						</ProtectedRoute>
-					}
-				/>
-
-				<Route
-					path="/short-urls"
-					element={
-						<ProtectedRoute>
-							<ShortUrlPage />
-						</ProtectedRoute>
-					}
-				/>
-
-				<Route
-					path="/statistics"
-					element={
-						<ProtectedRoute>
-							<StatisticsPage />
 						</ProtectedRoute>
 					}
 				/>
