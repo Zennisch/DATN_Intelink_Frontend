@@ -250,7 +250,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 								</button>
 
 								{/* Dropdown Menu */}
-								<div className="absolute right-0 top-8 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden group-hover:block">
+								<div className="absolute right-0 top-5 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden group-hover:block">
 									<div className="py-1">
 										{onViewStats && (
 											<button
