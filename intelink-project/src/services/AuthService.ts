@@ -13,13 +13,21 @@ import type {
 } from "../dto/response/UserResponse.ts";
 
 export class AuthService {
-	static async register(credentials: RegisterRequest): Promise<RegisterResponse> {
-		const response = await axios.post<RegisterResponse>("/auth/register", credentials);
+	static async register(
+		credentials: RegisterRequest,
+	): Promise<RegisterResponse> {
+		const response = await axios.post<RegisterResponse>(
+			"/auth/register",
+			credentials,
+		);
 		return response.data;
 	}
 
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
-		const response = await axios.post<LoginResponse>("/auth/login", credentials);
+		const response = await axios.post<LoginResponse>(
+			"/auth/login",
+			credentials,
+		);
 		return response.data;
 	}
 
@@ -46,7 +54,10 @@ export class AuthService {
 		return response.data;
 	}
 
-	static async resetPassword(token: string, request: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+	static async resetPassword(
+		token: string,
+		request: ResetPasswordRequest,
+	): Promise<ResetPasswordResponse> {
 		const response = await axios.post<ResetPasswordResponse>(
 			`/auth/reset-password?token=${token}`,
 			request,
@@ -55,7 +66,9 @@ export class AuthService {
 	}
 
 	static async oAuthCallback(token: string): Promise<LoginResponse> {
-		const response = await axios.get<LoginResponse>(`/auth/oauth/callback?token=${token}`);
+		const response = await axios.get<LoginResponse>(
+			`/auth/oauth/callback?token=${token}`,
+		);
 		return response.data;
 	}
 }

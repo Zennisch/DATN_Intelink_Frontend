@@ -1,17 +1,10 @@
 import type { ReactNode } from "react";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 import type { AuthState, User } from "../models/User.ts";
 import type { LoginRequest } from "../dto/request/UserRequest.ts";
-
-interface AuthContextType extends AuthState {
-	login: (credentials: LoginRequest) => Promise<void>;
-	logout: (onLogoutComplete?: () => void) => Promise<void>;
-	refreshUser: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext, type AuthContextType } from "../hooks/useAuth.ts";
 
 interface AuthProviderProps {
 	children: ReactNode;
@@ -145,12 +138,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = (): AuthContextType => {
-	const context = useContext(AuthContext);
-	if (context === undefined) {
-		throw new Error("useAuth must be used within an AuthProvider");
-	}
-	return context;
 };

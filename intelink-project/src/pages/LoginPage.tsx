@@ -4,12 +4,12 @@ import { SocialLoginSection } from "../components/auth";
 import { Header } from "../components/layout/Header";
 import { Button } from "../components/ui";
 import { Divider } from "../components/ui";
-import { useAuth } from "../contexts/AuthContext";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
 import { BACKEND_URL } from "../types/environment.ts";
 import type { LoginRequest } from "../dto/request/UserRequest.ts";
+import { useAuth } from "../hooks/useAuth.ts";
 
-function LoginPage() {
+export function LoginPage() {
 	const { login } = useAuth();
 	const { redirectToDashboard } = useAuthNavigation();
 	const [loading, setLoading] = useState(false);
@@ -112,5 +112,3 @@ function LoginPage() {
 		</div>
 	);
 }
-
-export default LoginPage;
