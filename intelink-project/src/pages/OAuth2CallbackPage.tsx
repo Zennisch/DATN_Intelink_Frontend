@@ -22,7 +22,7 @@ function OAuth2CallbackPage() {
 				}
 
 				// Call backend to get full auth response
-				const response = await AuthService.handleOAuth2Callback(token);
+				const response = await AuthService.oAuthCallback(token);
 
 				// Store tokens
 				AuthStorage.setAccessToken(response.token);

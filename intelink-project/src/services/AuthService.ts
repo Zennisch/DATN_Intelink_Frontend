@@ -7,6 +7,19 @@ import type {
 import type { LoginResponse } from "../dto/response/UserResponse.ts";
 
 export class AuthService {
+	static async register(credentials: RegisterRequest): Promise<LoginResponse> {
+		try {
+			const response = await axios.post<LoginResponse>(
+				"/auth/register",
+				credentials,
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Register failed:", error);
+			throw error;
+		}
+	}
+
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
 		try {
 			const response = await axios.post<LoginResponse>(
@@ -20,17 +33,7 @@ export class AuthService {
 		}
 	}
 
-	static async getProfile(): Promise<User> {
-		try {
-			const response = await axios.get<User>("/auth/profile");
-			return response.data;
-		} catch (error) {
-			console.error("Get profile failed:", error);
-			throw error;
-		}
-	}
-
-	static async refreshToken(refreshToken: string): Promise<LoginResponse> {
+	static async refresh(refreshToken: string): Promise<LoginResponse> {
 		try {
 			const response = await axios.post<LoginResponse>(
 				"/auth/refresh",
@@ -48,6 +51,16 @@ export class AuthService {
 		}
 	}
 
+	static async getProfile(): Promise<User> {
+		try {
+			const response = await axios.get<User>("/auth/profile");
+			return response.data;
+		} catch (error) {
+			console.error("Get profile failed:", error);
+			throw error;
+		}
+	}
+
 	static async logout(): Promise<void> {
 		try {
 			await axios.post("/auth/logout");
@@ -56,20 +69,7 @@ export class AuthService {
 		}
 	}
 
-	static async register(credentials: RegisterRequest): Promise<LoginResponse> {
-		try {
-			const response = await axios.post<LoginResponse>(
-				"/auth/register",
-				credentials,
-			);
-			return response.data;
-		} catch (error) {
-			console.error("Register failed:", error);
-			throw error;
-		}
-	}
-
-	static async handleOAuth2Callback(token: string): Promise<LoginResponse> {
+	static async oAuthCallback(token: string): Promise<LoginResponse> {
 		try {
 			const response = await axios.get<LoginResponse>(
 				`/auth/oauth/callback?token=${token}`,

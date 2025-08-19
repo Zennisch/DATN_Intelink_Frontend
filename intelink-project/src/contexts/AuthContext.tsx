@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		const initializeAuth = async () => {
 			try {
 				if (AuthStorage.isAuthenticated()) {
-					await fetchUserProfile();
+					await getProfile();
 				}
 			} catch (error) {
 				console.error("Failed to initialize auth:", error);
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		initializeAuth();
 	}, []);
 
-	const fetchUserProfile = async (): Promise<void> => {
+	const getProfile = async (): Promise<void> => {
 		try {
 			const userData = await AuthService.getProfile();
 
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				isLoading: false,
 			});
 
-			await fetchUserProfile();
+			await getProfile();
 		} catch (error) {
 			setAuthState({
 				user: null,
@@ -107,7 +107,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				isLoading: false,
 			});
 
-			// Use callback for navigation instead of direct window.location
 			if (onLogoutComplete) {
 				onLogoutComplete();
 			}
@@ -116,10 +115,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	const refreshUser = async (): Promise<void> => {
 		try {
-			await fetchUserProfile();
+			await getProfile();
 		} catch (error) {
 			console.error("Failed to refresh user:", error);
-			// Use callback for navigation on refresh failure
 			await logout();
 		}
 	};
