@@ -46,7 +46,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			const userData = await AuthService.getProfile();
 
 			setAuthState({
-				user: userData,
+				user: {
+					id: userData.id,
+					username: userData.username,
+					email: userData.email,
+					role: userData.role as "USER" | "ADMIN",
+					totalClicks: userData.totalClicks,
+					totalShortUrls: userData.totalShortUrls,
+					emailVerified: userData.emailVerified,
+					authProvider: userData.authProvider,
+					lastLoginAt: userData.lastLoginAt,
+					createdAt: userData.createdAt,
+					updatedAt: userData.updatedAt,
+				},
 				isAuthenticated: true,
 				isLoading: false,
 			});
@@ -73,6 +85,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				role,
 				totalClicks: 0,
 				totalShortUrls: 0,
+				emailVerified: false,
+				authProvider: "LOCAL",
+				lastLoginAt: new Date().toISOString(),
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 			};

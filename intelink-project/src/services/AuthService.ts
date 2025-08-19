@@ -1,83 +1,61 @@
 import axios from "axios";
-import type { User } from "../models/User.ts";
 import type {
 	LoginRequest,
 	RegisterRequest,
+	ResetPasswordRequest,
 } from "../dto/request/UserRequest.ts";
-import type { LoginResponse } from "../dto/response/UserResponse.ts";
+import type {
+	LoginResponse,
+	RegisterResponse,
+	ResetPasswordResponse,
+	LogoutResponse,
+	UserProfileResponse,
+} from "../dto/response/UserResponse.ts";
 
 export class AuthService {
-	static async register(credentials: RegisterRequest): Promise<LoginResponse> {
-		try {
-			const response = await axios.post<LoginResponse>(
-				"/auth/register",
-				credentials,
-			);
-			return response.data;
-		} catch (error) {
-			console.error("Register failed:", error);
-			throw error;
-		}
+	static async register(credentials: RegisterRequest): Promise<RegisterResponse> {
+		const response = await axios.post<RegisterResponse>("/auth/register", credentials);
+		return response.data;
 	}
 
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
-		try {
-			const response = await axios.post<LoginResponse>(
-				"/auth/login",
-				credentials,
-			);
-			return response.data;
-		} catch (error) {
-			console.error("Login failed:", error);
-			throw error;
-		}
+		const response = await axios.post<LoginResponse>("/auth/login", credentials);
+		return response.data;
 	}
 
 	static async refresh(refreshToken: string): Promise<LoginResponse> {
-		try {
-			const response = await axios.post<LoginResponse>(
-				"/auth/refresh",
-				{},
-				{
-					headers: {
-						Authorization: `Bearer ${refreshToken}`,
-					},
+		const response = await axios.post<LoginResponse>(
+			"/auth/refresh",
+			{},
+			{
+				headers: {
+					Authorization: `Bearer ${refreshToken}`,
 				},
-			);
-			return response.data;
-		} catch (error) {
-			console.error("Refresh token failed:", error);
-			throw error;
-		}
+			},
+		);
+		return response.data;
 	}
 
-	static async getProfile(): Promise<User> {
-		try {
-			const response = await axios.get<User>("/auth/profile");
-			return response.data;
-		} catch (error) {
-			console.error("Get profile failed:", error);
-			throw error;
-		}
+	static async getProfile(): Promise<UserProfileResponse> {
+		const response = await axios.get<UserProfileResponse>("/auth/profile");
+		return response.data;
 	}
 
-	static async logout(): Promise<void> {
-		try {
-			await axios.post("/auth/logout");
-		} catch (error) {
-			console.error("Logout failed:", error);
-		}
+	static async logout(): Promise<LogoutResponse> {
+		const response = await axios.post<LogoutResponse>("/auth/logout");
+		return response.data;
+	}
+
+	static async resetPassword(token: string, request: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+		const response = await axios.post<ResetPasswordResponse>(
+			`/auth/reset-password?token=${token}`,
+			request,
+		);
+		return response.data;
 	}
 
 	static async oAuthCallback(token: string): Promise<LoginResponse> {
-		try {
-			const response = await axios.get<LoginResponse>(
-				`/auth/oauth/callback?token=${token}`,
-			);
-			return response.data;
-		} catch (error) {
-			console.error("OAuth2 callback failed:", error);
-			throw error;
-		}
+		const response = await axios.get<LoginResponse>(`/auth/oauth/callback?token=${token}`);
+		return response.data;
 	}
 }

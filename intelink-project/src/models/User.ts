@@ -5,6 +5,9 @@ export interface User {
 	role: "USER" | "ADMIN";
 	totalClicks: number;
 	totalShortUrls: number;
+	emailVerified: boolean;
+	authProvider: string;
+	lastLoginAt: string;
 	createdAt: string;
 	updatedAt: string;
 }
