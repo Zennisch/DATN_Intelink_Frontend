@@ -4,6 +4,7 @@ import { CreateShortUrlForm } from "../shorturl/CreateShortUrlForm";
 import { ShortUrlList } from "../shorturl/ShortUrlList";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
+import { useCreateShortUrl } from "../../contexts/CreateShortUrlContext";
 import type {
 	SearchShortUrlRequest,
 	CreateShortUrlRequest,
@@ -11,10 +12,11 @@ import type {
 import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse";
 
 export const ShortUrlContent: React.FC = () => {
-	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
+
+	const { showCreateForm, openCreateForm, closeCreateForm } = useCreateShortUrl();
 
 	const {
 		shortUrls,
@@ -69,7 +71,7 @@ export const ShortUrlContent: React.FC = () => {
 		try {
 			const result = await createShortUrl(data);
 			if (result) {
-				setShowCreateForm(false);
+				closeCreateForm();
 				// Refresh the list
 				const searchParams: SearchShortUrlRequest = {
 					page: currentPage,
@@ -171,7 +173,7 @@ export const ShortUrlContent: React.FC = () => {
 					</p>
 				</div>
 				<Button
-					onClick={() => setShowCreateForm(true)}
+					onClick={openCreateForm}
 					className="bg-blue-600 hover:bg-blue-700 text-white"
 				>
 					+ Create Short URL
@@ -290,15 +292,15 @@ export const ShortUrlContent: React.FC = () => {
 
 			{/* Create Short URL Modal */}
 			{showCreateForm && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+				<div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
+					<div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
 						<div className="p-6">
 							<div className="flex justify-between items-center mb-4">
 								<h2 className="text-xl font-semibold text-gray-900">
 									Create New Short URL
 								</h2>
 								<button
-									onClick={() => setShowCreateForm(false)}
+									onClick={closeCreateForm}
 									className="text-gray-400 hover:text-gray-600"
 								>
 									<svg
@@ -318,7 +320,7 @@ export const ShortUrlContent: React.FC = () => {
 							</div>
 							<CreateShortUrlForm
 								onSubmit={handleCreateShortUrl}
-								onClose={() => setShowCreateForm(false)}
+								onClose={closeCreateForm}
 								loading={loading}
 							/>
 						</div>

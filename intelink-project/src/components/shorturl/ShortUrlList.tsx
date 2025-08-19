@@ -228,8 +228,8 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 
 								{shortUrl.maxUsage && <span>Max: {shortUrl.maxUsage}</span>}
 
-								<span>Tạo: {formatDate(shortUrl.createdAt)}</span>
-								<span>Hết hạn: {formatDate(shortUrl.expiresAt)}</span>
+								<span>Created: {formatDate(shortUrl.createdAt)}</span>
+								<span>Expires: {formatDate(shortUrl.expiresAt)}</span>
 							</div>
 						</div>
 

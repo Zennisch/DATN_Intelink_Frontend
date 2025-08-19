@@ -93,12 +93,12 @@ export const ShortUrlPage: React.FC = () => {
 						<div>
 							<h1 className="text-3xl font-bold text-gray-900">Short URLs</h1>
 							<p className="mt-2 text-gray-600">
-								Quản lý và theo dõi các Short URL của bạn
+								Manage and track your Short URLs
 							</p>
 						</div>
 						<Button
 							onClick={() => setShowCreateForm(true)}
-							className="flex items-center gap-2"
+							className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
 						>
 							<svg
 								className="w-5 h-5"
@@ -113,7 +113,7 @@ export const ShortUrlPage: React.FC = () => {
 									d="M12 6v6m0 0v6m0-6h6m-6 0H6"
 								/>
 							</svg>
-							Tạo Short URL
+							Create Short URL
 						</Button>
 					</div>
 				</div>
@@ -230,7 +230,7 @@ export const ShortUrlPage: React.FC = () => {
 									}
 									disabled={currentPage === 0 || loading}
 								>
-									Trước
+									Previous
 								</Button>
 
 								{/* Page Numbers */}
@@ -263,7 +263,7 @@ export const ShortUrlPage: React.FC = () => {
 									}
 									disabled={currentPage >= totalPages - 1 || loading}
 								>
-									Sau
+									Next
 								</Button>
 							</div>
 						</div>
@@ -273,16 +273,46 @@ export const ShortUrlPage: React.FC = () => {
 
 			{/* Create Short URL Modal */}
 			{showCreateForm && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-					<CreateShortUrlForm
-						onSubmit={handleCreateShortUrl}
-						loading={loading}
-						error={error}
-						onClose={() => {
-							setShowCreateForm(false);
-							clearError();
-						}}
-					/>
+				<div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50">
+					<div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+						<div className="p-6">
+							<div className="flex justify-between items-center mb-6">
+								<h2 className="text-xl font-semibold text-gray-900">
+									Create New Short URL
+								</h2>
+								<button
+									onClick={() => {
+										setShowCreateForm(false);
+										clearError();
+									}}
+									className="text-gray-400 hover:text-gray-600 transition-colors"
+								>
+									<svg
+										className="w-6 h-6"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								</button>
+							</div>
+							<CreateShortUrlForm
+								onSubmit={handleCreateShortUrl}
+								loading={loading}
+								error={error}
+								onClose={() => {
+									setShowCreateForm(false);
+									clearError();
+								}}
+							/>
+						</div>
+					</div>
 				</div>
 			)}
 		</div>
