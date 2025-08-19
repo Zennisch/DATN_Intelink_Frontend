@@ -7,10 +7,13 @@ import type {
 	LoginRequest,
 	RegisterRequest,
 	ResetPasswordRequest,
+	ForgotPasswordRequest,
 } from "../dto/request/UserRequest.ts";
 import type {
 	RegisterResponse,
 	ResetPasswordResponse,
+	VerifyEmailResponse,
+	ForgotPasswordResponse,
 } from "../dto/response/UserResponse.ts";
 import { AuthContext, type AuthContextType } from "../hooks/useAuth.ts";
 
@@ -217,6 +220,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		}
 	};
 
+	const verifyEmail = async (token: string): Promise<VerifyEmailResponse> => {
+		try {
+			const response = await AuthService.verifyEmail(token);
+			return response;
+		} catch (error) {
+			console.error("Email verification failed:", error);
+			throw error;
+		}
+	};
+
+	const forgotPassword = async (
+		request: ForgotPasswordRequest,
+	): Promise<ForgotPasswordResponse> => {
+		try {
+			const response = await AuthService.forgotPassword(request);
+			return response;
+		} catch (error) {
+			console.error("Forgot password failed:", error);
+			throw error;
+		}
+	};
+
 	const value: AuthContextType = {
 		...authState,
 		login,
@@ -225,6 +250,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		register,
 		resetPassword,
 		oAuthCallback,
+		verifyEmail,
+		forgotPassword,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

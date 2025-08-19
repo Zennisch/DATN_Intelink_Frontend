@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Input } from "../ui";
 import type { LoginRequest } from "../../dto/request/UserRequest.ts";
 import { useForm } from "../../hooks/useForm.ts";
@@ -22,6 +23,7 @@ const validateLogin = (values: LoginRequest): Partial<LoginRequest> => {
 };
 
 export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [keepSignedIn, setKeepSignedIn] = useState(false);
 
@@ -78,6 +80,10 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 
 				<a
 					href="/forgot-password"
+					onClick={(e) => {
+						e.preventDefault();
+						navigate("/forgot-password");
+					}}
 					className="text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:underline"
 				>
 					Forget your password?

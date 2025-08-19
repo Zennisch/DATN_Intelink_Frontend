@@ -19,6 +19,16 @@ export interface ResetPasswordResponse {
 	message: string;
 }
 
+export interface VerifyEmailResponse {
+	success: boolean;
+	message: string;
+}
+
+export interface ForgotPasswordResponse {
+	success: boolean;
+	message: string;
+}
+
 export interface LogoutResponse {
 	success: boolean;
 	message: string;

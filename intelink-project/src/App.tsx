@@ -8,6 +8,9 @@ import StatisticsPage from "./pages/StatisticsPage";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RegisterSuccessPage } from "./pages/RegisterSuccessPage";
+import { VerifyEmailPage } from "./pages/VerifyEmailPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 
 function App() {
 	return (
@@ -38,6 +41,25 @@ function App() {
 				<Route 
 					path="/register/success" 
 					element={<RegisterSuccessPage />} 
+				/>
+
+				<Route 
+					path="/verify-email" 
+					element={<VerifyEmailPage />} 
+				/>
+
+				<Route
+					path="/forgot-password"
+					element={
+						<AuthenticatedRoute>
+							<ForgotPasswordPage />
+						</AuthenticatedRoute>
+					}
+				/>
+
+				<Route 
+					path="/reset-password" 
+					element={<ResetPasswordPage />} 
 				/>
 
 				{/* Protected routes */}

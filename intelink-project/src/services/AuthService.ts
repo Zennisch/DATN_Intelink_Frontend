@@ -3,6 +3,7 @@ import type {
 	LoginRequest,
 	RegisterRequest,
 	ResetPasswordRequest,
+	ForgotPasswordRequest,
 } from "../dto/request/UserRequest.ts";
 import type {
 	LoginResponse,
@@ -10,6 +11,8 @@ import type {
 	ResetPasswordResponse,
 	LogoutResponse,
 	UserProfileResponse,
+	VerifyEmailResponse,
+	ForgotPasswordResponse,
 } from "../dto/response/UserResponse.ts";
 
 export class AuthService {
@@ -68,6 +71,23 @@ export class AuthService {
 	static async oAuthCallback(token: string): Promise<LoginResponse> {
 		const response = await axios.get<LoginResponse>(
 			`/auth/oauth/callback?token=${token}`,
+		);
+		return response.data;
+	}
+
+	static async verifyEmail(token: string): Promise<VerifyEmailResponse> {
+		const response = await axios.post<VerifyEmailResponse>(
+			`/auth/verify-email?token=${token}`,
+		);
+		return response.data;
+	}
+
+	static async forgotPassword(
+		request: ForgotPasswordRequest,
+	): Promise<ForgotPasswordResponse> {
+		const response = await axios.post<ForgotPasswordResponse>(
+			"/auth/forgot-password",
+			request,
 		);
 		return response.data;
 	}
