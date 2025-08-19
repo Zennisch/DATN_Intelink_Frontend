@@ -11,7 +11,20 @@ export function LoginPage() {
 	const { login } = useAuth();
 	const { redirectToDashboard } = useAuthNavigation();
 	const [loading, setLoading] = useState(false);
+	const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
+
+	const handleError = (error: any) => {
+		if (error.code === "NETWORK_ERROR") {
+			setError("Network error. Please check your connection.");
+		} else if (error.response?.status === 401) {
+			setError("Invalid credentials. Please try again.");
+		} else {
+			setError(
+				error.response?.data?.message || "An unexpected error occurred.",
+			);
+		}
+	};
 
 	const handleLogin = async (credentials: LoginRequest) => {
 		try {
@@ -22,9 +35,7 @@ export function LoginPage() {
 
 			redirectToDashboard();
 		} catch (err: any) {
-			setError(
-				err.response?.data?.message || "Login failed. Please try again.",
-			);
+			handleError(err);
 			console.error("Login error:", err);
 		} finally {
 			setLoading(false);
@@ -32,6 +43,7 @@ export function LoginPage() {
 	};
 
 	const handleOAuth2Login = (provider: "google" | "github") => {
+		setOauthLoading(provider);
 		window.location.href = `${BACKEND_URL}/oauth2/authorization/${provider}`;
 	};
 
