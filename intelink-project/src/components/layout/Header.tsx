@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import icon from "../../assets/icon.png";
 import { ICONS, LANGUAGES } from "../../types/constants.ts";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
 	onLanguageChange?: (language: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
+	const navigate = useNavigate();
 	const [currentLanguage, setCurrentLanguage] = useState(LANGUAGES.EN);
 	const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
@@ -16,6 +18,14 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 		setCurrentLanguage(language);
 		setShowLanguageDropdown(false);
 		onLanguageChange?.(language);
+	};
+
+	const handleLogin = () => {
+		navigate("/login");
+	};
+
+	const handleSignUp = () => {
+		navigate("/register");
 	};
 
 	return (
@@ -58,10 +68,16 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 					)}
 				</div>
 
-				<button className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">
+				<button 
+					className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500"
+					onClick={handleLogin}
+				>
 					Log in
 				</button>
-				<button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500">
+				<button 
+					className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+					onClick={handleSignUp}
+				>		
 					Sign up
 				</button>
 			</div>

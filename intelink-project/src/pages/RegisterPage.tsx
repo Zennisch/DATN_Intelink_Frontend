@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginForm, SocialLoginSection } from "../components/auth";
+import { RegisterForm, SocialLoginSection } from "../components/auth";
 import { Header } from "../components/layout/Header";
 import { Button, Divider } from "../components/ui";
-import type { LoginRequest } from "../dto/request/UserRequest.ts";
+import type { RegisterRequest } from "../dto/request/UserRequest.ts";
 import { useAuth } from "../hooks/useAuth.ts";
-import { useAuthNavigation } from "../hooks/useAuthNavigation";
 import { BACKEND_URL } from "../types/environment.ts";
 
-export function LoginPage() {
-	const { login } = useAuth();
-	const { redirectToDashboard } = useAuthNavigation();
+export function RegisterPage() {
+	const { register } = useAuth();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -18,8 +16,10 @@ export function LoginPage() {
 	const handleError = (error: any) => {
 		if (error.code === "NETWORK_ERROR") {
 			setError("Network error. Please check your connection.");
-		} else if (error.response?.status === 401) {
-			setError("Invalid credentials. Please try again.");
+		} else if (error.response?.status === 409) {
+			setError("Username or email already exists. Please try different credentials.");
+		} else if (error.response?.status === 400) {
+			setError("Invalid input. Please check your information and try again.");
 		} else {
 			setError(
 				error.response?.data?.message || "An unexpected error occurred.",
@@ -27,17 +27,27 @@ export function LoginPage() {
 		}
 	};
 
-	const handleLogin = async (credentials: LoginRequest) => {
+	const handleRegister = async (credentials: RegisterRequest) => {
 		try {
 			setLoading(true);
 			setError(null);
 
-			await login(credentials);
+			const response = await register(credentials);
 
-			redirectToDashboard();
+			if (response.success) {
+				// Navigate to success page with email info
+				navigate("/register/success", { 
+					state: { 
+						email: credentials.email,
+						emailVerified: response.emailVerified 
+					} 
+				});
+			} else {
+				setError(response.message || "Registration failed. Please try again.");
+			}
 		} catch (err: any) {
 			handleError(err);
-			console.error("Login error:", err);
+			console.error("Registration error:", err);
 		} finally {
 			setLoading(false);
 		}
@@ -58,8 +68,8 @@ export function LoginPage() {
 		handleOAuth2Login("github");
 	};
 
-	const handleSignUp = () => {
-		navigate("/register");
+	const handleBackToLogin = () => {
+		navigate("/login");
 	};
 
 	return (
@@ -71,8 +81,11 @@ export function LoginPage() {
 					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
 						<div className="text-center mb-8">
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
-								Log in to Intelink
+								Create your Intelink account
 							</h1>
+							<p className="text-gray-600">
+								Join thousands of users who trust Intelink for URL shortening
+							</p>
 						</div>
 
 						{error && (
@@ -94,20 +107,20 @@ export function LoginPage() {
 						</div>
 
 						<div className="mb-6">
-							<LoginForm onSubmit={handleLogin} loading={loading} />
+							<RegisterForm onSubmit={handleRegister} loading={loading} />
 						</div>
 
 						<div className="text-center">
 							<p className="text-sm text-gray-600 mb-4">
-								Don't have an account?
+								Already have an account?
 							</p>
 							<Button
 								variant="outline"
 								fullWidth
 								size="lg"
-								onClick={handleSignUp}
+								onClick={handleBackToLogin}
 							>
-								Sign up
+								Sign in
 							</Button>
 						</div>
 					</div>

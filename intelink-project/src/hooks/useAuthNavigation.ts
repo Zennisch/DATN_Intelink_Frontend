@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "./useAuth";
 
 export const useAuthNavigation = () => {
 	const navigate = useNavigate();

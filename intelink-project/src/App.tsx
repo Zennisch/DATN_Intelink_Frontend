@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
+import { LoginPage } from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 import StatisticsPage from "./pages/StatisticsPage";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { RegisterSuccessPage } from "./pages/RegisterSuccessPage";
 
 function App() {
 	return (
@@ -23,7 +25,20 @@ function App() {
 				/>
 
 				<Route path="/auth/oauth2/callback" element={<OAuth2CallbackPage />} />
-				{/* <Route path="/register" element={<RegisterPage />} /> */}
+				
+				<Route
+					path="/register"
+					element={
+						<AuthenticatedRoute>
+							<RegisterPage />
+						</AuthenticatedRoute>
+					}
+				/>
+				
+				<Route 
+					path="/register/success" 
+					element={<RegisterSuccessPage />} 
+				/>
 
 				{/* Protected routes */}
 				<Route
