@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
-import type { AuthState, User } from "../models/User.ts";
+import type { AuthState } from "../models/User.ts";
 import type { LoginRequest } from "../dto/request/UserRequest.ts";
 import { AuthContext, type AuthContextType } from "../hooks/useAuth.ts";
 
@@ -18,6 +18,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	});
 
 	useEffect(() => {
+		let isMounted = true;
+
 		const initializeAuth = async () => {
 			try {
 				if (AuthStorage.isAuthenticated()) {
@@ -27,18 +29,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				console.error("Failed to initialize auth:", error);
 				AuthStorage.clearTokens();
 			} finally {
-				setAuthState((prev) => ({ ...prev, isLoading: false }));
+				if (isMounted) {
+					setAuthState((prev) => ({ ...prev, isLoading: false }));
+				}
 			}
 		};
 
 		initializeAuth();
+
+		return () => {
+			isMounted = false;
+		};
 	}, []);
 
 	const getProfile = async (): Promise<void> => {
 		try {
 			const userData = await AuthService.getProfile();
 
-			setAuthState({
+			setAuthState((prev) => ({
+				...prev,
 				user: {
 					id: userData.id,
 					username: userData.username,
@@ -54,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				},
 				isAuthenticated: true,
 				isLoading: false,
-			});
+			}));
 		} catch (error) {
 			console.error("Failed to fetch user profile:", error);
 			throw error;
@@ -71,25 +80,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			AuthStorage.setAccessToken(token);
 			AuthStorage.setRefreshToken(refreshToken);
 
-			const user: User = {
-				id: 0,
-				username,
-				email,
-				role,
-				totalClicks: 0,
-				totalShortUrls: 0,
-				emailVerified: false,
-				authProvider: "LOCAL",
-				lastLoginAt: new Date().toISOString(),
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString(),
-			};
-
-			setAuthState({
-				user,
+			setAuthState((prev) => ({
+				...prev,
+				user: {
+					id: 0,
+					username,
+					email,
+					role,
+					totalClicks: 0,
+					totalShortUrls: 0,
+					emailVerified: false,
+					authProvider: "LOCAL",
+					lastLoginAt: new Date().toISOString(),
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				},
 				isAuthenticated: true,
 				isLoading: false,
-			});
+			}));
 
 			await getProfile();
 		} catch (error) {
