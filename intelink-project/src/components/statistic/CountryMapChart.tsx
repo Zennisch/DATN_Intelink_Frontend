@@ -122,7 +122,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 			<div className="bg-white p-6 rounded-lg shadow-md">
 				<h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
 				<div className="flex items-center justify-center h-96">
-					<p className="text-gray-500">Không có dữ liệu quốc gia để hiển thị</p>
+					<p className="text-gray-500">No country data to display</p>
 				</div>
 			</div>
 		);
@@ -133,7 +133,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 			<div className="bg-white p-6 rounded-lg shadow-md">
 				<h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
 				<div className="flex items-center justify-center h-96">
-					<p className="text-gray-500">Đang tải bản đồ...</p>
+					<p className="text-gray-500">Loading map...</p>
 				</div>
 			</div>
 		);

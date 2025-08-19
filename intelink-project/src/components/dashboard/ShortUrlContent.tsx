@@ -92,7 +92,7 @@ export const ShortUrlContent: React.FC = () => {
 	};
 
 	const handleDeleteShortUrl = async (shortCode: string) => {
-		if (window.confirm("Bạn có chắc chắn muốn xóa Short URL này?")) {
+		if (window.confirm("Are you sure you want to delete this Short URL?")) {
 			try {
 				await deleteShortUrl(shortCode);
 				// Refresh the list
@@ -167,14 +167,14 @@ export const ShortUrlContent: React.FC = () => {
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900">Short URLs</h1>
 					<p className="text-gray-600 mt-1">
-						Quản lý và theo dõi các short URLs của bạn
+						Manage and track your short URLs
 					</p>
 				</div>
 				<Button
 					onClick={() => setShowCreateForm(true)}
 					className="bg-blue-600 hover:bg-blue-700 text-white"
 				>
-					+ Tạo Short URL
+					+ Create Short URL
 				</Button>
 			</div>
 
@@ -184,7 +184,7 @@ export const ShortUrlContent: React.FC = () => {
 					<div className="md:col-span-2">
 						<Input
 							type="text"
-							placeholder="Tìm kiếm theo URL gốc hoặc short code..."
+							placeholder="Search by original URL or short code..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							className="w-full"
@@ -196,21 +196,21 @@ export const ShortUrlContent: React.FC = () => {
 							onChange={(e) => setStatusFilter(e.target.value)}
 							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						>
-							<option value="">Tất cả trạng thái</option>
-							<option value="true">Đang hoạt động</option>
-							<option value="false">Đã tắt</option>
+							<option value="">All statuses</option>
+							<option value="true">Active</option>
+							<option value="false">Disabled</option>
 						</select>
 					</div>
 					<div className="flex gap-2">
 						<Button onClick={handleSearch} variant="primary" className="flex-1">
-							Tìm kiếm
+							Search
 						</Button>
 						<Button
 							onClick={handleClearFilters}
 							variant="secondary"
 							className="flex-1"
 						>
-							Xóa bộ lọc
+							Clear Filters
 						</Button>
 					</div>
 				</div>
@@ -220,7 +220,7 @@ export const ShortUrlContent: React.FC = () => {
 			<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 				{loading && !shortUrls.length ? (
 					<div className="flex justify-center items-center py-8">
-						<div className="text-gray-500">Đang tải...</div>
+						<div className="text-gray-500">Loading...</div>
 					</div>
 				) : (
 					<ShortUrlList
@@ -237,9 +237,9 @@ export const ShortUrlContent: React.FC = () => {
 				{totalPages > 1 && (
 					<div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
 						<div className="text-sm text-gray-500">
-							Hiển thị {currentPage * 10 + 1} -{" "}
-							{Math.min((currentPage + 1) * 10, totalElements)} của{" "}
-							{totalElements} kết quả
+							Showing {currentPage * 10 + 1} -{" "}
+							{Math.min((currentPage + 1) * 10, totalElements)} of{" "}
+							{totalElements} results
 						</div>
 
 						<div className="flex gap-2">
@@ -248,7 +248,7 @@ export const ShortUrlContent: React.FC = () => {
 								onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 								disabled={currentPage === 0 || loading}
 							>
-								Trước
+								Previous
 							</Button>
 
 							{/* Page Numbers */}
@@ -281,7 +281,7 @@ export const ShortUrlContent: React.FC = () => {
 								}
 								disabled={currentPage >= totalPages - 1 || loading}
 							>
-								Sau
+								Next
 							</Button>
 						</div>
 					</div>
@@ -295,7 +295,7 @@ export const ShortUrlContent: React.FC = () => {
 						<div className="p-6">
 							<div className="flex justify-between items-center mb-4">
 								<h2 className="text-xl font-semibold text-gray-900">
-									Tạo Short URL mới
+									Create New Short URL
 								</h2>
 								<button
 									onClick={() => setShowCreateForm(false)}

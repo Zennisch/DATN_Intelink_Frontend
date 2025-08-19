@@ -49,9 +49,9 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 		};
 
 		const statusLabels = {
-			ACTIVE: "Hoạt động",
-			INACTIVE: "Không hoạt động",
-			EXPIRED: "Hết hạn",
+			ACTIVE: "Active",
+			INACTIVE: "Inactive",
+			EXPIRED: "Expired",
 		};
 
 		return (
@@ -99,10 +99,10 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 					/>
 				</svg>
 				<h3 className="mt-2 text-sm font-medium text-gray-900">
-					Chưa có Short URL nào
+					No Short URLs yet
 				</h3>
 				<p className="mt-1 text-sm text-gray-500">
-					Bắt đầu bằng cách tạo Short URL đầu tiên của bạn.
+					Get started by creating your first Short URL.
 				</p>
 			</div>
 		);
@@ -222,7 +222,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 												d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 											/>
 										</svg>
-										Bảo vệ
+										Protected
 									</span>
 								)}
 
@@ -270,7 +270,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 														d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
 													/>
 												</svg>
-												Xem thống kê
+												View Statistics
 											</button>
 										)}
 
@@ -292,7 +292,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 														d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 													/>
 												</svg>
-												Chỉnh sửa
+												Edit
 											</button>
 										)}
 
@@ -318,7 +318,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 																d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L5.636 5.636"
 															/>
 														</svg>
-														Vô hiệu hóa
+														Disable
 													</>
 												) : (
 													<>
@@ -335,7 +335,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 																d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
 															/>
 														</svg>
-														Kích hoạt
+														Enable
 													</>
 												)}
 											</button>
@@ -359,7 +359,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 														d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
 													/>
 												</svg>
-												Xóa
+												Delete
 											</button>
 										)}
 									</div>

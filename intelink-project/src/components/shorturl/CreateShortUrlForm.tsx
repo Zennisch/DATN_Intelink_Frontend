@@ -45,25 +45,25 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 
 				// Required field validation
 				if (!data.originalUrl.trim()) {
-					errors.originalUrl = "URL gốc là bắt buộc";
+					errors.originalUrl = "Original URL is required";
 				} else if (!isValidUrl(data.originalUrl)) {
-					errors.originalUrl = "URL không hợp lệ";
+					errors.originalUrl = "Invalid URL";
 				}
 
 				// Conditional validations
 				if (hasPassword && !data.password.trim()) {
-					errors.password = "Mật khẩu là bắt buộc khi bật bảo vệ";
+					errors.password = "Password is required when protection is enabled";
 				}
 
 				if (
 					hasMaxUsage &&
 					(!data.maxUsage.trim() || parseInt(data.maxUsage) <= 0)
 				) {
-					errors.maxUsage = "Số lần sử dụng tối đa phải lớn hơn 0";
+					errors.maxUsage = "Maximum usage must be greater than 0";
 				}
 
 				if (!data.availableDays.trim() || parseInt(data.availableDays) <= 0) {
-					errors.availableDays = "Số ngày có hiệu lực phải lớn hơn 0";
+					errors.availableDays = "Available days must be greater than 0";
 				}
 
 				return errors;
@@ -122,7 +122,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 				{/* Original URL */}
 				<div>
 					<Input
-						label="URL gốc *"
+						label="Original URL *"
 						type="url"
 						value={formData.originalUrl}
 						onChange={handleInputChange("originalUrl")}
@@ -135,18 +135,18 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 				{/* Description */}
 				<div>
 					<Input
-						label="Mô tả"
+						label="Description"
 						value={formData.description}
 						onChange={handleInputChange("description")}
 						error={errors.description}
-						placeholder="Mô tả ngắn gọn về URL này..."
+						placeholder="Brief description of this URL..."
 					/>
 				</div>
 
 				{/* Available Days */}
 				<div>
 					<Input
-						label="Số ngày có hiệu lực *"
+						label="Available Days *"
 						type="number"
 						min="1"
 						value={formData.availableDays}
@@ -161,19 +161,19 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 				<div>
 					<Checkbox
 						id="hasPassword"
-						label="Bảo vệ bằng mật khẩu"
+						label="Password Protection"
 						checked={hasPassword}
 						onChange={setHasPassword}
 					/>
 					{hasPassword && (
 						<div className="mt-2">
 							<Input
-								label="Mật khẩu"
+								label="Password"
 								type="password"
 								value={formData.password}
 								onChange={handleInputChange("password")}
 								error={errors.password}
-								placeholder="Nhập mật khẩu bảo vệ"
+								placeholder="Enter protection password"
 							/>
 						</div>
 					)}
@@ -183,14 +183,14 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 				<div>
 					<Checkbox
 						id="hasMaxUsage"
-						label="Giới hạn số lần sử dụng"
+						label="Limit Usage Count"
 						checked={hasMaxUsage}
 						onChange={setHasMaxUsage}
 					/>
 					{hasMaxUsage && (
 						<div className="mt-2">
 							<Input
-								label="Số lần sử dụng tối đa"
+								label="Maximum Usage Count"
 								type="number"
 								min="1"
 								value={formData.maxUsage}
@@ -219,7 +219,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 							disabled={loading}
 							className="flex-1"
 						>
-							Hủy
+							Cancel
 						</Button>
 					)}
 					<Button
@@ -228,7 +228,7 @@ export const CreateShortUrlForm: React.FC<CreateShortUrlFormProps> = ({
 						disabled={loading}
 						className="flex-1"
 					>
-						Tạo Short URL
+						Create Short URL
 					</Button>
 				</div>
 			</form>

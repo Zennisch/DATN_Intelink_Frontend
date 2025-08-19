@@ -22,7 +22,7 @@ export const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({
 	const [isAllSelected, setIsAllSelected] = useState(false);
 	const [chartType, setChartType] = useState<"bar" | "doughnut">("bar");
 
-	// Tạo danh sách tất cả dimensions khi chọn All
+	// Create list of all dimensions when selecting All
 	const allDimensions = Object.values(DIMENSION_CATEGORIES).flat();
 	const dimensionsToFetch = isAllSelected ? allDimensions : selectedDimensions;
 
@@ -44,7 +44,7 @@ export const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({
 			setIsAllSelected(false);
 			setSelectedDimensions([DimensionType.BROWSER]); // Default selection
 		} else {
-			// Nếu chưa chọn All, chọn tất cả
+			// If not selected All yet, select all
 			setIsAllSelected(true);
 			setSelectedDimensions([]); // Clear individual selections
 		}

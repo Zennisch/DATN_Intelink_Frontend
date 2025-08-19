@@ -19,7 +19,7 @@ export const DimensionSelector: React.FC<DimensionSelectorProps> = ({
 	isAllSelected,
 	onAllToggle,
 }) => {
-	// Lấy tất cả dimension
+	// Get all dimensions
 
 	const handleDimensionClick = (dimension: DimensionType) => {
 		if (selectedDimensions.includes(dimension)) {

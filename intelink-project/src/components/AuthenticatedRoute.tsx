@@ -8,8 +8,8 @@ interface AuthenticatedRouteProps {
 }
 
 /**
- * Component để bảo vệ các route không được truy cập khi đã đăng nhập
- * Ví dụ: LoginPage, RegisterPage
+ * Component to protect routes that should not be accessed when already logged in
+ * Example: LoginPage, RegisterPage
  */
 export const AuthenticatedRoute: React.FC<AuthenticatedRouteProps> = ({
 	children,
@@ -17,17 +17,17 @@ export const AuthenticatedRoute: React.FC<AuthenticatedRouteProps> = ({
 }) => {
 	const { isAuthenticated, isLoading } = useAuth();
 
-	// Hiển thị loading khi đang kiểm tra auth state
+	// Show loading when checking auth state
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
-	// Nếu đã authenticate, redirect đến trang dashboard
+	// If already authenticated, redirect to dashboard page
 	if (isAuthenticated) {
 		return <Navigate to={redirectTo} replace />;
 	}
 
-	// Nếu chưa authenticate, hiển thị children (login page)
+	// If not authenticated, show children (login page)
 	return <>{children}</>;
 };
 

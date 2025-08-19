@@ -58,7 +58,7 @@ export const ShortUrlPage: React.FC = () => {
 	};
 
 	const handleDeleteShortUrl = async (shortCode: string) => {
-		if (window.confirm("Bạn có chắc chắn muốn xóa Short URL này?")) {
+		if (window.confirm("Are you sure you want to delete this Short URL?")) {
 			await deleteShortUrl(shortCode);
 		}
 	};
@@ -124,11 +124,11 @@ export const ShortUrlPage: React.FC = () => {
 						{/* Search Input */}
 						<div className="flex-1">
 							<Input
-								label="Tìm kiếm"
+								label="Search"
 								type="text"
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								placeholder="Tìm kiếm theo URL, mô tả..."
+								placeholder="Search by URL, description..."
 							/>
 						</div>
 
@@ -142,10 +142,10 @@ export const ShortUrlPage: React.FC = () => {
 								onChange={(e) => setStatusFilter(e.target.value)}
 								className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 							>
-								<option value="">Tất cả</option>
-								<option value="ACTIVE">Hoạt động</option>
-								<option value="INACTIVE">Không hoạt động</option>
-								<option value="EXPIRED">Hết hạn</option>
+								<option value="">All</option>
+								<option value="ACTIVE">Active</option>
+								<option value="INACTIVE">Inactive</option>
+								<option value="EXPIRED">Expired</option>
 							</select>
 						</div>
 					</div>
@@ -163,7 +163,7 @@ export const ShortUrlPage: React.FC = () => {
 								<div className="text-2xl font-bold text-green-600">
 									{shortUrls.filter((url) => url.status === "ACTIVE").length}
 								</div>
-								<div className="text-gray-500">Đang hoạt động</div>
+								<div className="text-gray-500">Currently Active</div>
 							</div>
 							<div className="text-center">
 								<div className="text-2xl font-bold text-orange-600">
@@ -217,9 +217,9 @@ export const ShortUrlPage: React.FC = () => {
 					{totalPages > 1 && (
 						<div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
 							<div className="text-sm text-gray-500">
-								Hiển thị {currentPage * 10 + 1} -{" "}
-								{Math.min((currentPage + 1) * 10, totalElements)} của{" "}
-								{totalElements} kết quả
+								Showing {currentPage * 10 + 1} -{" "}
+								{Math.min((currentPage + 1) * 10, totalElements)} of{" "}
+								{totalElements} results
 							</div>
 
 							<div className="flex gap-2">

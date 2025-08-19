@@ -13,21 +13,21 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
 	{
 		id: "overview",
-		label: "Tổng quan",
+		label: "Overview",
 		icon: "📊",
-		description: "Xem tổng quan về tài khoản và hoạt động",
+		description: "View account overview and activities",
 	},
 	{
 		id: "short-urls",
 		label: "Short URLs",
 		icon: "🔗",
-		description: "Quản lý và tạo short URLs",
+		description: "Manage and create short URLs",
 	},
 	{
 		id: "statistics",
-		label: "Thống kê",
+		label: "Statistics",
 		icon: "📈",
-		description: "Xem thống kê truy cập và phân tích",
+		description: "View access statistics and analytics",
 	},
 ];
 
@@ -44,7 +44,7 @@ export const SinglePageDashboard: React.FC = () => {
 								Dashboard
 							</h1>
 							<p className="text-gray-600">
-								Chào mừng bạn đến với bảng điều khiển Intelink
+								Welcome to your Intelink dashboard
 							</p>
 						</div>
 
@@ -52,19 +52,19 @@ export const SinglePageDashboard: React.FC = () => {
 							{/* Quick Stats */}
 							<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 								<h2 className="text-lg font-semibold text-gray-900 mb-2">
-									Thống kê nhanh
+									Quick Stats
 								</h2>
 								<div className="space-y-2">
 									<div className="flex justify-between">
-										<span className="text-gray-600">Tổng số Links:</span>
+										<span className="text-gray-600">Total Links:</span>
 										<span className="font-medium">0</span>
 									</div>
 									<div className="flex justify-between">
-										<span className="text-gray-600">Tổng số Clicks:</span>
+										<span className="text-gray-600">Total Clicks:</span>
 										<span className="font-medium">0</span>
 									</div>
 									<div className="flex justify-between">
-										<span className="text-gray-600">Links hoạt động:</span>
+										<span className="text-gray-600">Active Links:</span>
 										<span className="font-medium">0</span>
 									</div>
 								</div>
@@ -73,20 +73,20 @@ export const SinglePageDashboard: React.FC = () => {
 							{/* Quick Actions */}
 							<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 								<h2 className="text-lg font-semibold text-gray-900 mb-4">
-									Thao tác nhanh
+									Quick Actions
 								</h2>
 								<div className="space-y-3">
 									<button
 										onClick={() => setActiveView("short-urls")}
 										className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
 									>
-										🔗 Tạo Short URL mới
+										🔗 Create New Short URL
 									</button>
 									<button
 										onClick={() => setActiveView("statistics")}
 										className="w-full text-left px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
 									>
-										📈 Xem thống kê
+										📈 View Statistics
 									</button>
 								</div>
 							</div>
@@ -94,9 +94,9 @@ export const SinglePageDashboard: React.FC = () => {
 							{/* Recent Activity */}
 							<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 								<h2 className="text-lg font-semibold text-gray-900 mb-2">
-									Hoạt động gần đây
+									Recent Activity
 								</h2>
-								<p className="text-gray-600 text-sm">Chưa có hoạt động nào</p>
+								<p className="text-gray-600 text-sm">No recent activity</p>
 							</div>
 						</div>
 
@@ -109,10 +109,10 @@ export const SinglePageDashboard: React.FC = () => {
 								<div className="text-white">
 									<div className="text-3xl mb-2">🔗</div>
 									<h3 className="text-xl font-semibold mb-2">
-										Quản lý Short URLs
+										Manage Short URLs
 									</h3>
 									<p className="text-blue-100">
-										Tạo, chỉnh sửa và quản lý các short URLs của bạn
+										Create, edit and manage your short URLs
 									</p>
 								</div>
 							</div>
@@ -123,9 +123,9 @@ export const SinglePageDashboard: React.FC = () => {
 							>
 								<div className="text-white">
 									<div className="text-3xl mb-2">📈</div>
-									<h3 className="text-xl font-semibold mb-2">Xem thống kê</h3>
+									<h3 className="text-xl font-semibold mb-2">View Statistics</h3>
 									<p className="text-green-100">
-										Phân tích lưu lượng truy cập và hiệu suất của các links
+										Analyze traffic and performance of your links
 									</p>
 								</div>
 							</div>
@@ -138,13 +138,13 @@ export const SinglePageDashboard: React.FC = () => {
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
 							<h1 className="text-3xl font-bold text-gray-900">
-								Quản lý Short URLs
+								Manage Short URLs
 							</h1>
 							<button
 								onClick={() => setActiveView("overview")}
 								className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
 							>
-								← Về trang chính
+								← Back to Main
 							</button>
 						</div>
 						<ShortUrlContent />
@@ -155,12 +155,12 @@ export const SinglePageDashboard: React.FC = () => {
 				return (
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
-							<h1 className="text-3xl font-bold text-gray-900">Thống kê</h1>
+							<h1 className="text-3xl font-bold text-gray-900">Statistics</h1>
 							<button
 								onClick={() => setActiveView("overview")}
 								className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
 							>
-								← Về trang chính
+								← Back to Main
 							</button>
 						</div>
 						<StatisticsContent />
