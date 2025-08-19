@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState } from "react";
 import { StatisticsDashboard } from "../components/statistic/StatisticsDashboard.tsx";
+import { AuthenticatedLayout } from "../components/layout/AuthenticatedLayout";
 
 function StatisticsPage() {
 	const [shortcode, setShortcode] = useState<string>("");
@@ -16,9 +17,9 @@ function StatisticsPage() {
 	};
 
 	return (
-		<div className="App">
+		<AuthenticatedLayout>
 			{!currentShortcode ? (
-				<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+				<div className="flex items-center justify-center min-h-96">
 					<div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
 						<h1 className="text-2xl font-bold text-center mb-6">
 							Statistics Dashboard
@@ -53,7 +54,7 @@ function StatisticsPage() {
 			) : (
 				<StatisticsDashboard shortcode={currentShortcode} />
 			)}
-		</div>
+		</AuthenticatedLayout>
 	);
 }
 
