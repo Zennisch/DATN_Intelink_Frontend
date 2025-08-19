@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { ShortUrlListResponse } from '../../dto/response/ShortUrlResponse';
+import { fixShortUrlFormat } from '../../utils/UrlUtil';
 
 interface ShortUrlListProps {
 	shortUrls: ShortUrlListResponse[];
@@ -107,15 +108,15 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 							{/* Short URL and Copy Button */}
 							<div className="flex items-center gap-2 mb-2">
 								<a
-									href={shortUrl.shortUrl}
+									href={fixShortUrlFormat(shortUrl.shortUrl)}
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-blue-600 hover:text-blue-800 font-medium truncate"
 								>
-									{shortUrl.shortUrl}
+									{fixShortUrlFormat(shortUrl.shortUrl)}
 								</a>
 								<button
-									onClick={() => copyToClipboard(shortUrl.shortUrl, shortUrl.id)}
+									onClick={() => copyToClipboard(fixShortUrlFormat(shortUrl.shortUrl), shortUrl.id)}
 									className="text-gray-400 hover:text-gray-600 transition-colors"
 									title="Copy to clipboard"
 								>
