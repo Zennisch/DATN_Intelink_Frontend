@@ -1,11 +1,25 @@
 import { createContext, useContext } from "react";
-import type { LoginRequest } from "../dto/request/UserRequest.ts";
+import type {
+	LoginRequest,
+	RegisterRequest,
+	ResetPasswordRequest,
+} from "../dto/request/UserRequest.ts";
+import type {
+	RegisterResponse,
+	ResetPasswordResponse,
+} from "../dto/response/UserResponse.ts";
 import type { AuthState } from "../models/User.ts";
 
 export interface AuthContextType extends AuthState {
 	login: (credentials: LoginRequest) => Promise<void>;
 	logout: (onLogoutComplete?: () => void) => Promise<void>;
 	refreshUser: () => Promise<void>;
+	register: (credentials: RegisterRequest) => Promise<RegisterResponse>;
+	resetPassword: (
+		token: string,
+		request: ResetPasswordRequest,
+	) => Promise<ResetPasswordResponse>;
+	oAuthCallback: (token: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(

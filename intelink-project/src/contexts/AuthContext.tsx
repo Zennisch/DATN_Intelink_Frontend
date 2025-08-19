@@ -3,7 +3,15 @@ import React, { useEffect, useState } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 import type { AuthState } from "../models/User.ts";
-import type { LoginRequest } from "../dto/request/UserRequest.ts";
+import type {
+	LoginRequest,
+	RegisterRequest,
+	ResetPasswordRequest,
+} from "../dto/request/UserRequest.ts";
+import type {
+	RegisterResponse,
+	ResetPasswordResponse,
+} from "../dto/response/UserResponse.ts";
 import { AuthContext, type AuthContextType } from "../hooks/useAuth.ts";
 
 interface AuthProviderProps {
@@ -138,11 +146,85 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		}
 	};
 
+	const register = async (
+		credentials: RegisterRequest,
+	): Promise<RegisterResponse> => {
+		try {
+			const response = await AuthService.register(credentials);
+			return response;
+		} catch (error) {
+			console.error("Registration failed:", error);
+			throw error;
+		}
+	};
+
+	const resetPassword = async (
+		token: string,
+		request: ResetPasswordRequest,
+	): Promise<ResetPasswordResponse> => {
+		try {
+			const response = await AuthService.resetPassword(token, request);
+			return response;
+		} catch (error) {
+			console.error("Reset password failed:", error);
+			throw error;
+		}
+	};
+
+	const oAuthCallback = async (token: string): Promise<void> => {
+		try {
+			setAuthState((prev) => ({ ...prev, isLoading: true }));
+
+			const loginResponse = await AuthService.oAuthCallback(token);
+			const {
+				token: accessToken,
+				refreshToken,
+				username,
+				email,
+				role,
+			} = loginResponse;
+
+			AuthStorage.setAccessToken(accessToken);
+			AuthStorage.setRefreshToken(refreshToken);
+
+			setAuthState((prev) => ({
+				...prev,
+				user: {
+					id: 0,
+					username,
+					email,
+					role,
+					totalClicks: 0,
+					totalShortUrls: 0,
+					emailVerified: false,
+					authProvider: "OAUTH",
+					lastLoginAt: new Date().toISOString(),
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				},
+				isAuthenticated: true,
+				isLoading: false,
+			}));
+
+			await getProfile();
+		} catch (error) {
+			setAuthState({
+				user: null,
+				isAuthenticated: false,
+				isLoading: false,
+			});
+			throw error;
+		}
+	};
+
 	const value: AuthContextType = {
 		...authState,
 		login,
 		logout,
 		refreshUser,
+		register,
+		resetPassword,
+		oAuthCallback,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
