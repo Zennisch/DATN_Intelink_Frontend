@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
-import { AuthStorage } from "../storages/AuthStorage";
-import { AuthService } from "../services/AuthService";
 
 function OAuth2CallbackPage() {
 	const [searchParams] = useSearchParams();
-	const { login } = useAuth();
+	const { oAuthCallback } = useAuth();
 	const { redirectToDashboard, redirectToLogin } = useAuthNavigation();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -21,26 +19,13 @@ function OAuth2CallbackPage() {
 					throw new Error("No token received from OAuth2 provider");
 				}
 
-				// Call backend to get full auth response
-				const response = await AuthService.oAuthCallback(token);
+				await oAuthCallback(token);
 
-				// Store tokens
-				AuthStorage.setAccessToken(response.token);
-				AuthStorage.setRefreshToken(response.refreshToken);
-
-				// Update auth context
-				// await login({
-				//     email: response.email,
-				//     password: '', // Not needed for OAuth2
-				// });
-
-				// Redirect to dashboard
 				redirectToDashboard();
 			} catch (err: any) {
 				console.error("OAuth2 callback error:", err);
 				setError(err.message || "Authentication failed");
 
-				// Redirect to login after delay
 				setTimeout(() => {
 					redirectToLogin();
 				}, 3000);
@@ -50,7 +35,7 @@ function OAuth2CallbackPage() {
 		};
 
 		handleOAuth2Callback();
-	}, [searchParams, login, redirectToDashboard, redirectToLogin]);
+	}, [searchParams, oAuthCallback, redirectToDashboard, redirectToLogin]);
 
 	if (loading) {
 		return (
