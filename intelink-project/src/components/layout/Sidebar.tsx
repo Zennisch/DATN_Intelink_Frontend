@@ -36,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 			dashboardView: "short-urls" as const,
 		},
 		{
-			icon: "�",
+			icon: "📈",
 			label: "Statistics",
 			path: "/statistics",
 			dashboardView: "statistics" as const,
@@ -59,15 +59,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 	];
 
 	const handleNavigation = (item: (typeof menuItems)[0]) => {
-		// If we're on dashboard and have dashboard context, use it for certain views
-		if (
-			location.pathname === "/dashboard" &&
-			dashboardContext &&
-			item.dashboardView
-		) {
-			dashboardContext.setActiveView(item.dashboardView);
+		// For dashboard views
+		if (item.dashboardView) {
+			// If we're already on dashboard and have context, just change view
+			if (location.pathname === "/dashboard" && dashboardContext) {
+				dashboardContext.setActiveView(item.dashboardView);
+			} else {
+				// Navigate to dashboard with view parameter
+				navigate(`/dashboard?view=${item.dashboardView}`);
+			}
 		} else {
-			// Otherwise, navigate normally
+			// For other pages, navigate normally
 			navigate(item.path);
 		}
 
@@ -114,15 +116,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 						<ul className="space-y-2">
 							{menuItems.map((item) => {
 								// Enhanced active state logic
-								let isActive = location.pathname === item.path;
-
-								// If we're on dashboard and have dashboard context, check dashboard view
-								if (
-									location.pathname === "/dashboard" &&
-									dashboardContext &&
-									item.dashboardView
-								) {
-									isActive = dashboardContext.activeView === item.dashboardView;
+								let isActive = false;
+								
+								if (item.dashboardView) {
+									// For dashboard views, check if we're on dashboard and the view matches
+									isActive = location.pathname === "/dashboard" && 
+										dashboardContext !== null && 
+										dashboardContext.activeView === item.dashboardView;
+								} else {
+									// For other pages, check path
+									isActive = location.pathname === item.path;
 								}
 
 								return (
