@@ -204,4 +204,54 @@ export class ShortUrlService {
 			throw error;
 		}
 	}
+
+	/**
+	 * Get basic info about a short URL (for unlock page) - GET /{shortCode}/unlock
+	 * @param shortCode string
+	 * @returns Basic URL info for unlock page
+	 */
+	static async getUnlockInfo(shortCode: string): Promise<{
+		success: boolean;
+		message: string;
+		shortCode: string;
+	}> {
+		try {
+			// Create direct URL without /api/v1 prefix for redirect endpoints
+			const backendUrl = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.get(`${backendUrl}/${shortCode}/unlock`);
+			return response.data;
+		} catch (error: any) {
+			console.error("Error fetching unlock info:", error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Unlock password-protected URL - POST /{shortCode}/unlock
+	 * @param shortCode string
+	 * @param password string
+	 * @returns Unlock response with original URL if successful
+	 */
+	static async unlockUrl(shortCode: string, password: string): Promise<{
+		success: boolean;
+		message: string;
+		shortCode: string;
+		originalUrl?: string;
+	}> {
+		try {
+			// Create direct URL without /api/v1 prefix for redirect endpoints
+			const backendUrl = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.post(`${backendUrl}/${shortCode}/unlock`, {
+				password,
+			});
+			return response.data;
+		} catch (error: any) {
+			console.error("Error unlocking URL:", error);
+			// Re-throw with proper error structure
+			if (error.response?.data) {
+				throw error.response.data;
+			}
+			throw error;
+		}
+	}
 }

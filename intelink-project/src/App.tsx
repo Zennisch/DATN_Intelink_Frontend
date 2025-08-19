@@ -3,6 +3,8 @@ import { LoginPage } from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
+import UnlockUrlPage from "./pages/UnlockUrlPage";
+import RedirectPage from "./pages/RedirectPage";
 import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -51,6 +53,12 @@ function App() {
 				/>
 
 				<Route path="/reset-password" element={<ResetPasswordPage />} />
+
+				{/* Unlock URL route - Public route for password-protected links */}
+				<Route path="/:shortCode/unlock" element={<UnlockUrlPage />} />
+
+				{/* Short URL redirect route - Public route for direct access */}
+				<Route path="/:shortCode" element={<RedirectPage />} />
 
 				{/* Protected routes */}
 				<Route
