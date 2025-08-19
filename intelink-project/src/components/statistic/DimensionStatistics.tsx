@@ -17,6 +17,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 	]);
 	const [isAllSelected, setIsAllSelected] = useState(false);
 	const [chartType, setChartType] = useState<"bar" | "doughnut">("bar");
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
 	// Create list of all dimensions when selecting All
 	const allDimensions = Object.values(DIMENSION_CATEGORIES).flat();
@@ -89,17 +90,63 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 
 	return (
 		<div className="p-6 space-y-6">
-			{/* Dimension Selector */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<h3 className="text-lg font-semibold text-gray-900 mb-4">
-					Statistics Filters
-				</h3>
-				<DimensionSelector
-					selectedDimensions={selectedDimensions}
-					onDimensionChange={handleDimensionChange}
-					isAllSelected={isAllSelected}
-					onAllToggle={handleAllToggle}
-				/>
+			{/* Collapsible Dimension Selector */}
+			<div className="bg-white rounded-lg border border-gray-200">
+				<div 
+					className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+					onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+				>
+					<div className="flex items-center space-x-3">
+						<h3 className="text-lg font-semibold text-gray-900">
+							Statistics Filters
+						</h3>
+						<span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+							{isAllSelected 
+								? `All (${Object.values(DIMENSION_CATEGORIES).flat().length})`
+								: `${selectedDimensions.length} selected`
+							}
+						</span>
+					</div>
+					<div className="flex items-center space-x-2">
+						<span className="text-sm text-gray-500">
+							{isFilterPanelOpen ? 'Hide' : 'Show'} Filters
+						</span>
+						<button 
+							className="p-1 rounded hover:bg-gray-200 transition-colors"
+							onClick={(e) => {
+								e.stopPropagation();
+								setIsFilterPanelOpen(!isFilterPanelOpen);
+							}}
+						>
+							<svg 
+								className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+									isFilterPanelOpen ? 'rotate-180' : ''
+								}`} 
+								fill="none" 
+								stroke="currentColor" 
+								viewBox="0 0 24 24"
+							>
+								<path 
+									strokeLinecap="round" 
+									strokeLinejoin="round" 
+									strokeWidth={2} 
+									d="M19 9l-7 7-7-7" 
+								/>
+							</svg>
+						</button>
+					</div>
+				</div>
+				
+				{isFilterPanelOpen && (
+					<div className="border-t border-gray-200 p-6 animate-in slide-in-from-top-2 duration-200">
+						<DimensionSelector
+							selectedDimensions={selectedDimensions}
+							onDimensionChange={handleDimensionChange}
+							isAllSelected={isAllSelected}
+							onAllToggle={handleAllToggle}
+						/>
+					</div>
+				)}
 			</div>
 
 			{data && Object.keys(data).length > 0 ? (
