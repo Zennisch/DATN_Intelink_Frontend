@@ -140,12 +140,6 @@ export const SinglePageDashboard: React.FC = () => {
 							<h1 className="text-3xl font-bold text-gray-900">
 								Manage Short URLs
 							</h1>
-							<button
-								onClick={() => setActiveView("overview")}
-								className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
-							>
-								← Back to Main
-							</button>
 						</div>
 						<ShortUrlContent />
 					</div>
@@ -156,12 +150,6 @@ export const SinglePageDashboard: React.FC = () => {
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
 							<h1 className="text-3xl font-bold text-gray-900">Statistics</h1>
-							<button
-								onClick={() => setActiveView("overview")}
-								className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
-							>
-								← Back to Main
-							</button>
 						</div>
 						<StatisticsContent />
 					</div>
