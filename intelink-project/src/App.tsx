@@ -11,6 +11,7 @@ import { RegisterSuccessPage } from "./pages/RegisterSuccessPage";
 import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
+import { ShortUrlPage } from "./pages/ShortUrlPage";
 
 function App() {
 	return (
@@ -63,6 +64,24 @@ function App() {
 					}
 				/>
 
+				<Route
+					path="/short-urls"
+					element={
+						<ProtectedRoute>
+							<ShortUrlPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path="/statistics"
+					element={
+						<ProtectedRoute>
+							<StatisticsPage />
+						</ProtectedRoute>
+					}
+				/>
+
 				{/* Default redirect */}
 				<Route
 					path="/"
@@ -73,15 +92,6 @@ function App() {
 					}
 				/>
 				{/* <Route path="*" element={<NotFoundPage />} /> */}
-
-				<Route
-					path="/statistics"
-					element={
-						<ProtectedRoute>
-							<StatisticsPage />
-						</ProtectedRoute>
-					}
-				/>
 			</Routes>
 		</>
 	);

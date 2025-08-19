@@ -21,8 +21,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 		},
 		{
 			icon: "🔗",
-			label: "Links",
-			path: "/links",
+			label: "Short URLs",
+			path: "/short-urls",
 		},
 		// {
 		// 	icon: "📱",
@@ -36,8 +36,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 		// },
 		{
 			icon: "📈",
-			label: "Analytics",
-			path: "/analytics",
+			label: "Statistics",
+			path: "/statistics",
 		},
 		{
 			icon: "🌐",
