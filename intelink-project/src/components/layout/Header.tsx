@@ -1,22 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import icon from "../../assets/icon.png";
+import { ICONS, LANGUAGES } from "../../types/constants.ts";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
 	onLanguageChange?: (language: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
-	const [currentLanguage, setCurrentLanguage] = useState(
-		"English (United States)",
-	);
+	const navigate = useNavigate();
+	const [currentLanguage, setCurrentLanguage] = useState(LANGUAGES.EN);
 	const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-	const languages = [
-		"English (United States)",
-		"Tiếng Việt (Vietnam)",
-		"中文 (简体)",
-		"日本語 (Japan)",
-	];
+	const languages = Object.values(LANGUAGES);
 
 	const handleLanguageSelect = (language: string) => {
 		setCurrentLanguage(language);
@@ -24,57 +20,37 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 		onLanguageChange?.(language);
 	};
 
+	const handleLogin = () => {
+		navigate("/login");
+	};
+
+	const handleSignUp = () => {
+		navigate("/register");
+	};
+
 	return (
-		<header className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between">
-			{/* Logo */}
+		<header className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
 			<div className="flex items-center">
-				<img src={icon} alt="Intelink Logo" className="w-8 h-8" />
+				<img src={icon} alt="Intelink Logo" className="w-10 h-10" />
 			</div>
 
-			{/* Navigation */}
 			<div className="flex items-center space-x-4">
-				{/* Search */}
 				<div className="relative">
 					<input
 						type="text"
 						placeholder="Search"
-						className="pl-8 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+						className="pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
 					/>
-					<svg
-						className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-						/>
-					</svg>
+					<ICONS.SEARCH className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
 				</div>
 
-				{/* Language Selector */}
 				<div className="relative">
 					<button
 						onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
 						className="flex items-center px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
 					>
 						{currentLanguage}
-						<svg
-							className="ml-2 h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M19 9l-7 7-7-7"
-							/>
-						</svg>
+						<ICONS.DROP_DOWN />
 					</button>
 
 					{showLanguageDropdown && (
@@ -92,11 +68,16 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 					)}
 				</div>
 
-				{/* Auth Buttons */}
-				<button className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">
+				<button
+					className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500"
+					onClick={handleLogin}
+				>
 					Log in
 				</button>
-				<button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500">
+				<button
+					className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+					onClick={handleSignUp}
+				>
 					Sign up
 				</button>
 			</div>

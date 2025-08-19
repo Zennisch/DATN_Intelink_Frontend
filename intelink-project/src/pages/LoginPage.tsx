@@ -1,18 +1,31 @@
 import { useState } from "react";
-import { LoginForm } from "../components/auth/LoginForm";
-import { SocialLoginSection } from "../components/auth/SocialLogin";
+import { useNavigate } from "react-router-dom";
+import { LoginForm, SocialLoginSection } from "../components/auth";
 import { Header } from "../components/layout/Header";
-import { Button } from "../components/ui/Button";
-import { Divider } from "../components/ui/Divider";
-import { useAuth } from "../contexts/AuthContext";
+import { Button, Divider } from "../components/ui";
+import type { LoginRequest } from "../dto/request/UserRequest.ts";
+import { useAuth } from "../hooks/useAuth.ts";
 import { useAuthNavigation } from "../hooks/useAuthNavigation";
-import type { LoginRequest } from "../models/User";
+import { BACKEND_URL } from "../types/environment.ts";
 
-function LoginPage() {
+export function LoginPage() {
 	const { login } = useAuth();
 	const { redirectToDashboard } = useAuthNavigation();
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const handleError = (error: any) => {
+		if (error.code === "NETWORK_ERROR") {
+			setError("Network error. Please check your connection.");
+		} else if (error.response?.status === 401) {
+			setError("Invalid credentials. Please try again.");
+		} else {
+			setError(
+				error.response?.data?.message || "An unexpected error occurred.",
+			);
+		}
+	};
 
 	const handleLogin = async (credentials: LoginRequest) => {
 		try {
@@ -23,35 +36,31 @@ function LoginPage() {
 
 			redirectToDashboard();
 		} catch (err: any) {
-			setError(
-				err.response?.data?.message || "Login failed. Please try again.",
-			);
+			handleError(err);
 			console.error("Login error:", err);
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const handleOAuth2Login = (provider: 'google' | 'github') => {
-		const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
-		const oauth2Url = `${backendUrl}/oauth2/authorization/${provider}`;
-		
-		window.location.href = oauth2Url;
+	const handleOAuth2Login = (provider: "google" | "github") => {
+		setLoading(true);
+		window.location.href = `${BACKEND_URL}/oauth2/authorization/${provider}`;
 	};
 
 	const handleGoogleLogin = () => {
-        setError(null);
-        handleOAuth2Login('google');
-    };
+		setError(null);
+		handleOAuth2Login("google");
+	};
 
-    const handleGitHubLogin = () => {
-        setError(null);
-        handleOAuth2Login('github');
-    };
+	const handleGitHubLogin = () => {
+		setError(null);
+		handleOAuth2Login("github");
+	};
 
 	const handleSignUp = () => {
-        console.log("Sign up clicked");
-    };
+		navigate("/register");
+	};
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
@@ -59,23 +68,19 @@ function LoginPage() {
 
 			<div className="flex items-center justify-center min-h-screen pt-20">
 				<div className="w-full max-w-2xl p-8">
-					{/* Main Content */}
 					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-						{/* Title */}
 						<div className="text-center mb-8">
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Log in to Intelink
 							</h1>
 						</div>
 
-						{/* Error Message */}
 						{error && (
 							<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 								<p className="text-sm text-red-600">{error}</p>
 							</div>
 						)}
 
-						{/* Social Login */}
 						<div className="mb-6">
 							<SocialLoginSection
 								onGoogleLogin={() => handleGoogleLogin()}
@@ -84,17 +89,14 @@ function LoginPage() {
 							/>
 						</div>
 
-						{/* Divider */}
 						<div className="mb-6">
 							<Divider />
 						</div>
 
-						{/* Login Form */}
 						<div className="mb-6">
 							<LoginForm onSubmit={handleLogin} loading={loading} />
 						</div>
 
-						{/* Sign Up Link */}
 						<div className="text-center">
 							<p className="text-sm text-gray-600 mb-4">
 								Don't have an account?
@@ -114,5 +116,3 @@ function LoginPage() {
 		</div>
 	);
 }
-
-export default LoginPage;

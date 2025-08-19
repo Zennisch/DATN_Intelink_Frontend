@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
 	children: ReactNode;
@@ -12,14 +12,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 	children,
 	fallback = <div>Redirecting to login...</div>,
 }) => {
+	const navigate = useNavigate();
 	const { isAuthenticated, isLoading } = useAuth();
 
 	if (isLoading) {
-		return <div>Loading...</div>;
+		return fallback;
 	}
 
 	if (!isAuthenticated) {
-		return <Navigate to="/login" replace />;
+		navigate("/login", { replace: true });
 	}
 
 	return <>{children}</>;

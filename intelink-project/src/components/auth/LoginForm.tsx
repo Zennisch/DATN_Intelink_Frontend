@@ -1,69 +1,39 @@
 import { useState } from "react";
-import type { LoginRequest } from "../../models/User";
-import { Button } from "../ui/Button";
-import { Checkbox } from "../ui/Checkbox";
-import { Input } from "../ui/Input";
+import { useNavigate } from "react-router-dom";
+import { Button, Checkbox, Input } from "../ui";
+import type { LoginRequest } from "../../dto/request/UserRequest.ts";
+import { useForm } from "../../hooks/useForm.ts";
 
 interface LoginFormProps {
 	onSubmit: (credentials: LoginRequest) => Promise<void>;
 	loading?: boolean;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
-	onSubmit,
-	loading = false,
-}) => {
-	const [formData, setFormData] = useState<LoginRequest>({
-		username: "",
-		password: "",
-	});
+const validateLogin = (values: LoginRequest): Partial<LoginRequest> => {
+	const errors: Partial<LoginRequest> = {};
+	if (!values.username.trim()) {
+		errors.username = "Username is required";
+	}
+	if (!values.password) {
+		errors.password = "Password is required";
+	} else if (values.password.length < 6) {
+		errors.password = "Password must be at least 6 characters";
+	}
+	return errors;
+};
+
+export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [keepSignedIn, setKeepSignedIn] = useState(false);
-	const [errors, setErrors] = useState<Partial<LoginRequest>>({});
 
-	const validateForm = (): boolean => {
-		const newErrors: Partial<LoginRequest> = {};
-
-		if (!formData.username.trim()) {
-			newErrors.username = "Username is required";
-		}
-
-		if (!formData.password) {
-			newErrors.password = "Password is required";
-		} else if (formData.password.length < 6) {
-			newErrors.password = "Password must be at least 6 characters";
-		}
-
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (!validateForm()) return;
-
-		try {
-			await onSubmit(formData);
-		} catch (error) {
-			console.error("Login failed:", error);
-		}
-	};
-
-	const handleInputChange =
-		(field: keyof LoginRequest) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			setFormData((prev) => ({
-				...prev,
-				[field]: e.target.value,
-			}));
-
-			if (errors[field]) {
-				setErrors((prev) => ({
-					...prev,
-					[field]: undefined,
-				}));
-			}
-		};
+	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
+		useForm<LoginRequest>(
+			{ username: "", password: "" },
+			validateLogin,
+			onSubmit,
+			500,
+		);
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
@@ -71,7 +41,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 				<Input
 					type="text"
 					label="Username"
-					placeholder="Enter your Username"
+					placeholder="Username/Email"
 					value={formData.username}
 					onChange={handleInputChange("username")}
 					error={errors.username}
@@ -82,8 +52,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 				<div className="relative">
 					<Input
 						type={showPassword ? "text" : "password"}
-						label="Your password"
-						placeholder="Enter your password"
+						label="Password"
+						placeholder="Password"
 						value={formData.password}
 						onChange={handleInputChange("password")}
 						error={errors.password}
@@ -110,6 +80,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
 				<a
 					href="/forgot-password"
+					onClick={(e) => {
+						e.preventDefault();
+						navigate("/forgot-password");
+					}}
 					className="text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:underline"
 				>
 					Forget your password?
@@ -121,7 +95,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 				variant="primary"
 				fullWidth
 				size="lg"
-				loading={loading}
+				loading={loading || isSubmitting}
 			>
 				Log in
 			</Button>

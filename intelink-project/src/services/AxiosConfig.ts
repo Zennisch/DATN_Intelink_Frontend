@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthStorage } from "../storage/AuthStorage";
+import { AuthStorage } from "../storages/AuthStorage";
 import { getGlobalNavigateToLogin } from "../contexts/AxiosNavigationContext";
 
 const getApi = () => {
@@ -77,7 +77,7 @@ export const setupAxios = async () => {
 						.catch((refreshError) => {
 							console.error(`[Axios Refresh Token Error]: ${refreshError}`);
 							AuthStorage.clearTokens();
-							
+
 							// Use global navigation function instead of window.location.href
 							const navigate = getGlobalNavigateToLogin();
 							if (navigate) {
@@ -86,7 +86,7 @@ export const setupAxios = async () => {
 								// Fallback to window.location if navigation context is not available
 								window.location.href = "/login";
 							}
-							
+
 							return Promise.reject(refreshError);
 						});
 				}

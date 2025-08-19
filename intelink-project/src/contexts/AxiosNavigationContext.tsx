@@ -1,26 +1,30 @@
-import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import type { ReactNode } from "react";
+import { createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AxiosNavigationContextType {
 	navigateToLogin: () => void;
 }
 
-const AxiosNavigationContext = createContext<AxiosNavigationContextType | undefined>(undefined);
+const AxiosNavigationContext = createContext<
+	AxiosNavigationContextType | undefined
+>(undefined);
 
 interface AxiosNavigationProviderProps {
 	children: ReactNode;
 }
 
-export const AxiosNavigationProvider: React.FC<AxiosNavigationProviderProps> = ({ children }) => {
+export const AxiosNavigationProvider: React.FC<
+	AxiosNavigationProviderProps
+> = ({ children }) => {
 	const navigate = useNavigate();
 
 	const navigateToLogin = () => {
-		navigate('/login', { replace: true });
+		navigate("/login", { replace: true });
 	};
 
 	const value = {
-		navigateToLogin
+		navigateToLogin,
 	};
 
 	return (
@@ -33,7 +37,9 @@ export const AxiosNavigationProvider: React.FC<AxiosNavigationProviderProps> = (
 export const useAxiosNavigation = (): AxiosNavigationContextType => {
 	const context = useContext(AxiosNavigationContext);
 	if (context === undefined) {
-		throw new Error('useAxiosNavigation must be used within an AxiosNavigationProvider');
+		throw new Error(
+			"useAxiosNavigation must be used within an AxiosNavigationProvider",
+		);
 	}
 	return context;
 };

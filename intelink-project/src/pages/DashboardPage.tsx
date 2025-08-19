@@ -1,9 +1,14 @@
+import { AuthenticatedLayout } from "../components/layout/AuthenticatedLayout";
+import { SinglePageDashboard } from "../components/dashboard/SinglePageDashboard";
+import { DashboardProvider } from "../contexts/DashboardContext";
+
 function DashboardPage() {
 	return (
-		<div>
-			<h1>Dashboard</h1>
-			<p>Welcome to the dashboard page!</p>
-		</div>
+		<AuthenticatedLayout>
+			<DashboardProvider>
+				<SinglePageDashboard />
+			</DashboardProvider>
+		</AuthenticatedLayout>
 	);
 }
 
