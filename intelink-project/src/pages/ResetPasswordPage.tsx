@@ -10,9 +10,11 @@ interface ResetPasswordFormData extends ResetPasswordRequest {
 	confirmPassword: string;
 }
 
-const validateResetPassword = (values: ResetPasswordFormData): Partial<ResetPasswordFormData> => {
+const validateResetPassword = (
+	values: ResetPasswordFormData,
+): Partial<ResetPasswordFormData> => {
 	const errors: Partial<ResetPasswordFormData> = {};
-	
+
 	if (!values.password) {
 		errors.password = "New password is required";
 	} else if (values.password.length < 6) {
@@ -44,7 +46,9 @@ export function ResetPasswordPage() {
 		if (error.code === "NETWORK_ERROR") {
 			setError("Network error. Please check your connection.");
 		} else if (error.response?.status === 400) {
-			setError("Invalid or expired reset token. Please request a new password reset.");
+			setError(
+				"Invalid or expired reset token. Please request a new password reset.",
+			);
 		} else {
 			setError(
 				error.response?.data?.message || "An unexpected error occurred.",
@@ -72,7 +76,9 @@ export function ResetPasswordPage() {
 			if (response.success) {
 				setSuccess(true);
 			} else {
-				setError(response.message || "Failed to reset password. Please try again.");
+				setError(
+					response.message || "Failed to reset password. Please try again.",
+				);
 			}
 		} catch (err: any) {
 			handleError(err);
@@ -126,10 +132,10 @@ export function ResetPasswordPage() {
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Invalid Reset Link
 							</h1>
-							
+
 							<p className="text-gray-600 mb-6">
-								This password reset link is invalid or has expired. 
-								Please request a new password reset.
+								This password reset link is invalid or has expired. Please
+								request a new password reset.
 							</p>
 
 							<div className="space-y-3">
@@ -141,7 +147,7 @@ export function ResetPasswordPage() {
 								>
 									Request New Reset Link
 								</Button>
-								
+
 								<Button
 									variant="outline"
 									fullWidth
@@ -186,9 +192,10 @@ export function ResetPasswordPage() {
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Password Reset Successful!
 							</h1>
-							
+
 							<p className="text-gray-600 mb-6">
-								Your password has been successfully reset. You can now log in with your new password.
+								Your password has been successfully reset. You can now log in
+								with your new password.
 							</p>
 
 							<Button
@@ -218,9 +225,7 @@ export function ResetPasswordPage() {
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Reset your password
 							</h1>
-							<p className="text-gray-600">
-								Enter your new password below.
-							</p>
+							<p className="text-gray-600">Enter your new password below.</p>
 						</div>
 
 						{error && (

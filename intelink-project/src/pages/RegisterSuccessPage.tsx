@@ -12,7 +12,7 @@ export function RegisterSuccessPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [countdown, setCountdown] = useState(3);
-	
+
 	const state = location.state as RegisterSuccessState | null;
 	const email = state?.email || "";
 	const emailVerified = state?.emailVerified || false;
@@ -75,7 +75,7 @@ export function RegisterSuccessPage() {
 						<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 							Account Created Successfully!
 						</h1>
-						
+
 						<p className="text-gray-600 mb-6">
 							Welcome to Intelink! Your account has been created successfully.
 						</p>
@@ -143,10 +143,11 @@ export function RegisterSuccessPage() {
 							>
 								Go to Login Page
 							</Button>
-							
+
 							{!emailVerified && (
 								<p className="text-xs text-gray-500">
-									Don't forget to check your email inbox and spam folder for the verification email.
+									Don't forget to check your email inbox and spam folder for the
+									verification email.
 								</p>
 							)}
 						</div>

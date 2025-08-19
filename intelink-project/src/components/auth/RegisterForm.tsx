@@ -8,9 +8,11 @@ interface RegisterFormProps {
 	loading?: boolean;
 }
 
-const validateRegister = (values: RegisterRequest): Partial<RegisterRequest> => {
+const validateRegister = (
+	values: RegisterRequest,
+): Partial<RegisterRequest> => {
 	const errors: Partial<RegisterRequest> = {};
-	
+
 	if (!values.username.trim()) {
 		errors.username = "Username is required";
 	} else if (values.username.length < 3) {
@@ -32,7 +34,10 @@ const validateRegister = (values: RegisterRequest): Partial<RegisterRequest> => 
 	return errors;
 };
 
-export const RegisterForm = ({ onSubmit, loading = false }: RegisterFormProps) => {
+export const RegisterForm = ({
+	onSubmit,
+	loading = false,
+}: RegisterFormProps) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [agreeToTerms, setAgreeToTerms] = useState(false);
 
@@ -44,7 +49,8 @@ export const RegisterForm = ({ onSubmit, loading = false }: RegisterFormProps) =
 			500,
 		);
 
-	const isFormValid = agreeToTerms && formData.username && formData.email && formData.password;
+	const isFormValid =
+		agreeToTerms && formData.username && formData.email && formData.password;
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
@@ -107,8 +113,8 @@ export const RegisterForm = ({ onSubmit, loading = false }: RegisterFormProps) =
 								rel="noopener noreferrer"
 							>
 								Terms of Service
-							</a>
-							{" "}and{" "}
+							</a>{" "}
+							and{" "}
 							<a
 								href="/privacy"
 								className="text-blue-600 hover:text-blue-700 focus:outline-none focus:underline"

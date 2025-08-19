@@ -17,7 +17,9 @@ export function RegisterPage() {
 		if (error.code === "NETWORK_ERROR") {
 			setError("Network error. Please check your connection.");
 		} else if (error.response?.status === 409) {
-			setError("Username or email already exists. Please try different credentials.");
+			setError(
+				"Username or email already exists. Please try different credentials.",
+			);
 		} else if (error.response?.status === 400) {
 			setError("Invalid input. Please check your information and try again.");
 		} else {
@@ -36,11 +38,11 @@ export function RegisterPage() {
 
 			if (response.success) {
 				// Navigate to success page with email info
-				navigate("/register/success", { 
-					state: { 
+				navigate("/register/success", {
+					state: {
 						email: credentials.email,
-						emailVerified: response.emailVerified 
-					} 
+						emailVerified: response.emailVerified,
+					},
 				});
 			} else {
 				setError(response.message || "Registration failed. Please try again.");

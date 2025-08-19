@@ -28,7 +28,7 @@ function App() {
 				/>
 
 				<Route path="/auth/oauth2/callback" element={<OAuth2CallbackPage />} />
-				
+
 				<Route
 					path="/register"
 					element={
@@ -37,16 +37,10 @@ function App() {
 						</AuthenticatedRoute>
 					}
 				/>
-				
-				<Route 
-					path="/register/success" 
-					element={<RegisterSuccessPage />} 
-				/>
 
-				<Route 
-					path="/verify-email" 
-					element={<VerifyEmailPage />} 
-				/>
+				<Route path="/register/success" element={<RegisterSuccessPage />} />
+
+				<Route path="/verify-email" element={<VerifyEmailPage />} />
 
 				<Route
 					path="/forgot-password"
@@ -57,10 +51,7 @@ function App() {
 					}
 				/>
 
-				<Route 
-					path="/reset-password" 
-					element={<ResetPasswordPage />} 
-				/>
+				<Route path="/reset-password" element={<ResetPasswordPage />} />
 
 				{/* Protected routes */}
 				<Route

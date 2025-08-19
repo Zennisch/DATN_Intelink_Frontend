@@ -68,16 +68,16 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 					)}
 				</div>
 
-				<button 
+				<button
 					className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500"
 					onClick={handleLogin}
 				>
 					Log in
 				</button>
-				<button 
+				<button
 					className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
 					onClick={handleSignUp}
-				>		
+				>
 					Sign up
 				</button>
 			</div>

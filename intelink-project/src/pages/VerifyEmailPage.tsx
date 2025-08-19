@@ -8,7 +8,7 @@ export function VerifyEmailPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const { verifyEmail } = useAuth();
-	
+
 	const [isVerifying, setIsVerifying] = useState(true);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export function VerifyEmailPage() {
 
 	useEffect(() => {
 		const token = searchParams.get("token");
-		
+
 		if (!token) {
 			setError("Invalid verification link. No token provided.");
 			setIsVerifying(false);
@@ -29,10 +29,10 @@ export function VerifyEmailPage() {
 				setError(null);
 
 				const response = await verifyEmail(token);
-				
+
 				if (response.success) {
 					setIsSuccess(true);
-					
+
 					// Start countdown
 					const timer = setInterval(() => {
 						setCountdown((prev) => {
@@ -50,15 +50,15 @@ export function VerifyEmailPage() {
 				}
 			} catch (err: any) {
 				console.error("Email verification error:", err);
-				
+
 				if (err.response?.status === 400) {
 					setError("Invalid or expired verification token.");
 				} else if (err.response?.status === 409) {
 					setError("Email is already verified.");
 				} else {
 					setError(
-						err.response?.data?.message || 
-						"An unexpected error occurred during verification."
+						err.response?.data?.message ||
+							"An unexpected error occurred during verification.",
 					);
 				}
 			} finally {
@@ -77,7 +77,9 @@ export function VerifyEmailPage() {
 		// This would typically trigger a resend verification email API call
 		console.log("Resend verification email");
 		// For now, just show a message
-		alert("Feature not implemented yet. Please contact support if you need a new verification email.");
+		alert(
+			"Feature not implemented yet. Please contact support if you need a new verification email.",
+		);
 	};
 
 	return (
@@ -109,7 +111,7 @@ export function VerifyEmailPage() {
 								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 									Verifying your email...
 								</h1>
-								
+
 								<p className="text-gray-600">
 									Please wait while we verify your email address.
 								</p>
@@ -136,15 +138,18 @@ export function VerifyEmailPage() {
 								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 									Email Verified Successfully!
 								</h1>
-								
+
 								<p className="text-gray-600 mb-6">
-									Your email has been verified. You can now log in to your account.
+									Your email has been verified. You can now log in to your
+									account.
 								</p>
 
 								<div className="mb-6">
 									<p className="text-sm text-gray-500">
 										Redirecting to login page in{" "}
-										<span className="font-semibold text-blue-600">{countdown}</span>{" "}
+										<span className="font-semibold text-blue-600">
+											{countdown}
+										</span>{" "}
 										second{countdown !== 1 ? "s" : ""}...
 									</p>
 								</div>
@@ -180,10 +185,8 @@ export function VerifyEmailPage() {
 								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 									Email Verification Failed
 								</h1>
-								
-								<p className="text-red-600 mb-6">
-									{error}
-								</p>
+
+								<p className="text-red-600 mb-6">{error}</p>
 
 								<div className="space-y-3">
 									<Button
@@ -194,7 +197,7 @@ export function VerifyEmailPage() {
 									>
 										Go to Login Page
 									</Button>
-									
+
 									<Button
 										variant="outline"
 										fullWidth

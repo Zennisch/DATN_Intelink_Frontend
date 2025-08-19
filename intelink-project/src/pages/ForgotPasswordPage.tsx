@@ -6,9 +6,11 @@ import { useAuth } from "../hooks/useAuth";
 import { useForm } from "../hooks/useForm";
 import type { ForgotPasswordRequest } from "../dto/request/UserRequest";
 
-const validateForgotPassword = (values: ForgotPasswordRequest): Partial<ForgotPasswordRequest> => {
+const validateForgotPassword = (
+	values: ForgotPasswordRequest,
+): Partial<ForgotPasswordRequest> => {
 	const errors: Partial<ForgotPasswordRequest> = {};
-	
+
 	if (!values.email.trim()) {
 		errors.email = "Email is required";
 	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
@@ -45,7 +47,9 @@ export function ForgotPasswordPage() {
 			if (response.success) {
 				setSuccess(true);
 			} else {
-				setError(response.message || "Failed to send reset email. Please try again.");
+				setError(
+					response.message || "Failed to send reset email. Please try again.",
+				);
 			}
 		} catch (err: any) {
 			handleError(err);
@@ -95,16 +99,17 @@ export function ForgotPasswordPage() {
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Check your email
 							</h1>
-							
+
 							<p className="text-gray-600 mb-6">
-								If an account with email <strong>{formData.email}</strong> exists, 
-								we've sent you a password reset link.
+								If an account with email <strong>{formData.email}</strong>{" "}
+								exists, we've sent you a password reset link.
 							</p>
 
 							<div className="bg-blue-50 rounded-lg p-4 mb-6">
 								<p className="text-sm text-blue-800">
-									<strong>Note:</strong> The reset link will expire in 15 minutes. 
-									Please check your spam folder if you don't see the email.
+									<strong>Note:</strong> The reset link will expire in 15
+									minutes. Please check your spam folder if you don't see the
+									email.
 								</p>
 							</div>
 
@@ -117,7 +122,7 @@ export function ForgotPasswordPage() {
 								>
 									Back to Login
 								</Button>
-								
+
 								<Button
 									variant="outline"
 									fullWidth
@@ -146,7 +151,8 @@ export function ForgotPasswordPage() {
 								Forgot your password?
 							</h1>
 							<p className="text-gray-600">
-								Enter your email address and we'll send you a link to reset your password.
+								Enter your email address and we'll send you a link to reset your
+								password.
 							</p>
 						</div>
 
