@@ -28,7 +28,7 @@ export const StatisticsTabs: React.FC<StatisticsTabsProps> = ({
 				</svg>
 			),
 			description: "View statistics over time",
-			disabled: true, // Backend not ready yet
+			disabled: false, // Backend not ready yet
 		},
 		{
 			id: "location" as StatisticsTab,
