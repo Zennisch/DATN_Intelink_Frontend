@@ -6,7 +6,7 @@ function DashboardPage() {
 	return (
 		<AuthenticatedLayout>
 			<DashboardProvider>
-					<SinglePageDashboard />
+				<SinglePageDashboard />
 			</DashboardProvider>
 		</AuthenticatedLayout>
 	);
