@@ -5,11 +5,8 @@ import { BrowserRouter } from "react-router-dom";
 import { PageSpinner } from "./components/ui/Spinner.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import "./index.css";
-import { setupAxios } from "./services/AxiosConfig.ts";
 
 const App = lazy(() => import("./App.tsx"));
-
-setupAxios();
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
