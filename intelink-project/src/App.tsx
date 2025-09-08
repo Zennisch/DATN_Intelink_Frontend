@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import RouteGuard from "./components/RouteGuard";
 import DashboardPage from "./pages/DashboardPage";
 import UnlockUrlPage from "./pages/UnlockUrlPage";
 import RedirectPage from "./pages/RedirectPage";
@@ -20,9 +19,9 @@ function App() {
 				<Route
 					path="/login"
 					element={
-						<AuthenticatedRoute>
+						<RouteGuard>
 							<LoginPage />
-						</AuthenticatedRoute>
+						</RouteGuard>
 					}
 				/>
 
@@ -31,9 +30,9 @@ function App() {
 				<Route
 					path="/register"
 					element={
-						<AuthenticatedRoute>
+						<RouteGuard>
 							<RegisterPage />
-						</AuthenticatedRoute>
+						</RouteGuard>
 					}
 				/>
 
@@ -44,37 +43,33 @@ function App() {
 				<Route
 					path="/forgot-password"
 					element={
-						<AuthenticatedRoute>
+						<RouteGuard>
 							<ForgotPasswordPage />
-						</AuthenticatedRoute>
+						</RouteGuard>
 					}
 				/>
 
 				<Route path="/reset-password" element={<ResetPasswordPage />} />
 
-				{/* Unlock URL route - Public route for password-protected links */}
 				<Route path="/:shortCode/unlock" element={<UnlockUrlPage />} />
 
-				{/* Short URL redirect route - Public route for direct access */}
 				<Route path="/:shortCode" element={<RedirectPage />} />
 
-				{/* Protected routes */}
 				<Route
 					path="/dashboard"
 					element={
-						<ProtectedRoute>
+						<RouteGuard requireAuth>
 							<DashboardPage />
-						</ProtectedRoute>
+						</RouteGuard>
 					}
 				/>
 
-				{/* Default redirect */}
 				<Route
 					path="/"
 					element={
-						<AuthenticatedRoute>
+						<RouteGuard>
 							<LoginPage />
-						</AuthenticatedRoute>
+						</RouteGuard>
 					}
 				/>
 				{/* <Route path="*" element={<NotFoundPage />} /> */}
