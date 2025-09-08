@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useDashboard } from "../../contexts/DashboardContext";
 import icon from "../../assets/icon.png";
 
 interface SidebarProps {
@@ -14,32 +13,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 	const location = useLocation();
 	const { logout } = useAuth();
 
-	// Try to get dashboard context, but don't fail if not available
-	let dashboardContext;
-	try {
-		dashboardContext = useDashboard();
-	} catch {
-		dashboardContext = null;
-	}
-
 	const menuItems = [
 		{
 			icon: "📊",
 			label: "Dashboard",
-			path: "/dashboard",
-			dashboardView: "overview" as const,
+			path: "/dashboard/overview",
 		},
 		{
 			icon: "🔗",
 			label: "Short URLs",
-			path: "/short-urls",
-			dashboardView: "short-urls" as const,
+			path: "/dashboard/short-urls",
 		},
 		{
-			icon: "�",
+			icon: "📈",
 			label: "Statistics",
-			path: "/statistics",
-			dashboardView: "statistics" as const,
+			path: "/dashboard/statistics",
 		},
 		{
 			icon: "🌐",
@@ -59,18 +47,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 	];
 
 	const handleNavigation = (item: (typeof menuItems)[0]) => {
-		// If we're on dashboard and have dashboard context, use it for certain views
-		if (
-			location.pathname === "/dashboard" &&
-			dashboardContext &&
-			item.dashboardView
-		) {
-			dashboardContext.setActiveView(item.dashboardView);
-		} else {
-			// Otherwise, navigate normally
-			navigate(item.path);
-		}
-
+		navigate(item.path);
+		
 		if (window.innerWidth < 768) {
 			onClose();
 		}
@@ -113,17 +91,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 					<nav className="flex-1 px-4 py-6">
 						<ul className="space-y-2">
 							{menuItems.map((item) => {
-								// Enhanced active state logic
-								let isActive = location.pathname === item.path;
-
-								// If we're on dashboard and have dashboard context, check dashboard view
-								if (
-									location.pathname === "/dashboard" &&
-									dashboardContext &&
-									item.dashboardView
-								) {
-									isActive = dashboardContext.activeView === item.dashboardView;
-								}
+								// Simple path-based active state
+								const isActive = location.pathname === item.path;
 
 								return (
 									<li key={item.path}>

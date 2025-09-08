@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useAuthNavigation } from "../hooks/useAuthNavigation";
 
 function OAuth2CallbackPage() {
 	const [searchParams] = useSearchParams();
 	const { oAuthCallback } = useAuth();
-	const { redirectToDashboard, redirectToLogin } = useAuthNavigation();
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -21,13 +20,13 @@ function OAuth2CallbackPage() {
 
 				await oAuthCallback(token);
 
-				redirectToDashboard();
+				navigate("/dashboard", { replace: true });
 			} catch (err: any) {
 				console.error("OAuth2 callback error:", err);
 				setError(err.message || "Authentication failed");
 
 				setTimeout(() => {
-					redirectToLogin();
+					navigate("/login", { replace: true });
 				}, 3000);
 			} finally {
 				setLoading(false);
@@ -35,7 +34,7 @@ function OAuth2CallbackPage() {
 		};
 
 		handleOAuth2Callback();
-	}, [searchParams, oAuthCallback, redirectToDashboard, redirectToLogin]);
+	}, [searchParams, oAuthCallback, navigate]);
 
 	if (loading) {
 		return (

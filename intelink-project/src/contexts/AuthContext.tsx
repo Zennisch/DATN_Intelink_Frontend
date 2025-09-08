@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 import type { AuthState } from "../models/User.ts";
+import { UserRole, UserProvider, UserStatus } from "../types/enums";
 import type {
 	LoginRequest,
 	RegisterRequest,
@@ -15,7 +16,24 @@ import type {
 	VerifyEmailResponse,
 	ForgotPasswordResponse,
 } from "../dto/response/UserResponse.ts";
-import { AuthContext, type AuthContextType } from "../hooks/useAuth.ts";
+
+export interface AuthContextType extends AuthState {
+	login: (credentials: LoginRequest) => Promise<void>;
+	logout: (onLogoutComplete?: () => void) => Promise<void>;
+	refreshUser: () => Promise<void>;
+	register: (credentials: RegisterRequest) => Promise<RegisterResponse>;
+	resetPassword: (
+		token: string,
+		request: ResetPasswordRequest,
+	) => Promise<ResetPasswordResponse>;
+	oAuthCallback: (token: string) => Promise<void>;
+	verifyEmail: (token: string) => Promise<VerifyEmailResponse>;
+	forgotPassword: (
+		request: ForgotPasswordRequest,
+	) => Promise<ForgotPasswordResponse>;
+}
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
 	children: ReactNode;
@@ -63,14 +81,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					id: userData.id,
 					username: userData.username,
 					email: userData.email,
-					role: userData.role as "USER" | "ADMIN",
+					role: userData.role as UserRole,
+					provider: userData.authProvider as UserProvider,
+					emailVerified: userData.emailVerified,
 					totalClicks: userData.totalClicks,
 					totalShortUrls: userData.totalShortUrls,
-					emailVerified: userData.emailVerified,
-					authProvider: userData.authProvider,
+					status: userData.status as UserStatus,
 					lastLoginAt: userData.lastLoginAt,
 					createdAt: userData.createdAt,
 					updatedAt: userData.updatedAt,
+					displayName: userData.displayName,
+					bio: userData.bio,
+					profilePictureUrl: userData.profilePictureUrl,
+					providerUserId: userData.providerUserId,
 				},
 				isAuthenticated: true,
 				isLoading: false,
@@ -97,11 +120,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					id: 0,
 					username,
 					email,
-					role,
+					role: role as UserRole,
+					provider: UserProvider.LOCAL,
 					totalClicks: 0,
 					totalShortUrls: 0,
 					emailVerified: false,
-					authProvider: "LOCAL",
+					status: UserStatus.ACTIVE,
 					lastLoginAt: new Date().toISOString(),
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString(),
@@ -196,11 +220,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					id: 0,
 					username,
 					email,
-					role,
+					role: role as UserRole,
+					provider: UserProvider.GOOGLE,
 					totalClicks: 0,
 					totalShortUrls: 0,
 					emailVerified: false,
-					authProvider: "OAUTH",
+					status: UserStatus.ACTIVE,
 					lastLoginAt: new Date().toISOString(),
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString(),

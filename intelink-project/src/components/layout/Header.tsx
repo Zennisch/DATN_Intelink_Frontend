@@ -4,7 +4,7 @@ import { ICONS, LANGUAGES } from "../../types/constants.ts";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
-	onLanguageChange?: (language: string) => void;
+	onLanguageChange: (language: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ onLanguageChange }) => {
 	const handleLanguageSelect = (language: string) => {
 		setCurrentLanguage(language);
 		setShowLanguageDropdown(false);
-		onLanguageChange?.(language);
+		onLanguageChange(language);
 	};
 
 	const handleLogin = () => {

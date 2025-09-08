@@ -1,4 +1,3 @@
-// Request types
 export interface CreateShortUrlRequest {
 	originalUrl: string;
 	password?: string;
@@ -25,4 +24,8 @@ export interface SearchShortUrlRequest {
 	sortDirection?: string;
 	page?: number;
 	size?: number;
+}
+
+export interface UnlockUrlRequest {
+    password: string;
 }

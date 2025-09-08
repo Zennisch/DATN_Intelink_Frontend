@@ -1,13 +1,30 @@
+import { UserRole, UserProvider, UserStatus } from '../types/enums';
+
 export interface User {
+	// Key group
 	id: number;
+
+	// Auth group
 	username: string;
 	email: string;
-	role: "USER" | "ADMIN";
-	totalClicks: number;
-	totalShortUrls: number;
+	passwordHash?: string;
 	emailVerified: boolean;
-	authProvider: string;
-	lastLoginAt: string;
+	lastLoginAt?: string;
+	role: UserRole;
+	provider: UserProvider;
+	providerUserId?: string;
+
+	// Information group
+	displayName?: string;
+	bio?: string;
+	profilePictureUrl?: string;
+
+	// Statistics group
+	totalShortUrls: number;
+	totalClicks: number;
+
+	// Audit group
+	status: UserStatus;
 	createdAt: string;
 	updatedAt: string;
 }
