@@ -5,12 +5,10 @@ import { Header } from "../components/layout/Header";
 import { Button, Divider } from "../components/ui";
 import type { LoginRequest } from "../dto/request/UserRequest.ts";
 import { useAuth } from "../hooks/useAuth.ts";
-import { useAuthNavigation } from "../hooks/useAuthNavigation";
 import { BACKEND_URL } from "../types/environment.ts";
 
 export function LoginPage() {
 	const { login } = useAuth();
-	const { redirectToDashboard } = useAuthNavigation();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -34,7 +32,7 @@ export function LoginPage() {
 
 			await login(credentials);
 
-			redirectToDashboard();
+			navigate("/dashboard", { replace: true });
 		} catch (err: any) {
 			handleError(err);
 			console.error("Login error:", err);
