@@ -43,20 +43,20 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 
 	const getStatusBadge = (status: string) => {
 		const statusClasses = {
-			ACTIVE: "bg-green-100 text-green-800",
-			INACTIVE: "bg-gray-100 text-gray-800",
+			ENABLED: "bg-green-100 text-green-800",
+			DISABLED: "bg-gray-100 text-gray-800",
 			EXPIRED: "bg-red-100 text-red-800",
 		};
 
 		const statusLabels = {
-			ACTIVE: "Active",
-			INACTIVE: "Inactive",
+			ENABLED: "Active",
+			DISABLED: "Disabled",
 			EXPIRED: "Expired",
 		};
 
 		return (
 			<span
-				className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClasses[status as keyof typeof statusClasses] || statusClasses.INACTIVE}`}
+				className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClasses[status as keyof typeof statusClasses] || statusClasses.DISABLED}`}
 			>
 				{statusLabels[status as keyof typeof statusLabels] || status}
 			</span>
@@ -209,7 +209,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 												}
 												className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
 											>
-												{shortUrl.status === "true" || shortUrl.status === "ENABLED" ? (
+												{shortUrl.status === "ENABLED" ? (
 													<>
 														<i className="fas fa-ban w-4 h-4"></i>
 														Disable

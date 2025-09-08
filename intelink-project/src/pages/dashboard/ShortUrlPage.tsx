@@ -116,7 +116,7 @@ export const ShortUrlPage = () => {
 		currentStatus: string,
 	) => {
 		try {
-			const isEnabled = currentStatus === "true" || currentStatus === "ENABLED";
+			const isEnabled = currentStatus === "ENABLED";
 			if (isEnabled) {
 				await disableShortUrl(shortCode);
 			} else {
@@ -181,8 +181,8 @@ export const ShortUrlPage = () => {
 							className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						>
 							<option value="">All statuses</option>
-							<option value="true">Active</option>
-							<option value="false">Disabled</option>
+							<option value="ENABLED">Active</option>
+							<option value="DISABLED">Disabled</option>
 						</select>
 					</div>
 					<div className="flex gap-2">
