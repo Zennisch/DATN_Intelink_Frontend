@@ -5,7 +5,6 @@ import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import DashboardPage from "./pages/DashboardPage";
 import UnlockUrlPage from "./pages/UnlockUrlPage";
 import RedirectPage from "./pages/RedirectPage";
-import { AxiosNavigationSetup } from "./components/AxiosNavigationSetup";
 import OAuth2CallbackPage from "./pages/OAuth2CallbackPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RegisterSuccessPage } from "./pages/RegisterSuccessPage";
@@ -16,7 +15,6 @@ import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 function App() {
 	return (
 		<>
-			<AxiosNavigationSetup />
 			<Routes>
 				{/* Public routes - redirect to dashboard if already authenticated */}
 				<Route
