@@ -44,7 +44,7 @@ export const routes: RouteConfig[] = [
 		)
 	},
 	{
-		path: "/dashboard",
+		path: "/dashboard/*",
 		element: (
 			<RouteGuard requireAuth>
 				<DashboardPage />

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { AuthenticatedLayout } from "../components/layout/AuthenticatedLayout";
-import { UrlListSidebar } from "../components/statistic/UrlListSidebar";
-import { StatisticsTabs, type StatisticsTab } from "../components/statistic/StatisticsTabs";
-import { TimeStatistics } from "../components/statistic/TimeStatistics";
-import { LocationStatistics } from "../components/statistic/LocationStatistics";
-import { DimensionStatistics } from "../components/statistic/DimensionStatistics";
-import type { ShortUrlListResponse } from "../dto/response/ShortUrlResponse";
+import { AuthenticatedLayout } from "../../components/layout/AuthenticatedLayout.tsx";
+import { UrlListSidebar } from "../../components/statistic/UrlListSidebar.tsx";
+import { StatisticsTabs, type StatisticsTab } from "../../components/statistic/StatisticsTabs.tsx";
+import { TimeStatistics } from "../../components/statistic/TimeStatistics.tsx";
+import { LocationStatistics } from "../../components/statistic/LocationStatistics.tsx";
+import { DimensionStatistics } from "../../components/statistic/DimensionStatistics.tsx";
+import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse.ts";
 
 function StatisticsPage() {
 	const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
