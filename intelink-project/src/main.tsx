@@ -6,6 +6,9 @@ import { PageSpinner } from "./components/ui/Spinner.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import "./index.css";
 import { ShortUrlProvider } from "./contexts/ShortUrlContext.tsx";
+import { setupAxios } from "./services/AxiosConfig.ts";
+
+setupAxios();
 
 const App = lazy(() => import("./App.tsx"));
 
