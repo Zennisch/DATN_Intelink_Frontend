@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { PageSpinner } from "./components/ui/Spinner.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import "./index.css";
+import { ShortUrlProvider } from "./contexts/ShortUrlContext.tsx";
 
 const App = lazy(() => import("./App.tsx"));
 
@@ -12,9 +13,11 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<AuthProvider>
-				<Suspense fallback={<PageSpinner />}>
-					<App />
-				</Suspense>
+				<ShortUrlProvider>
+					<Suspense fallback={<PageSpinner />}>
+						<App />
+					</Suspense>
+				</ShortUrlProvider>
 			</AuthProvider>
 		</BrowserRouter>
 	</StrictMode>,
