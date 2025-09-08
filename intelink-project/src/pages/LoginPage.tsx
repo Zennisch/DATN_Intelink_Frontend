@@ -62,7 +62,7 @@ export function LoginPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
-			<Header />
+			<Header onLanguageChange={() => {}} />
 
 			<div className="flex items-center justify-center min-h-screen pt-20">
 				<div className="w-full max-w-2xl p-8">
