@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useShortUrls } from "../../hooks/useShortUrls";
+import { useShortUrl } from "../../hooks/useShortUrl.ts";
 import { fixShortUrlFormat } from "../../utils/UrlUtil";
 import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse";
 
@@ -12,7 +12,7 @@ export const UrlListSidebar: React.FC<UrlListSidebarProps> = ({
 	selectedUrl,
 	onUrlSelect,
 }) => {
-	const { shortUrls, loading, error, fetchShortUrls } = useShortUrls();
+	const { shortUrls, loading, error, fetchShortUrls } = useShortUrl();
 
 	useEffect(() => {
 		// Fetch URLs when component mounts

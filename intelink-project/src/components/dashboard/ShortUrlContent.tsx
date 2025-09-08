@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useShortUrls } from "../../hooks/useShortUrls";
+import { useShortUrl } from "../../hooks/useShortUrl.ts";
 import { CreateShortUrlForm } from "../shorturl/CreateShortUrlForm";
 import { ShortUrlList } from "../shorturl/ShortUrlList";
 import { Input } from "../ui/Input";
@@ -30,7 +30,7 @@ export const ShortUrlContent: React.FC = () => {
 		enableShortUrl,
 		disableShortUrl,
 		clearError,
-	} = useShortUrls();
+	} = useShortUrl();
 
 	// Fetch short URLs on component mount and when filters change
 	useEffect(() => {

@@ -21,7 +21,7 @@ interface UseShortUrlsState {
 	error: string | null;
 }
 
-export const useShortUrls = () => {
+export const useShortUrl = () => {
 	const [state, setState] = useState<UseShortUrlsState>({
 		shortUrls: [],
 		totalElements: 0,
