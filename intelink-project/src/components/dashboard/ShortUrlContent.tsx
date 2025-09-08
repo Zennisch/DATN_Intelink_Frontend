@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useShortUrl } from "../../hooks/useShortUrl.ts";
-import { CreateShortUrlForm } from "../shorturl/CreateShortUrlForm";
+import { CreateShortUrlModal } from "../shorturl/CreateShortUrlModal";
 import { ShortUrlList } from "../shorturl/ShortUrlList";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
-import { useCreateShortUrl } from "../../contexts/CreateShortUrlContext";
 import type {
 	SearchShortUrlRequest,
 	CreateShortUrlRequest,
@@ -15,8 +14,7 @@ export const ShortUrlContent: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
-
-	const { showCreateForm, openCreateForm, closeCreateForm } = useCreateShortUrl();
+	const [showCreateModal, setShowCreateModal] = useState(false);
 
 	const {
 		shortUrls,
@@ -71,7 +69,7 @@ export const ShortUrlContent: React.FC = () => {
 		try {
 			const result = await createShortUrl(data);
 			if (result) {
-				closeCreateForm();
+				setShowCreateModal(false);
 				// Refresh the list
 				const searchParams: SearchShortUrlRequest = {
 					page: currentPage,
@@ -173,7 +171,7 @@ export const ShortUrlContent: React.FC = () => {
 					</p>
 				</div>
 				<Button
-					onClick={openCreateForm}
+					onClick={() => setShowCreateModal(true)}
 					className="bg-blue-600 hover:bg-blue-700 text-white"
 				>
 					+ Create Short URL
@@ -291,42 +289,12 @@ export const ShortUrlContent: React.FC = () => {
 			</div>
 
 			{/* Create Short URL Modal */}
-			{showCreateForm && (
-				<div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-						<div className="p-6">
-							<div className="flex justify-between items-center mb-4">
-								<h2 className="text-xl font-semibold text-gray-900">
-									Create New Short URL
-								</h2>
-								<button
-									onClick={closeCreateForm}
-									className="text-gray-400 hover:text-gray-600"
-								>
-									<svg
-										className="w-6 h-6"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M6 18L18 6M6 6l12 12"
-										/>
-									</svg>
-								</button>
-							</div>
-							<CreateShortUrlForm
-								onSubmit={handleCreateShortUrl}
-								onClose={closeCreateForm}
-								loading={loading}
-							/>
-						</div>
-					</div>
-				</div>
-			)}
+			<CreateShortUrlModal
+				isOpen={showCreateModal}
+				onClose={() => setShowCreateModal(false)}
+				onCreateShortUrl={handleCreateShortUrl}
+				loading={loading}
+			/>
 		</div>
 	);
 };

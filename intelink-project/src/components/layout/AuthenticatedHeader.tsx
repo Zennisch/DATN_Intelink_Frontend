@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { ICONS, LANGUAGES } from "../../types/constants.ts";
 import { useDashboard } from "../../contexts/DashboardContext";
-import { useCreateShortUrl } from "../../contexts/CreateShortUrlContext";
 import { useLocation } from "react-router-dom";
 
 interface AuthenticatedHeaderProps {
@@ -41,7 +40,6 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 	let createContext;
 	try {
 		dashboardContext = useDashboard();
-		createContext = useCreateShortUrl();
 	} catch {
 		dashboardContext = null;
 		createContext = null;
