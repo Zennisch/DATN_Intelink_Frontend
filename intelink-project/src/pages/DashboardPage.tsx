@@ -1,16 +1,15 @@
+import { Routes, Route } from "react-router-dom";
 import { AuthenticatedLayout } from "../components/layout/AuthenticatedLayout";
-import { SinglePageDashboard } from "../components/dashboard/SinglePageDashboard";
-import { DashboardProvider } from "../contexts/DashboardContext";
-import { CreateShortUrlProvider } from "../contexts/CreateShortUrlContext";
+import { dashboardRoutes } from "./dashboard/routes";
 
 function DashboardPage() {
 	return (
 		<AuthenticatedLayout>
-			<DashboardProvider>
-				<CreateShortUrlProvider>
-					<SinglePageDashboard />
-				</CreateShortUrlProvider>
-			</DashboardProvider>
+			<Routes>
+				{dashboardRoutes.map((route, index) => (
+					<Route key={index} path={route.path} element={route.component} />
+				))}
+			</Routes>
 		</AuthenticatedLayout>
 	);
 }

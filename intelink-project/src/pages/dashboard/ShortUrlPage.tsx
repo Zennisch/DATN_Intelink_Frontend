@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useShortUrl } from "../../hooks/useShortUrl.ts";
-import { CreateShortUrlModal } from "../shorturl/CreateShortUrlModal";
-import { ShortUrlList } from "../shorturl/ShortUrlList";
-import { Input } from "../ui/Input";
-import { Button } from "../ui/Button";
+import { CreateShortUrlModal } from "../../components/shorturl/CreateShortUrlModal";
+import { ShortUrlList } from "../../components/shorturl/ShortUrlList";
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
 import type {
 	SearchShortUrlRequest,
 	CreateShortUrlRequest,
 } from "../../dto/request/ShortUrlRequest";
 import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse";
 
-export const ShortUrlContent: React.FC = () => {
+export const ShortUrlPage = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -116,8 +116,8 @@ export const ShortUrlContent: React.FC = () => {
 		currentStatus: string,
 	) => {
 		try {
-			const isActive = currentStatus === "true";
-			if (isActive) {
+			const isEnabled = currentStatus === "ENABLED";
+			if (isEnabled) {
 				await disableShortUrl(shortCode);
 			} else {
 				await enableShortUrl(shortCode);
@@ -162,55 +162,52 @@ export const ShortUrlContent: React.FC = () => {
 				</div>
 			)}
 
-			{/* Header */}
-			<div className="flex justify-between items-center">
-				<div>
-					<h1 className="text-2xl font-bold text-gray-900">Short URLs</h1>
-					<p className="text-gray-600 mt-1">
-						Manage and track your short URLs
-					</p>
-				</div>
-				<Button
-					onClick={() => setShowCreateModal(true)}
-					className="bg-blue-600 hover:bg-blue-700 text-white"
-				>
-					+ Create Short URL
-				</Button>
-			</div>
-
-			{/* Search and Filters */}
+			{/* Search, Filters and Create Button in one row */}
 			<div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-					<div className="md:col-span-2">
+				<div className="flex flex-col md:flex-row gap-4 items-end">
+					<div className="flex-1 md:flex-[2]">
 						<Input
 							type="text"
 							placeholder="Search by original URL or short code..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
-							className="w-full"
+							className="w-full h-10"
 						/>
 					</div>
-					<div>
+					<div className="flex-1">
 						<select
 							value={statusFilter}
 							onChange={(e) => setStatusFilter(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						>
 							<option value="">All statuses</option>
-							<option value="true">Active</option>
-							<option value="false">Disabled</option>
+							<option value="ENABLED">Active</option>
+							<option value="DISABLED">Disabled</option>
 						</select>
 					</div>
 					<div className="flex gap-2">
-						<Button onClick={handleSearch} variant="primary" className="flex-1">
+						<Button
+							onClick={handleSearch}
+							variant="primary"
+							className="h-10 px-4"
+						>
 							Search
 						</Button>
 						<Button
 							onClick={handleClearFilters}
 							variant="secondary"
-							className="flex-1"
+							className="h-10 px-4"
 						>
-							Clear Filters
+							Clear
+						</Button>
+					</div>
+					<div>
+						<Button
+							onClick={() => setShowCreateModal(true)}
+							className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-4"
+						>
+							<i className="fas fa-plus mr-2"></i>
+							Create Short URL
 						</Button>
 					</div>
 				</div>
@@ -245,6 +242,7 @@ export const ShortUrlContent: React.FC = () => {
 						<div className="flex gap-2">
 							<Button
 								variant="secondary"
+								size="sm"
 								onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 								disabled={currentPage === 0 || loading}
 							>
@@ -253,14 +251,16 @@ export const ShortUrlContent: React.FC = () => {
 
 							{/* Page Numbers */}
 							<div className="flex gap-1">
-								{[...Array(Math.min(5, totalPages))].map((_, index) => {
-									const pageNum = Math.max(
-										0,
-										Math.min(currentPage - 2 + index, totalPages - 1),
-									);
+								{Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+									// Calculate which pages to show
+									let startPage = Math.max(0, currentPage - 2);
+									startPage = Math.min(startPage, Math.max(0, totalPages - 5));
+
+									const pageNum = startPage + i;
+
 									return (
 										<button
-											key={pageNum}
+											key={`page-${pageNum}`}
 											onClick={() => setCurrentPage(pageNum)}
 											className={`px-3 py-1 text-sm rounded-md ${
 												pageNum === currentPage
@@ -276,6 +276,7 @@ export const ShortUrlContent: React.FC = () => {
 
 							<Button
 								variant="secondary"
+								size="sm"
 								onClick={() =>
 									setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
 								}
@@ -286,15 +287,13 @@ export const ShortUrlContent: React.FC = () => {
 						</div>
 					</div>
 				)}
+				<CreateShortUrlModal
+					isOpen={showCreateModal}
+					onClose={() => setShowCreateModal(false)}
+					onCreateShortUrl={handleCreateShortUrl}
+					loading={loading}
+				/>
 			</div>
-
-			{/* Create Short URL Modal */}
-			<CreateShortUrlModal
-				isOpen={showCreateModal}
-				onClose={() => setShowCreateModal(false)}
-				onCreateShortUrl={handleCreateShortUrl}
-				loading={loading}
-			/>
 		</div>
 	);
 };

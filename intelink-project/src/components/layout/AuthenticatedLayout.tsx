@@ -21,7 +21,7 @@ export const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({
 
 	const handleLanguageChange = (language: string) => {
 		console.log("Language changed to:", language);
-		// Implement language change logic here
+		// TODO: Implement language change logic
 	};
 
 	return (

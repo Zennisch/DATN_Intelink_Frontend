@@ -1,4 +1,3 @@
-// Response types
 export interface CreateShortUrlResponse {
 	id: number;
 	shortCode: string;
@@ -57,4 +56,11 @@ export interface PagedResponse<T> {
 	first: boolean;
 	last: boolean;
 	empty: boolean;
+}
+
+export interface UnlockUrlResponse {
+    success: boolean;
+    message: string;
+    redirectUrl?: string;
+    shortCode: string;
 }
