@@ -12,7 +12,7 @@ interface AuthenticatedHeaderProps {
 export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 	onSidebarToggle,
 	onLanguageChange,
-}) => {
+}) => {	
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const [currentLanguage, setCurrentLanguage] = useState(LANGUAGES.EN);
