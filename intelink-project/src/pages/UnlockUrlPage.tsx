@@ -64,9 +64,9 @@ const UnlockUrlPage: React.FC = () => {
 
 		try {
 			const result = await ShortUrlService.unlockUrl(shortCode!, password);
-			if (result.success && result.originalUrl) {
+			if (result.success && result.redirectUrl) {
 				// Redirect to the original URL
-				window.location.href = result.originalUrl;
+				window.location.href = result.redirectUrl;
 			} else {
 				setError(result.message || "Failed to unlock URL");
 			}

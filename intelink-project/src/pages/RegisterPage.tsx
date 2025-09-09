@@ -13,6 +13,11 @@ export function RegisterPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	const handleLanguageChange = (language: string) => {
+		// TODO: Implement language change logic
+		console.log('Language changed to:', language);
+	};
+
 	const handleError = (error: any) => {
 		if (error.code === "NETWORK_ERROR") {
 			setError("Network error. Please check your connection.");
@@ -76,7 +81,7 @@ export function RegisterPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
-			<Header />
+			<Header onLanguageChange={handleLanguageChange} />
 
 			<div className="flex items-center justify-center min-h-screen pt-20">
 				<div className="w-full max-w-2xl p-8">

@@ -56,7 +56,7 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
 	};
 
 	// Validate date range and shortcode
-	const validateInputs = (start: Date | undefined, end: Date | undefined, granularity: DimensionType, shortcode: string): string | null => {
+	const validateInputs = (_start: Date | undefined, _end: Date | undefined, _granularity: DimensionType, shortcode: string): string | null => {
 		if (!shortcode || shortcode.trim() === "") {
 			return "Invalid or missing shortcode.";
 		}

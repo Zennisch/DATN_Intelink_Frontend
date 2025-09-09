@@ -13,6 +13,11 @@ export function RegisterSuccessPage() {
 	const location = useLocation();
 	const [countdown, setCountdown] = useState(3);
 
+	const handleLanguageChange = (language: string) => {
+		// TODO: Implement language change logic
+		console.log('Language changed to:', language);
+	};
+
 	const state = location.state as RegisterSuccessState | null;
 	const email = state?.email || "";
 	const emailVerified = state?.emailVerified || false;
@@ -48,7 +53,7 @@ export function RegisterSuccessPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
-			<Header />
+			<Header onLanguageChange={handleLanguageChange} />
 
 			<div className="flex items-center justify-center min-h-screen pt-20">
 				<div className="w-full max-w-2xl p-8">

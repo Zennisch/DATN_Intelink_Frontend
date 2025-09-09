@@ -14,6 +14,11 @@ export function VerifyEmailPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [countdown, setCountdown] = useState(5);
 
+	const handleLanguageChange = (language: string) => {
+		// TODO: Implement language change logic
+		console.log('Language changed to:', language);
+	};
+
 	useEffect(() => {
 		const token = searchParams.get("token");
 
@@ -84,7 +89,7 @@ export function VerifyEmailPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50 font-inter">
-			<Header />
+			<Header onLanguageChange={handleLanguageChange} />
 
 			<div className="flex items-center justify-center min-h-screen pt-20">
 				<div className="w-full max-w-2xl p-8">
