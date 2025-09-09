@@ -116,7 +116,7 @@ export const ShortUrlPage = () => {
 		currentStatus: string,
 	) => {
 		try {
-			const isEnabled = currentStatus === "true" || currentStatus === "ENABLED";
+			const isEnabled = currentStatus === "ENABLED";
 			if (isEnabled) {
 				await disableShortUrl(shortCode);
 			} else {
@@ -181,12 +181,16 @@ export const ShortUrlPage = () => {
 							className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						>
 							<option value="">All statuses</option>
-							<option value="true">Active</option>
-							<option value="false">Disabled</option>
+							<option value="ENABLED">Active</option>
+							<option value="DISABLED">Disabled</option>
 						</select>
 					</div>
 					<div className="flex gap-2">
-						<Button onClick={handleSearch} variant="primary" className="h-10 px-4">
+						<Button
+							onClick={handleSearch}
+							variant="primary"
+							className="h-10 px-4"
+						>
 							Search
 						</Button>
 						<Button
@@ -247,14 +251,16 @@ export const ShortUrlPage = () => {
 
 							{/* Page Numbers */}
 							<div className="flex gap-1">
-								{[...Array(Math.min(5, totalPages))].map((_, index) => {
-									const pageNum = Math.max(
-										0,
-										Math.min(currentPage - 2 + index, totalPages - 1),
-									);
+								{Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+									// Calculate which pages to show
+									let startPage = Math.max(0, currentPage - 2);
+									startPage = Math.min(startPage, Math.max(0, totalPages - 5));
+
+									const pageNum = startPage + i;
+
 									return (
 										<button
-											key={pageNum}
+											key={`page-${pageNum}`}
 											onClick={() => setCurrentPage(pageNum)}
 											className={`px-3 py-1 text-sm rounded-md ${
 												pageNum === currentPage
@@ -281,15 +287,13 @@ export const ShortUrlPage = () => {
 						</div>
 					</div>
 				)}
+				<CreateShortUrlModal
+					isOpen={showCreateModal}
+					onClose={() => setShowCreateModal(false)}
+					onCreateShortUrl={handleCreateShortUrl}
+					loading={loading}
+				/>
 			</div>
-
-			{/* Create Short URL Modal */}
-			<CreateShortUrlModal
-				isOpen={showCreateModal}
-				onClose={() => setShowCreateModal(false)}
-				onCreateShortUrl={handleCreateShortUrl}
-				loading={loading}
-			/>
 		</div>
 	);
 };
