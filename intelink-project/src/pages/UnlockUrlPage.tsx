@@ -53,39 +53,30 @@ const UnlockUrlPage: React.FC = () => {
 	};
 
 	const handleUnlock = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!password.trim()) {
-			setError("Please enter the password");
-			return;
-		}
+    e.preventDefault();
+    if (!password.trim()) {
+        setError("Please enter the password");
+        return;
+    }
 
-		setLoading(true);
-		setError("");
+    setLoading(true);
+    setError("");
 
-		try {
-			const result = await ShortUrlService.unlockUrl(shortCode!, password);
-			if (result.success && result.originalUrl) {
-				// Redirect to the original URL
-				window.location.href = result.originalUrl;
-			} else {
-				setError(result.message || "Failed to unlock URL");
-			}
-		} catch (error: any) {
-			console.error("Error unlocking URL:", error);
-			if (error.success === false) {
-				// Error from backend with structured response
-				setError(error.message || "Incorrect password");
-			} else if (error.response?.status === 400) {
-				setError("Incorrect password or URL is unavailable");
-			} else if (error.response?.status === 404) {
-				setError("Link not found");
-			} else {
-				setError("An error occurred. Please try again.");
-			}
-		} finally {
-			setLoading(false);
-		}
-	};
+    try {
+        const result = await ShortUrlService.unlockUrl(shortCode!, password);
+        if (result.success && result.redirectUrl) {
+            // Chuyển hướng tới URL trả về từ backend
+            window.location.href = result.redirectUrl;
+        } else {
+            setError(result.message || "Failed to unlock URL");
+        }
+    } catch (error: any) {
+        console.error("Error unlocking URL:", error);
+        setError("Incorrect password or URL is unavailable");
+    } finally {
+        setLoading(false);
+    }
+};
 
 	const handleGoHome = () => {
 		navigate("/");
