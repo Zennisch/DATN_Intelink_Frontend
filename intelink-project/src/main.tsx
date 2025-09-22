@@ -13,15 +13,15 @@ setupAxios();
 const App = lazy(() => import("./App.tsx"));
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<BrowserRouter>
-			<AuthProvider>
-				<ShortUrlProvider>
-					<Suspense fallback={<PageSpinner />}>
+	<Suspense fallback={<PageSpinner />}>
+		<StrictMode>
+			<BrowserRouter>
+				<AuthProvider>
+					<ShortUrlProvider>
 						<App />
-					</Suspense>
-				</ShortUrlProvider>
-			</AuthProvider>
-		</BrowserRouter>
-	</StrictMode>,
+					</ShortUrlProvider>
+				</AuthProvider>
+			</BrowserRouter>
+		</StrictMode>
+	</Suspense>,
 );
