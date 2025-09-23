@@ -8,6 +8,7 @@ import type { SubscriptionPlanResponse } from "../dto/response/SubscriptionPlanR
 import type { RegisterSubscriptionRequest } from "../dto/request/SubscriptionRequest";
 
 const SubscriptionPlansPage: React.FC = () => {
+  const navigate = (window as any).navigate || ((url: string) => { window.location.href = url; });
   const { user, isLoading: authLoading } = useAuth();
   const [plans, setPlans] = useState<SubscriptionPlanResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,14 @@ const SubscriptionPlansPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 flex flex-col items-center justify-center min-h-[80vh]">
+      <div className="w-full flex justify-start mb-4">
+        <Button
+          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded shadow"
+          onClick={() => navigate("/")}
+        >
+          &larr; Back to Home
+        </Button>
+      </div>
       <h2 className="text-3xl font-bold mb-6 text-center">Subscription Plans</h2>
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
       <div className="flex flex-row flex-wrap justify-center items-stretch gap-8 w-full">

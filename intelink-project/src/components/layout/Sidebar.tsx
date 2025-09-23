@@ -123,7 +123,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 								Enjoying Intelink? Consider upgrading your plan so you can go
 								limitless.
 							</div>
-							<button className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors">
+							<button className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors"
+								onClick={() => {
+									navigate("/plans");
+									onClose();
+								}}
+							>
 								Upgrade now →
 							</button>
 						</div>
