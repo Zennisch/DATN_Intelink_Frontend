@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import RouteGuard from "./components/RouteGuard";
 
+const SubscriptionPlansPage = lazy(() => import("./pages/SubscriptionPlansPage"));
+
 const LoginPage = lazy(() => import("./pages/LoginPage").then(m => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import("./pages/RegisterPage").then(m => ({ default: m.RegisterPage })));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
@@ -52,6 +54,15 @@ export const routes: RouteConfig[] = [
 		),
 		requireAuth: true
 	},
+	   {
+		   path: "/plans",
+		   element: (
+			   <RouteGuard requireAuth>
+				   <SubscriptionPlansPage />
+			   </RouteGuard>
+		   ),
+		   requireAuth: true
+	   },
 	{
 		path: "/auth/oauth2/callback",
 		element: <OAuth2CallbackPage />
