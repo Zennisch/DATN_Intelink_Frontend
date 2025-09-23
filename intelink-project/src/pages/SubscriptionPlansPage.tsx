@@ -8,7 +8,7 @@ import type { SubscriptionPlanResponse } from "../dto/response/SubscriptionPlanR
 import type { RegisterSubscriptionRequest } from "../dto/request/SubscriptionRequest";
 
 const SubscriptionPlansPage: React.FC = () => {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [plans, setPlans] = useState<SubscriptionPlanResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
@@ -21,7 +21,7 @@ const SubscriptionPlansPage: React.FC = () => {
         setLoading(false);
       })
       .catch(() => {
-        setError("Không thể tải danh sách gói đăng ký.");
+        setError("Failed to load subscription plans.");
         setLoading(false);
       });
   }, []);
@@ -36,9 +36,9 @@ const SubscriptionPlansPage: React.FC = () => {
         subscriptionPlanId: plan.id,
       };
       await SubscriptionService.register(request);
-      alert("Đăng ký thành công! Vui lòng kiểm tra thanh toán.");
+      alert("Registration successful! Please check your payment.");
     } catch (e) {
-      setError("Đăng ký thất bại. Vui lòng thử lại.");
+      setError("Registration failed. Please try again.");
     } finally {
       setRegisteringId(null);
     }
@@ -47,10 +47,10 @@ const SubscriptionPlansPage: React.FC = () => {
   if (loading || authLoading) return <Spinner />;
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
+    <div className="max-w-7xl mx-auto py-8 px-4 flex flex-col items-center justify-center min-h-[80vh]">
       <h2 className="text-3xl font-bold mb-6 text-center">Subscription Plans</h2>
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
-      <div className="flex flex-row space-x-6 overflow-x-auto pb-4">
+      <div className="flex flex-row flex-wrap justify-center items-stretch gap-8 w-full">
         {plans.length === 0 ? (
           <div className="text-center text-gray-500 w-full">No subscription plans available.</div>
         ) : (
@@ -87,6 +87,5 @@ const SubscriptionPlansPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
+}
 export default SubscriptionPlansPage;
