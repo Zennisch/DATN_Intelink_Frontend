@@ -13,6 +13,7 @@ const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage").then(m => (
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
 const UnlockUrlPage = lazy(() => import("./pages/UnlockUrlPage"));
 const RedirectPage = lazy(() => import("./pages/RedirectPage"));
+const PaymentCostPage = lazy(() => import("./pages/PaymentCostPage"));
 
 export interface RouteConfig {
 	path: string;
@@ -21,6 +22,15 @@ export interface RouteConfig {
 }
 
 export const routes: RouteConfig[] = [
+	{
+		path: "/plans/:planId/cost",
+		element: (
+			<RouteGuard requireAuth>
+				<PaymentCostPage />
+			</RouteGuard>
+		),
+		requireAuth: true
+	},
 	{
 		path: "/login",
 		element: (

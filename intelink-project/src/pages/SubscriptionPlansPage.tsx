@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { SubscriptionPlanService } from "../services/SubscriptionPlanService";
-import { SubscriptionService } from "../services/SubscriptionService";
 import { useAuth } from "../hooks/useAuth";
 import { Spinner } from "../components/ui/Spinner";
 import { Button } from "../components/ui/Button";
 import type { SubscriptionPlanResponse } from "../dto/response/SubscriptionPlanResponse";
-import type { RegisterSubscriptionRequest } from "../dto/request/SubscriptionRequest";
 
 const SubscriptionPlansPage: React.FC = () => {
   const navigate = (window as any).navigate || ((url: string) => { window.location.href = url; });
@@ -29,20 +27,8 @@ const SubscriptionPlansPage: React.FC = () => {
 
   const currentPlanType = user?.currentSubscription?.planType;
 
-  const handleRegister = async (plan: SubscriptionPlanResponse) => {
-    setRegisteringId(plan.id.toString());
-    setError(null);
-    try {
-      const request: RegisterSubscriptionRequest = {
-        subscriptionPlanId: plan.id,
-      };
-      await SubscriptionService.register(request);
-      alert("Registration successful! Please check your payment.");
-    } catch (e) {
-      setError("Registration failed. Please try again.");
-    } finally {
-      setRegisteringId(null);
-    }
+  const handleRegister = (plan: SubscriptionPlanResponse) => {
+    navigate(`/plans/${plan.id}/cost`);
   };
 
   if (loading || authLoading) return <Spinner />;
