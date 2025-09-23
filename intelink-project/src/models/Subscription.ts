@@ -15,9 +15,12 @@ export interface Subscription {
 	// Status group
 	status: SubscriptionStatus;
 	active: boolean;
+	creditUsed: number;
+	proRateValue?: number;
 
 	// Audit group
 	createdAt: string;
 	startsAt: string;
-	expiresAt: string;
+	activatedAt?: string;
+	expiresAt?: string;
 }
