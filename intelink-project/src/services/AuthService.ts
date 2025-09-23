@@ -49,6 +49,7 @@ export class AuthService {
 
 	static async getProfile(): Promise<UserProfileResponse> {
 		const response = await axios.get<UserProfileResponse>("/auth/profile");
+		console.log("User profile response:", response.data);
 		return response.data;
 	}
 

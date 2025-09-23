@@ -68,11 +68,14 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 			.slice(0, 2);
 	};
 
-	const userInitials = user?.username ? getInitials(user.username) : "U";
+		const userInitials = user?.username ? getInitials(user.username) : "U";
+		const currentPlan = user?.currentSubscription?.planType || "No plan";
+		const creditBalance = typeof user?.creditBalance === "number" ? user.creditBalance : 0;
+		const currency = user?.currency || "VND";
 
 	return (
-		<header className="fixed top-0 left-0 md:left-64 right-0 bg-white border-b border-gray-200 z-30 h-16">
-			<div className="flex items-center justify-between px-4 h-full">
+			<header className="fixed top-0 left-0 md:left-64 right-0 bg-white border-b border-gray-200 z-30 h-16">
+				<div className="flex items-center justify-between px-4 h-full">
 				{/* Left side - Menu button and greeting */}
 				<div className="flex items-center space-x-4">
 					<Button
@@ -196,58 +199,68 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 					</div>
 
 					{/* User Avatar and Dropdown */}
-					<div className="relative">
-						<Button
-							onClick={() => setShowUserDropdown(!showUserDropdown)}
-							variant="secondary"
-							size="sm"
-							className="flex items-center space-x-2"
-							icon={
-								<div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-									{userInitials}
+								<div className="relative flex items-center space-x-4">
+									<Button
+										onClick={() => setShowUserDropdown(!showUserDropdown)}
+										variant="secondary"
+										size="sm"
+										className="flex items-center space-x-2"
+										icon={
+											<div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
+												{userInitials}
+											</div>
+										}
+									>
+										<span className="hidden md:block text-sm font-medium text-gray-700">
+											{user?.username || "User"}
+										</span>
+										<i className="fas fa-chevron-down text-gray-400 ml-1"></i>
+									</Button>
+									{/* Subscription & Credit */}
+									<div className="hidden md:flex flex-col items-end text-xs">
+										<div className="flex items-center space-x-2">
+											<span className="font-semibold text-blue-600">{currentPlan}</span>
+											<span className="text-gray-400">|</span>
+											<span className="font-semibold text-green-600">{creditBalance} {currency}</span>
+										</div>
+										<span className="text-gray-500">Plan & Credit</span>
+									</div>
+									{/* End Subscription & Credit */}
+									{showUserDropdown && (
+										<div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+											<div className="px-4 py-3 border-b border-gray-200">
+												<p className="text-sm font-medium text-gray-900">
+													{user?.username || "User"}
+												</p>
+												<p className="text-sm text-gray-500">{user?.email || ""}</p>
+												<p className="text-xs mt-1"><span className="font-semibold text-blue-600">{currentPlan}</span> | <span className="font-semibold text-green-600">{creditBalance} {currency}</span></p>
+											</div>
+											<div className="py-1">
+												<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+													<i className="fas fa-user w-4 mr-3"></i>
+													My account
+												</button>
+												<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+													<i className="fas fa-bell w-4 mr-3"></i>
+													Notifications
+												</button>
+												<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+													<i className="fas fa-credit-card w-4 mr-3"></i>
+													Billing & Plan
+												</button>
+												<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+													<i className="fas fa-cog w-4 mr-3"></i>
+													Settings
+												</button>
+												<hr className="my-1" />
+												<button className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+													<i className="fas fa-sign-out-alt w-4 mr-3"></i>
+													Sign out
+												</button>
+											</div>
+										</div>
+									)}
 								</div>
-							}
-						>
-							<span className="hidden md:block text-sm font-medium text-gray-700">
-								{user?.username || "User"}
-							</span>
-							<i className="fas fa-chevron-down text-gray-400 ml-1"></i>
-						</Button>
-
-						{showUserDropdown && (
-							<div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
-								<div className="px-4 py-3 border-b border-gray-200">
-									<p className="text-sm font-medium text-gray-900">
-										{user?.username || "User"}
-									</p>
-									<p className="text-sm text-gray-500">{user?.email || ""}</p>
-								</div>
-								<div className="py-1">
-									<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-										<i className="fas fa-user w-4 mr-3"></i>
-										My account
-									</button>
-									<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-										<i className="fas fa-bell w-4 mr-3"></i>
-										Notifications
-									</button>
-									<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-										<i className="fas fa-credit-card w-4 mr-3"></i>
-										Billing & Plan
-									</button>
-									<button className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-										<i className="fas fa-cog w-4 mr-3"></i>
-										Settings
-									</button>
-									<hr className="my-1" />
-									<button className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-										<i className="fas fa-sign-out-alt w-4 mr-3"></i>
-										Sign out
-									</button>
-								</div>
-							</div>
-						)}
-					</div>
 				</div>
 			</div>
 		</header>
