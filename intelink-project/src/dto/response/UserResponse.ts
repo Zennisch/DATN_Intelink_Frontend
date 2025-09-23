@@ -73,13 +73,17 @@ export interface UserProfileResponse {
 	providerUserId?: string;
 	lastLoginAt?: string;
 	
+	// Payment
+	creditBalance: number;
+	currency: string;
+
 	// Statistics
 	totalClicks: number;
 	totalShortUrls: number;
-	
+
 	// Current subscription info
 	currentSubscription?: SubscriptionInfo;
-	
+
 	// Audit
 	createdAt: string;
 	updatedAt: string;

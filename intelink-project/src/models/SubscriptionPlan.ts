@@ -1,4 +1,7 @@
-import { SubscriptionPlanBillingInterval, SubscriptionPlanType } from '../types/enums';
+import {
+	SubscriptionPlanBillingInterval,
+	SubscriptionPlanType,
+} from "../types/enums";
 
 export interface SubscriptionPlan {
 	// Key group
@@ -20,4 +23,5 @@ export interface SubscriptionPlan {
 	// Audit group
 	active: boolean;
 	createdAt: string;
+	maxUsagePerUrl: number;
 }

@@ -19,9 +19,16 @@ export interface User {
 	bio?: string;
 	profilePictureUrl?: string;
 
+	// Payment group
+	creditBalance: number;
+	currency: string;
+
 	// Statistics group
 	totalShortUrls: number;
 	totalClicks: number;
+
+	// Subscription group
+	currentSubscription?: any;
 
 	// Audit group
 	status: UserStatus;
