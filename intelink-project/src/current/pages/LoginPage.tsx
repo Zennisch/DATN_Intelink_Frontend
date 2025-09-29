@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { LoginRequest } from "../../legacy/dto/request/UserRequest.ts";
 import { BACKEND_URL } from "../../legacy/types/environment.ts";
-import { Header } from "../../legacy/components/layout/Header.tsx";
 import { LoginForm, SocialLoginSection } from "../../legacy/components/auth";
 import { Button } from "../../legacy/components/ui";
+import { Header } from "../components/layout/Header.tsx";
 
 export function LoginPage() {
 	const { login } = useAuth();
