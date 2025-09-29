@@ -7,7 +7,7 @@ import {
 	useId,
 	useState,
 } from "react";
-import { cn } from "./utils"
+import { cn } from "./utils.ts"
 
 type Size = "sm" | "md" | "lg"
 

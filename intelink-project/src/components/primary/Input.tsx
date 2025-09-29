@@ -1,5 +1,5 @@
 import { forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
-import { cn } from "./utils"
+import { cn } from "./utils.ts"
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: ReactNode

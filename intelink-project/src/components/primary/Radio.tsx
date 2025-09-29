@@ -1,7 +1,7 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, RefObject, useEffect, useId } from "react"
-import { cn } from "./utils"
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
+import { cn } from "./utils.ts"
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "checked"> {
+type RadioProps = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "checked" | "type"> & {
   id?: string
   checked?: boolean
   defaultChecked?: boolean
@@ -9,11 +9,10 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onC
   label?: ReactNode
   wrapperClassName?: string
   inputClassName?: string
-  indeterminate?: boolean
   labelPosition?: "right" | "left"
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
   {
     id,
     checked,
@@ -22,30 +21,20 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
     label,
     wrapperClassName,
     inputClassName,
-    indeterminate = false,
     labelPosition = "right",
     disabled,
     name,
     value,
+    className,
     ...rest
   },
   ref
 ) {
   const autoId = useId()
-  const finalId = id ?? `checkbox-${autoId}`
-
-  useEffect(() => {
-    const input = (ref as RefObject<HTMLInputElement>)?.current
-    if (input) {
-      input.indeterminate = Boolean(indeterminate)
-    } else {
-      const el = document.getElementById(finalId) as HTMLInputElement | null
-      if (el) el.indeterminate = Boolean(indeterminate)
-    }
-  }, [indeterminate, ref, finalId])
+  const finalId = id ?? `radio-${autoId}`
 
   return (
-    <div className={cn("flex items-center", wrapperClassName)}>
+    <div className={cn("inline-flex items-center", wrapperClassName)}>
       {label && labelPosition === "left" && (
         <label htmlFor={finalId} className="mr-2 text-sm text-gray-700 cursor-pointer">
           {label}
@@ -55,10 +44,14 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       <input
         id={finalId}
         ref={ref}
-        type="checkbox"
+        type="radio"
         name={name}
         value={value}
-        className={cn("h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded", inputClassName)}
+        className={cn(
+          "h-4 w-4 text-gray-600 focus:ring-2 focus-visible:ring-offset-1 focus-visible:ring-gray-500 border-gray-300",
+          inputClassName,
+          className
+        )}
         checked={checked}
         defaultChecked={defaultChecked}
         disabled={disabled}

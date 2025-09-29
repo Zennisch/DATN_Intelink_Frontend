@@ -1,5 +1,5 @@
 import { ChangeEvent, forwardRef, ReactNode, SelectHTMLAttributes, useId } from "react"
-import { cn } from "./utils"
+import { cn } from "./utils.ts"
 
 type OptionItem = {
   value: string | number

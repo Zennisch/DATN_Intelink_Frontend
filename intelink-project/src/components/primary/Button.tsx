@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
-import { cn } from "./utils"
+import { cn } from "./utils.ts"
 
 type Variant = "primary" | "secondary" | "outline" | "social"
 type Size = "sm" | "md" | "lg"
