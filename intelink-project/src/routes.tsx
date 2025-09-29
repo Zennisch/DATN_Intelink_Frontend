@@ -13,7 +13,10 @@ const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage").then(m => (
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
 const UnlockUrlPage = lazy(() => import("./pages/UnlockUrlPage"));
 const RedirectPage = lazy(() => import("./pages/RedirectPage"));
+
 const PaymentCostPage = lazy(() => import("./pages/PaymentCostPage"));
+const PaymentCallbackPage = lazy(() => import("./pages/PaymentCallbackPage"));
+const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 
 export interface RouteConfig {
 	path: string;
@@ -22,6 +25,14 @@ export interface RouteConfig {
 }
 
 export const routes: RouteConfig[] = [
+	{
+		path: "/payments/payment-callback",
+		element: <PaymentCallbackPage />
+	},
+	{
+		path: "/payments/payment-success",
+		element: <PaymentSuccessPage />
+	},
 	{
 		path: "/plans/:planId/cost",
 		element: (
