@@ -1,5 +1,5 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { StrictMode, Suspense, lazy } from "react";
+import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { PageSpinner } from "./legacy/components/ui/Spinner.tsx";
@@ -13,15 +13,15 @@ setupAxios();
 const App = lazy(() => import("./App.tsx"));
 
 createRoot(document.getElementById("root")!).render(
-	<Suspense fallback={<PageSpinner />}>
-		<StrictMode>
-			<BrowserRouter>
-				<AuthProvider>
-					<ShortUrlProvider>
+	<StrictMode>
+		<BrowserRouter>
+			<AuthProvider>
+				<ShortUrlProvider>
+					<Suspense fallback={<PageSpinner />}>
 						<App />
-					</ShortUrlProvider>
-				</AuthProvider>
-			</BrowserRouter>
-		</StrictMode>
-	</Suspense>,
+					</Suspense>
+				</ShortUrlProvider>
+			</AuthProvider>
+		</BrowserRouter>
+	</StrictMode>,
 );

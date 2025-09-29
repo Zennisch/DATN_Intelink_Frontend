@@ -94,20 +94,29 @@
         100% { transform: rotate(360deg); }
       }
     </style>
+    <script>
+      let intervalId;
 
+      function clear() {
+        if (intervalId) {
+          clearInterval(intervalId);
+          console.log("Cleared interval:", intervalId);
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="preloader">
       <header id="preload-header">
         <a href="https://intelink.click" target="_blank" rel="noopener noreferrer">
-          <img src="public/logo.png" alt="Intelink Logo" />
+          <img src="/logo.png" alt="Intelink Logo" />
           <span>Intelink</span>
         </a>
       </header>
 
       <div id="preload-container">
         <div id="preload-container-icon">
-          <img src="public/icon-loading.svg" alt="Loading Icon" />
+          <img src="/icon-loading.svg" alt="Loading Icon" />
         </div>
         <div id="preload-container-text">
           <span id="loading">Loading</span>
@@ -116,14 +125,16 @@
 
       <script>
         const text = "Loading";
-
         function animateLoading() {
           let index = 0;
-          setInterval(() => {
-            if (index % 4 !== 0) {
-              document.getElementById("loading").textContent = text + ".".repeat(index % 4);
-            } else {
-              document.getElementById("loading").textContent = text;
+          window.intervalId = setInterval(() => {
+            const loadingEl = document.getElementById("loading");
+            if (loadingEl) {
+              if (index % 4 !== 0) {
+                loadingEl.textContent = text + ".".repeat(index % 4);
+              } else {
+                loadingEl.textContent = text;
+              }
             }
             index++;
           }, 500);
