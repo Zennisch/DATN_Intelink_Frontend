@@ -3,7 +3,7 @@ import RouteGuard from "./legacy/components/RouteGuard";
 
 const SubscriptionPlansPage = lazy(() => import("./legacy/pages/SubscriptionPlansPage"));
 
-const LoginPage = lazy(() => import("./legacy/pages/LoginPage").then(m => ({ default: m.LoginPage })));
+const LoginPage = lazy(() => import("./current/pages/LoginPage").then(m => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import("./legacy/pages/RegisterPage").then(m => ({ default: m.RegisterPage })));
 const ForgotPasswordPage = lazy(() => import("./legacy/pages/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
 const DashboardPage = lazy(() => import("./legacy/pages/DashboardPage"));

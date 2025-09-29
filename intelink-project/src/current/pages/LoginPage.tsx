@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useAuth } from "../../legacy/hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
-import { LoginForm, SocialLoginSection } from "../components/auth";
-import { Header } from "../components/layout/Header.tsx";
-import { Button, Divider } from "../components/ui";
-import type { LoginRequest } from "../dto/request/UserRequest.ts";
-import { useAuth } from "../hooks/useAuth.ts";
-import { BACKEND_URL } from "../types/environment.ts";
+import { useState } from "react";
+import type { LoginRequest } from "../../legacy/dto/request/UserRequest.ts";
+import { BACKEND_URL } from "../../legacy/types/environment.ts";
+import { Header } from "../../legacy/components/layout/Header.tsx";
+import { LoginForm, SocialLoginSection } from "../../legacy/components/auth";
+import { Button } from "../../legacy/components/ui";
 
 export function LoginPage() {
 	const { login } = useAuth();
@@ -15,7 +15,10 @@ export function LoginPage() {
 
 	const handleError = (error: unknown) => {
 		if (error && error instanceof Error) {
-			const err = error as { code?: string; response?: { status?: number; data?: { message?: string } } };
+			const err = error as {
+				code?: string;
+				response?: { status?: number; data?: { message?: string } };
+			};
 			if (err.code === "NETWORK_ERROR") {
 				setError("Network error. Please check your connection.");
 			} else if (err.response?.status === 401) {
@@ -69,8 +72,8 @@ export function LoginPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={() => {}} />
 
-			<div className="flex items-center justify-center min-h-screen pt-20">
-				<div className="w-full max-w-2xl p-8">
+			<div className="flex h-screen justify-center items-center">
+				<div className="w-full max-w-6xl p-8">
 					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
 						<div className="text-center mb-8">
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -84,34 +87,31 @@ export function LoginPage() {
 							</div>
 						)}
 
-						<div className="mb-6">
-							<SocialLoginSection
-								onGoogleLogin={() => handleGoogleLogin()}
-								onGitHubLogin={() => handleGitHubLogin()}
-								loading={loading}
-							/>
-						</div>
-
-						<div className="mb-6">
-							<Divider />
-						</div>
-
-						<div className="mb-6">
-							<LoginForm onSubmit={handleLogin} loading={loading} />
-						</div>
-
-						<div className="text-center">
-							<p className="text-sm text-gray-600 mb-4">
-								Don't have an account?
-							</p>
-							<Button
-								variant="outline"
-								fullWidth
-								size="lg"
-								onClick={handleSignUp}
-							>
-								Sign up
-							</Button>
+						<div className="flex flex-row w-full items-center justify-center ">
+							<div className="w-1/2">
+								<LoginForm onSubmit={handleLogin} loading={loading} />
+								<p className="text-sm text-gray-600 my-4 text-center">
+									Don't have an account?
+								</p>
+								<Button
+									variant="outline"
+									fullWidth
+									size="lg"
+									onClick={handleSignUp}
+								>
+									Sign up
+								</Button>
+							</div>
+							<div className="flex flex-col justify-evenly items-center px-4">
+								<span className="">OR</span>
+							</div>
+							<div className="w-1/2 h-full flex flex-col justify-center items-center">
+								<SocialLoginSection
+									onGoogleLogin={() => handleGoogleLogin()}
+									onGitHubLogin={() => handleGitHubLogin()}
+									loading={loading}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -6,7 +6,7 @@ import { AuthProvider } from "./legacy/contexts/AuthContext.tsx";
 import "./index.css";
 import { ShortUrlProvider } from "./legacy/contexts/ShortUrlContext.tsx";
 import { setupAxios } from "./legacy/services/AxiosConfig.ts";
-import { LoadingPage } from "./components/ui";
+import { LoadingPage } from "./current/components/ui";
 
 setupAxios().then();
 
