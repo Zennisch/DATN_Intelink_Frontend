@@ -4,6 +4,7 @@ export interface SubscriptionCostResponse {
   proRateValue: number;
   amountToPay: number;
   creditBalance: number;
+	requiresPayment: boolean;
   currency: string;
   message: string;
   startDate: string;

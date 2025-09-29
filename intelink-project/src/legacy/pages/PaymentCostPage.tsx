@@ -32,9 +32,11 @@ const PaymentCostPage: React.FC = () => {
     setRegistering(true);
     try {
       const res = await SubscriptionService.register({ subscriptionPlanId: Number(planId), applyImmediately });
-      if (res.paymentUrl) {
-        window.open(res.paymentUrl, "_blank");
-      }
+			if (res.paymentUrl && res.paymentUrl !== "") {
+				window.open(res.paymentUrl, "_blank");
+			} else {
+				navigate("/dashboard");
+			}
     } catch (e) {
       setError("Registration failed. Please try again.");
     } finally {
