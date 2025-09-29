@@ -2,12 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import { useEffect } from "react";
 
-declare global {
-	interface Window {
-		clear?: () => void;
-	}
-}
-
 function App() {
 	useEffect(() => {
 		const preloader = document.getElementById("preloader");
@@ -17,7 +11,7 @@ function App() {
 				if (preloader.parentNode) {
 					preloader.parentNode.removeChild(preloader);
 				}
-			}, 300);
+			}, 1000);
 		}
 		setTimeout(() => {
 			if (typeof window.clear === "function") {
