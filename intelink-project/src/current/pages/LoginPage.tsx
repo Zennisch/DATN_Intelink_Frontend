@@ -72,7 +72,7 @@ export function LoginPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={() => {}} />
 
-			<div className="flex h-screen justify-center items-center">
+			<div className="flex justify-center items-center">
 				<div className="w-full max-w-6xl p-8">
 					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
 						<div className="text-center mb-8">
@@ -87,7 +87,7 @@ export function LoginPage() {
 							</div>
 						)}
 
-						<div className="flex flex-row w-full items-center justify-center ">
+						<div className="flex flex-col lg:flex-row w-full items-center justify-center ">
 							<div className="w-1/2">
 								<LoginForm onSubmit={handleLogin} loading={loading} />
 								<p className="text-sm text-gray-600 my-4 text-center">
@@ -102,8 +102,8 @@ export function LoginPage() {
 									Sign up
 								</Button>
 							</div>
-							<div className="flex flex-col justify-evenly items-center px-4">
-								<span className="">OR</span>
+							<div className="flex flex-col justify-center items-center p-4">
+								OR
 							</div>
 							<div className="w-1/2 h-full flex flex-col justify-center items-center">
 								<SocialLoginSection
