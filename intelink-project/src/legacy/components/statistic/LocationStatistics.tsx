@@ -42,7 +42,7 @@ export const LocationStatistics: React.FC<LocationStatisticsProps> = ({
 		: [];
 
 	return (
-		<div className="p-6 space-y-6">
+		<div className="p-2 space-y-6">
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				{/* Country Map */}
 				<div className="bg-white rounded-lg border border-gray-200 p-6">

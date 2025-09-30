@@ -350,7 +350,7 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-2 space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Time-based Analytics</h3>
