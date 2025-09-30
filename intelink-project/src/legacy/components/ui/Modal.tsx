@@ -50,7 +50,7 @@ export const Modal: React.FC<ModalProps> = ({
 					<div className="flex items-center justify-between p-6 border-b border-gray-200">
 						<h3 className="text-lg font-semibold text-gray-900">{title}</h3>
 						<Button variant="secondary" onClick={onClose}>
-							Đóng modal
+							Close
 						</Button>
 					</div>
 				)}

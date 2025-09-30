@@ -138,10 +138,10 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={handleClose} title="Tạo Short URL">
+		<Modal isOpen={isOpen} onClose={handleClose} title="Create Short URL">
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<Input
-					label="URL gốc *"
+					label="Origignal URL*"
 					placeholder="https://example.com/very-long-url..."
 					value={formData.originalUrl}
 					onChange={handleInputChange("originalUrl")}
@@ -152,7 +152,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 
 				<div className="w-full">
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Mô tả
+						Description
 					</label>
 					<textarea
 						placeholder="Mô tả ngắn gọn về URL này (tùy chọn)..."
@@ -165,7 +165,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 				</div>
 
 				<Input
-					label="Số ngày có hiệu lực *"
+					label="Available Days *"
 					type="number"
 					placeholder="30"
 					value={formData.availableDays.toString()}
@@ -181,7 +181,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 						id="has-password"
 						checked={hasPassword}
 						onChange={handlePasswordToggle}
-						label="Bảo vệ bằng mật khẩu"
+						label="Protect with Password"
 					/>
 
 					{hasPassword && (
@@ -203,7 +203,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 						id="has-max-usage"
 						checked={hasMaxUsage}
 						onChange={handleMaxUsageToggle}
-						label="Giới hạn số lần sử dụng"
+						label="Limit Maximum Usage"
 					/>
 
 					{hasMaxUsage && (
@@ -228,7 +228,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 						onClick={handleClose}
 						disabled={loading}
 					>
-						Hủy
+						Cancel
 					</Button>
 					<Button
 						type="submit"
@@ -236,7 +236,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 						disabled={!formData.originalUrl.trim() || loading}
 						className="min-w-[120px]"
 					>
-						Tạo Short URL
+						Create Short URL
 					</Button>
 				</div>
 			</form>

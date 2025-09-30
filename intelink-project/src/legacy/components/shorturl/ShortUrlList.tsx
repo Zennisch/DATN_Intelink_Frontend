@@ -152,7 +152,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 							<div className="flex items-center gap-4 text-xs text-gray-500">
 								<span className="flex items-center gap-1">
 									<i className="fas fa-eye w-3 h-3"></i>
-									{shortUrl.totalClicks} lượt click
+									{shortUrl.totalClicks} Clicks
 								</span>
 
 								{shortUrl.hasPassword && (
