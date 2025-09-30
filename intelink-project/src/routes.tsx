@@ -18,6 +18,8 @@ const PaymentCostPage = lazy(() => import("./legacy/pages/PaymentCostPage"));
 const PaymentCallbackPage = lazy(() => import("./legacy/pages/PaymentCallbackPage"));
 const PaymentSuccessPage = lazy(() => import("./legacy/pages/PaymentSuccessPage"));
 
+const SubscriptionsPage = lazy(() => import("./legacy/pages/SubscriptionsPage"));
+
 export interface RouteConfig {
 	path: string;
 	element: JSX.Element;
@@ -103,6 +105,13 @@ export const routes: RouteConfig[] = [
 	{
 		path: "/:shortCode/unlock",
 		element: <UnlockUrlPage />
+	},
+	{
+		path: "/subscriptions",
+		element: (
+			<SubscriptionsPage />
+		),
+		requireAuth: true
 	},
 	{
 		path: "/:shortCode",
