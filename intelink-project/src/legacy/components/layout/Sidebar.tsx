@@ -35,8 +35,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 			path: "/domains",
 		},
 		{
-			label: "APIs",
 			icon: "💻",
+			label: "APIs",
 			path: "/apis",
 		},
 		{

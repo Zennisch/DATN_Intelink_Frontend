@@ -199,7 +199,7 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 					{/*</div>*/}
 
 					{/* User Avatar and Dropdown */}
-								<div className="relative flex items-center space-x-4">
+								<div className="relative flex items-center">
 									<Button
 										onClick={() => setShowUserDropdown(!showUserDropdown)}
 										variant="secondary"
@@ -217,17 +217,17 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 										<i className="fas fa-chevron-down text-gray-400 ml-1"></i>
 									</Button>
 									{/* Subscription & Credit */}
-									<div className="hidden md:flex flex-col items-end text-xs">
-										<div className="flex items-center space-x-2">
-											<span className="font-semibold text-blue-600">{currentPlan}</span>
-											<span className="text-gray-400">|</span>
-											<span className="font-semibold text-green-600">{creditBalance} {currency}</span>
-										</div>
-										<span className="text-gray-500">Plan & Credit</span>
-									</div>
+									{/*<div className="hidden md:flex flex-col items-end text-xs">*/}
+									{/*	<span className="text-gray-500">Plan & Credit</span>*/}
+									{/*	<div className="flex items-center space-x-2">*/}
+									{/*		<span className="font-semibold text-blue-600">{currentPlan}</span>*/}
+									{/*		<span className="text-gray-400">|</span>*/}
+									{/*		<span className="font-semibold text-green-600">{creditBalance} {currency}</span>*/}
+									{/*	</div>*/}
+									{/*</div>*/}
 									{/* End Subscription & Credit */}
 									{showUserDropdown && (
-										<div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+										<div className="absolute top-12 right-0 w-56 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
 											<div className="px-4 py-3 border-b border-gray-200">
 												<p className="text-sm font-medium text-gray-900">
 													{user?.username || "User"}
