@@ -7,11 +7,16 @@ const SubscriptionsPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [expanded, setExpanded] = useState<string | null>(null);
 
-	useEffect(() => {
-		SubscriptionService.getAll()
-			.then((res) => setSubscriptions(res.subscriptions))
-			.finally(() => setLoading(false));
-	}, []);
+  useEffect(() => {
+    SubscriptionService.getAll()
+    .then((res) => {
+      const sorted = [...res.subscriptions].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setSubscriptions(sorted);
+    })
+    .finally(() => setLoading(false));
+  }, []);
 
 	const getStatusColor = (status: string) => {
 		switch (status.toUpperCase()) {
