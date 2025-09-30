@@ -83,8 +83,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 				<div className="flex flex-col h-full">
 					{/* Logo */}
 					<div className="flex items-center px-6 py-4 border-b border-gray-200">
-						<img src={icon} alt="Intelink Logo" className="w-8 h-8 mr-3" />
-						<span className="text-xl font-bold text-gray-900">Intelink</span>
+						{/*<img src={icon} alt="Intelink Logo" className="w-8 h-8 mr-3" />*/}
+						{/*<span className="text-xl font-bold text-gray-900">Intelink</span>*/}
+						<a href="/dashboard" className="flex items-center">
+							<img src={icon} alt="Intelink Logo" className="w-8 h-8 mr-3" />
+							<span className="text-xl font-bold text-gray-900">Intelink</span>
+						</a>
 					</div>
 
 					{/* Navigation Menu */}

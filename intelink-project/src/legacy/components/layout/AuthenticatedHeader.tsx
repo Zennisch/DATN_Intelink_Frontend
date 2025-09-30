@@ -78,23 +78,23 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 				<div className="flex items-center justify-between px-4 h-full">
 				{/* Left side - Menu button and greeting */}
 				<div className="flex items-center space-x-4">
-					<Button
-						onClick={onSidebarToggle}
-						variant="secondary"
-						size="sm"
-						className="md:hidden"
-						icon={<i className="fas fa-bars text-gray-600"></i>}
-					>
-						<span className="sr-only">Toggle sidebar</span>
-					</Button>
+					{/*<Button*/}
+					{/*	onClick={onSidebarToggle}*/}
+					{/*	variant="secondary"*/}
+					{/*	size="sm"*/}
+					{/*	className="md:hidden"*/}
+					{/*	icon={<i className="fas fa-bars text-gray-600"></i>}*/}
+					{/*>*/}
+					{/*	<span className="sr-only">Toggle sidebar</span>*/}
+					{/*</Button>*/}
 
-					<div className="hidden md:block">
-						<h1 className="text-lg text-gray-600">
-							<span className="text-yellow-500">☀️</span> Good morning,{" "}
-							{user?.username || "User"}
-						</h1>
-						<p className="text-sm text-gray-500">Mon, July 22</p>
-					</div>
+					{/*<div className="hidden md:block">*/}
+					{/*	<h1 className="text-lg text-gray-600">*/}
+					{/*		<span className="text-yellow-500">☀️</span> Good morning,{" "}*/}
+					{/*		{user?.username || "User"}*/}
+					{/*	</h1>*/}
+					{/*	<p className="text-sm text-gray-500">Mon, July 22</p>*/}
+					{/*</div>*/}
 				</div>
 
 				{/* Right side - Create button, search, language, notifications, user */}
@@ -185,18 +185,18 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 					</div>
 
 					{/* Notifications */}
-					<div className="relative">
-						<Button
-							variant="secondary"
-							size="sm"
-							className="relative"
-							icon={<i className="fas fa-bell text-gray-600"></i>}
-						>
-							<span className="sr-only">Notifications</span>
-						</Button>
-						{/* Notification badge */}
-						<span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full transform translate-x-1 -translate-y-1"></span>
-					</div>
+					{/*<div className="relative">*/}
+					{/*	<Button*/}
+					{/*		variant="secondary"*/}
+					{/*		size="sm"*/}
+					{/*		className="relative"*/}
+					{/*		icon={<i className="fas fa-bell text-gray-600"></i>}*/}
+					{/*	>*/}
+					{/*		<span className="sr-only">Notifications</span>*/}
+					{/*	</Button>*/}
+					{/*	/!* Notification badge *!/*/}
+					{/*	<span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full transform translate-x-1 -translate-y-1"></span>*/}
+					{/*</div>*/}
 
 					{/* User Avatar and Dropdown */}
 								<div className="relative flex items-center space-x-4">
