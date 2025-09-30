@@ -30,19 +30,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 			path: "/dashboard/statistics",
 		},
 		{
-			icon: "🌐",
-			label: "Domains",
-			path: "/domains",
-		},
-		{
 			icon: "💻",
 			label: "APIs",
-			path: "/apis",
+			path: "/dashboard/apis",
+		},
+		{
+			icon: "🌐",
+			label: "Domains",
+			path: "/dashboard/domains",
 		},
 		{
 			icon: "⚙️",
 			label: "Settings",
-			path: "/settings",
+			path: "/dashboard/settings",
 		},
 	];
 

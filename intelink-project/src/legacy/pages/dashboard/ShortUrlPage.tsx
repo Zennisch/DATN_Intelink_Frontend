@@ -149,7 +149,7 @@ export const ShortUrlPage = () => {
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-2">
 			{error && (
 				<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center justify-between">
 					<span>{error}</span>
