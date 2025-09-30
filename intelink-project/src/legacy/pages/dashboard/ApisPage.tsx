@@ -11,15 +11,19 @@ export const ApisPage = () => {
 	const [newKeyName, setNewKeyName] = useState("");
 	const [newRateLimit, setNewRateLimit] = useState(1000);
 	const [newActive, setNewActive] = useState(true);
+	const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);
+	const [copyComponent, setCopyComponent] = useState<JSX.Element | null>(null);
 
 	const fetchApiKeys = async () => {
 		setLoading(true);
 		try {
 			const data = await ApiKeyService.list();
-			// sort by createdAt desc
-			data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			data.sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			);
 			setApiKeys(data);
-		} catch (e: unknown) {
+		} catch (e: any) {
 			setError(e.message || "Failed to load API keys");
 		}
 		setLoading(false);
@@ -37,7 +41,7 @@ export const ApisPage = () => {
 
 	const handleCreate = async () => {
 		try {
-			await ApiKeyService.create({
+			const res = await ApiKeyService.create({
 				name: newKeyName,
 				rateLimitPerHour: newRateLimit,
 				active: newActive,
@@ -46,10 +50,20 @@ export const ApisPage = () => {
 			setNewKeyName("");
 			setNewRateLimit(1000);
 			setNewActive(true);
+			setCreatedKey(res); // Show rawKey modal
 			fetchApiKeys();
-		} catch (e: unknown) {
+		} catch (e: any) {
 			setError(e.message || "Failed to create API key");
 		}
+	};
+
+	const handleCopy = async () => {
+		if (createdKey?.rawKey) {
+			await navigator.clipboard.writeText(createdKey.rawKey);
+		}
+		// use font-awesome check icon
+		setCopyComponent(<i className="fas fa-check" />);
+		setTimeout(() => setCopyComponent(<i className="fas fa-copy" />), 2000);
 	};
 
 	return (
@@ -72,42 +86,62 @@ export const ApisPage = () => {
 				<table className="min-w-full divide-y divide-gray-200">
 					<thead className="bg-gray-50">
 						<tr>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prefix</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rate Limit</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Active</th>
-							<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+								Name
+							</th>
+							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+								Prefix
+							</th>
+							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+								Rate Limit
+							</th>
+							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+								Active
+							</th>
+							<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+								Actions
+							</th>
 						</tr>
 					</thead>
 					<tbody className="bg-white divide-y divide-gray-100">
 						{loading ? (
 							<tr>
-								<td colSpan={5} className="text-center py-8 text-gray-400">Loading...</td>
+								<td colSpan={5} className="text-center py-8 text-gray-400">
+									Loading...
+								</td>
 							</tr>
 						) : apiKeys.length === 0 ? (
 							<tr>
-								<td colSpan={5} className="text-center py-8 text-gray-400">No API keys found.</td>
+								<td colSpan={5} className="text-center py-8 text-gray-400">
+									No API keys found.
+								</td>
 							</tr>
 						) : (
 							apiKeys.map((key) => (
 								<tr key={key.id}>
 									<td className="px-6 py-4">{key.name}</td>
-									<td className="px-6 py-4 font-mono text-blue-700">{key.keyPrefix}</td>
+									<td className="px-6 py-4 font-mono text-blue-700">
+										{key.keyPrefix}
+									</td>
 									<td className="px-6 py-4">{key.rateLimitPerHour}/hr</td>
 									<td className="px-6 py-4">
-										<span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${key.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+										<span
+											className={`inline-block px-2 py-1 rounded text-xs font-semibold ${key.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+										>
 											{key.active ? "Active" : "Inactive"}
 										</span>
 									</td>
 									<td className="px-6 py-4 text-right space-x-2">
 										<Button
 											className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded hover:bg-yellow-200"
-											onClick={() => alert("Edit functionality not implemented")}
+											onClick={() =>
+												alert("Edit functionality not implemented")
+											}
 										>
 											Edit
 										</Button>
 										<Button
-											className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
+											className="bg-red-500 text-red-700 px-3 py-1 rounded hover:bg-red-200"
 											onClick={() => handleDelete(key.id)}
 										>
 											Delete
@@ -127,21 +161,25 @@ export const ApisPage = () => {
 						<h2 className="text-xl font-semibold mb-4">Create API Key</h2>
 						<div className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Name
+								</label>
 								<input
 									type="text"
 									className="w-full border border-gray-300 rounded px-3 py-2"
 									value={newKeyName}
-									onChange={e => setNewKeyName(e.target.value)}
+									onChange={(e) => setNewKeyName(e.target.value)}
 								/>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-1">Rate Limit Per Hour</label>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Rate Limit Per Hour
+								</label>
 								<input
 									type="number"
 									className="w-full border border-gray-300 rounded px-3 py-2"
 									value={newRateLimit}
-									onChange={e => setNewRateLimit(Number(e.target.value))}
+									onChange={(e) => setNewRateLimit(Number(e.target.value))}
 									min={1}
 								/>
 							</div>
@@ -149,11 +187,13 @@ export const ApisPage = () => {
 								<input
 									type="checkbox"
 									checked={newActive}
-									onChange={e => setNewActive(e.target.checked)}
+									onChange={(e) => setNewActive(e.target.checked)}
 									className="mr-2"
 									id="active"
 								/>
-								<label htmlFor="active" className="text-sm text-gray-700">Active</label>
+								<label htmlFor="active" className="text-sm text-gray-700">
+									Active
+								</label>
 							</div>
 						</div>
 						<div className="mt-6 flex justify-end gap-2">
@@ -168,6 +208,44 @@ export const ApisPage = () => {
 								onClick={handleCreate}
 							>
 								Create
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Show rawKey Modal */}
+			{createdKey?.rawKey && (
+				<div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-50 backdrop-blur-sm">
+					<div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl">
+						{/*<h2 className="text-xl font-semibold mb-4 text-green-700">*/}
+						{/*	API Key Created*/}
+						{/*</h2>*/}
+						<div className="flex flex-row justify-between items-center">
+							<h2 className="text-xl font-semibold mb-4 text-green-700">
+								API Key Created
+							</h2>
+							<Button
+								className="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200"
+								onClick={() => setCreatedKey(null)}
+							>
+								Close
+							</Button>
+						</div>
+						<p className="mb-2 text-gray-700">
+							Please copy and save your API key. You will not be able to see it
+							again!
+						</p>
+						<div className="flex items-center bg-gray-100 rounded px-3 py-2 mb-4">
+							<span className="font-mono text-blue-700 break-all flex-1">
+								{createdKey.rawKey}
+							</span>
+							<Button
+								className="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+								onClick={handleCopy}
+							>
+								{/*Copy*/}
+								{copyComponent || <i className="fas fa-copy" />}
 							</Button>
 						</div>
 					</div>
