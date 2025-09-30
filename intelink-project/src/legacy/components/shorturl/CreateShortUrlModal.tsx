@@ -4,6 +4,7 @@ import { Modal } from "../ui/Modal.tsx";
 import { Input } from "../ui/Input.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Checkbox } from "../ui/Checkbox.tsx";
+import { useAuth } from "../../hooks/useAuth.ts";
 
 interface CreateShortUrlModalProps {
 	isOpen: boolean;
@@ -20,6 +21,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 }) => {
 	const [formData, setFormData] = useState<CreateShortUrlRequest>({
 		originalUrl: "",
+		customCode: "",
 		password: "",
 		description: "",
 		maxUsage: undefined,
@@ -28,6 +30,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 	const [errors, setErrors] = useState<Partial<Record<keyof CreateShortUrlRequest, string>>>({});
 	const [hasPassword, setHasPassword] = useState(false);
 	const [hasMaxUsage, setHasMaxUsage] = useState(false);
+	const {user} = useAuth()
 
 	const validateForm = (): Partial<Record<keyof CreateShortUrlRequest, string>> => {
 		const newErrors: Partial<Record<keyof CreateShortUrlRequest, string>> = {};
@@ -74,6 +77,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 			// Prepare request data
 			const requestData: CreateShortUrlRequest = {
 				originalUrl: formData.originalUrl.trim(),
+				customCode: formData.customCode?.trim() || undefined,
 				availableDays: formData.availableDays,
 				description: formData.description?.trim() || undefined,
 				password: hasPassword ? formData.password?.trim() : undefined,
@@ -138,7 +142,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={handleClose} title="Create Short URL">
+		<Modal isOpen={isOpen} onClose={handleClose} title="Create Short URL" >
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<Input
 					label="Origignal URL*"
@@ -150,12 +154,23 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 					disabled={loading}
 				/>
 
+				<Input
+					label="Custom Short Code"
+					placeholder="Custom alias (optional)"
+					value={formData.customCode || ""}
+					onChange={handleInputChange("customCode")}
+					error={errors.customCode}
+					fullWidth
+					disabled={loading || user?.currentSubscription.planType === 'FREE'}
+					className="disabled:cursor-not-allowed disabled:opacity-50"
+				/>
+
 				<div className="w-full">
 					<label className="block text-sm font-medium text-gray-700 mb-2">
 						Description
 					</label>
 					<textarea
-						placeholder="Mô tả ngắn gọn về URL này (tùy chọn)..."
+						placeholder="Description for this short URL..."
 						value={formData.description || ""}
 						onChange={handleInputChange("description")}
 						disabled={loading}

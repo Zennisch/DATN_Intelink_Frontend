@@ -1,5 +1,6 @@
 export interface CreateShortUrlRequest {
 	originalUrl: string;
+	customCode?: string;
 	password?: string;
 	description?: string;
 	maxUsage?: number;

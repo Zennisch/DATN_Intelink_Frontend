@@ -12,37 +12,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { logout } = useAuth();
+	const {user} = useAuth();
 
 	const menuItems = [
 		{
 			icon: "📊",
 			label: "Dashboard",
 			path: "/dashboard/overview",
+			disabled: [],
 		},
 		{
 			icon: "🔗",
 			label: "Short URLs",
 			path: "/dashboard/short-urls",
+			disabled: [],
 		},
 		{
 			icon: "📈",
 			label: "Statistics",
 			path: "/dashboard/statistics",
+			disabled: ["FREE",]
 		},
 		{
 			icon: "💻",
 			label: "APIs",
 			path: "/dashboard/apis",
+			disabled: ["FREE", "PRO",]
 		},
 		{
 			icon: "🌐",
 			label: "Domains",
 			path: "/dashboard/domains",
+			disabled: ["FREE", "PRO"],
 		},
 		{
 			icon: "⚙️",
 			label: "Settings",
 			path: "/dashboard/settings",
+			disabled: [],
 		},
 	];
 
@@ -106,7 +113,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 												isActive
 													? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
 													: "text-gray-700 hover:bg-gray-100"
-											}`}
+											} disabled:cursor-not-allowed disabled:opacity-50`}
+											disabled={item.disabled.includes(user?.currentSubscription?.planType || 'FREE')}
+
 										>
 											<span className="mr-3 text-lg">{item.icon}</span>
 											{item.label}
