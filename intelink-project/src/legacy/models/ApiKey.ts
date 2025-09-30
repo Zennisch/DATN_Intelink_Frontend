@@ -9,6 +9,7 @@ export interface ApiKey {
 
 	// Information group
 	name: string;
+	rawKey?: string;
 	keyHash: string;
 	keyPrefix: string;
 
