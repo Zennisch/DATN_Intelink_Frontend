@@ -1,7 +1,7 @@
 import {forwardRef, type InputHTMLAttributes, type ReactNode, useId} from 'react';
 import {cn} from './utils.ts';
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	label?: ReactNode;
 	error?: ReactNode;
 	helpText?: ReactNode;
@@ -9,7 +9,7 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
 	wrapperClassName?: string;
 	inputClassName?: string;
 	labelSrOnly?: boolean;
-};
+}
 
 export const Input = forwardRef<HTMLInputElement, Props>(
 	(
