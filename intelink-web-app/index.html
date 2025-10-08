@@ -1,13 +1,160 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>intelink-web-app</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="./assets/logo.png" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Intelink - Welcome</title>
+
+		<style>
+			#preloader {
+				display: flex;
+				flex-direction: column;
+				justify-content: start;
+				align-items: center;
+				position: fixed;
+				inset: 0;
+				font-family: 'Inter', sans-serif;
+				transition: opacity 1s ease;
+			}
+			#preload-header {
+				display: flex;
+				flex-direction: row;
+				justify-content: start;
+				align-items: center;
+				gap: 1rem;
+				position: relative;
+				width: 100%;
+				padding: 0.3rem;
+				box-sizing: border-box;
+				box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+			}
+			#preload-header a {
+				display: flex;
+				flex-direction: row;
+				justify-content: start;
+				align-items: center;
+				gap: 1rem;
+				text-decoration: none;
+				padding: 0.3rem;
+			}
+			#preload-header a img {
+				width: 50px;
+				height: 50px;
+			}
+			#preload-header a span {
+				font-size: 1.5rem;
+				font-weight: 600;
+				color: #333;
+
+				background: linear-gradient(90deg, #000000, #5599dd);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+			#preload-container {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				gap: 1.5rem;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(135deg, #eeffff, #ffffff);
+			}
+			#preload-container-icon {
+				display: flex;
+				flex-direction: row;
+				justify-content: end;
+				align-items: center;
+				width: 50%;
+			}
+			#preload-container-icon img {
+				width: 50px;
+				height: 50px;
+				animation: spin 2s linear infinite;
+			}
+			#preload-container-text {
+				display: flex;
+				flex-direction: row;
+				justify-content: start;
+				align-items: center;
+				width: 50%;
+			}
+			#preload-container-text span {
+				font-size: 2rem;
+				font-weight: 500;
+				letter-spacing: 0.05em;
+				text-shadow: 0 0 4px #77bbee;
+				color: #5599dd;
+			}
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+		<script>
+			let intervalId;
+
+			function clear() {
+				if (intervalId) {
+					clearInterval(intervalId);
+					console.log('Cleared interval:', intervalId);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="preloader">
+			<header id="preload-header">
+				<a href="https://intelink.click" target="_blank" rel="noopener noreferrer">
+					<img src="./assets/logo.png" alt="Intelink Logo" />
+					<span>Intelink</span>
+				</a>
+			</header>
+
+			<div id="preload-container">
+				<div id="preload-container-icon">
+					<img src="./assets/icon-loading-cyan.svg" alt="Loading Icon" />
+				</div>
+				<div id="preload-container-text">
+					<span id="loading">Loading</span>
+				</div>
+			</div>
+
+			<script>
+				const text = 'Loading';
+				function animateLoading() {
+					let index = 0;
+					window.intervalId = setInterval(() => {
+						const loadingEl = document.getElementById('loading');
+						if (loadingEl) {
+							if (index % 4 !== 0) {
+								loadingEl.textContent = text + '.'.repeat(index % 4);
+							} else {
+								loadingEl.textContent = text;
+							}
+						}
+						index++;
+					}, 500);
+				}
+				animateLoading();
+			</script>
+		</div>
+
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
 </html>
