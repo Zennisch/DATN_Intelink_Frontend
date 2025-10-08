@@ -1,16 +1,24 @@
 import { lazy } from "react";
-import RouteGuard from "./components/RouteGuard";
+import RouteGuard from "./legacy/components/RouteGuard";
 
-const LoginPage = lazy(() => import("./pages/LoginPage").then(m => ({ default: m.LoginPage })));
-const RegisterPage = lazy(() => import("./pages/RegisterPage").then(m => ({ default: m.RegisterPage })));
-const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
-const DashboardPage = lazy(() => import("./pages/DashboardPage"));
-const OAuth2CallbackPage = lazy(() => import("./pages/OAuth2CallbackPage"));
-const RegisterSuccessPage = lazy(() => import("./pages/RegisterSuccessPage").then(m => ({ default: m.RegisterSuccessPage })));
-const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage").then(m => ({ default: m.VerifyEmailPage })));
-const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
-const UnlockUrlPage = lazy(() => import("./pages/UnlockUrlPage"));
-const RedirectPage = lazy(() => import("./pages/RedirectPage"));
+const SubscriptionPlansPage = lazy(() => import("./legacy/pages/SubscriptionPlansPage"));
+
+const LoginPage = lazy(() => import("./current/pages/LoginPage").then(m => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import("./legacy/pages/RegisterPage").then(m => ({ default: m.RegisterPage })));
+const ForgotPasswordPage = lazy(() => import("./legacy/pages/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
+const DashboardPage = lazy(() => import("./legacy/pages/DashboardPage"));
+const OAuth2CallbackPage = lazy(() => import("./legacy/pages/OAuth2CallbackPage"));
+const RegisterSuccessPage = lazy(() => import("./legacy/pages/RegisterSuccessPage").then(m => ({ default: m.RegisterSuccessPage })));
+const VerifyEmailPage = lazy(() => import("./legacy/pages/VerifyEmailPage").then(m => ({ default: m.VerifyEmailPage })));
+const ResetPasswordPage = lazy(() => import("./legacy/pages/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
+const UnlockUrlPage = lazy(() => import("./legacy/pages/UnlockUrlPage"));
+const RedirectPage = lazy(() => import("./legacy/pages/RedirectPage"));
+
+const PaymentCostPage = lazy(() => import("./legacy/pages/PaymentCostPage"));
+const PaymentCallbackPage = lazy(() => import("./legacy/pages/PaymentCallbackPage"));
+const PaymentSuccessPage = lazy(() => import("./legacy/pages/PaymentSuccessPage"));
+
+const SubscriptionsPage = lazy(() => import("./legacy/pages/SubscriptionsPage"));
 
 export interface RouteConfig {
 	path: string;
@@ -19,6 +27,23 @@ export interface RouteConfig {
 }
 
 export const routes: RouteConfig[] = [
+	{
+		path: "/payments/payment-callback",
+		element: <PaymentCallbackPage />
+	},
+	{
+		path: "/payments/payment-success",
+		element: <PaymentSuccessPage />
+	},
+	{
+		path: "/plans/:planId/cost",
+		element: (
+			<RouteGuard requireAuth>
+				<PaymentCostPage />
+			</RouteGuard>
+		),
+		requireAuth: true
+	},
 	{
 		path: "/login",
 		element: (
@@ -52,6 +77,15 @@ export const routes: RouteConfig[] = [
 		),
 		requireAuth: true
 	},
+	   {
+		   path: "/plans",
+		   element: (
+			   <RouteGuard requireAuth>
+				   <SubscriptionPlansPage />
+			   </RouteGuard>
+		   ),
+		   requireAuth: true
+	   },
 	{
 		path: "/auth/oauth2/callback",
 		element: <OAuth2CallbackPage />
@@ -71,6 +105,13 @@ export const routes: RouteConfig[] = [
 	{
 		path: "/:shortCode/unlock",
 		element: <UnlockUrlPage />
+	},
+	{
+		path: "/subscriptions",
+		element: (
+			<SubscriptionsPage />
+		),
+		requireAuth: true
 	},
 	{
 		path: "/:shortCode",
