@@ -5,7 +5,6 @@ type LabelPosition = 'right' | 'left';
 type Exclude = 'checked' | 'onChange';
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
-	id?: string;
 	checked?: boolean;
 	defaultChecked?: boolean;
 	wrapperClassName?: string;
@@ -18,7 +17,6 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
 
 export const Checkbox = forwardRef<HTMLInputElement, Props>(function Checkbox(
 	{
-		id,
 		checked,
 		defaultChecked,
 		wrapperClassName,
@@ -35,31 +33,31 @@ export const Checkbox = forwardRef<HTMLInputElement, Props>(function Checkbox(
 	},
 	ref
 ) {
-	const autoId = useId();
-	const finalId = id ?? `checkbox-${autoId}`;
+  const autoId = useId();
+  const id = props.id ?? autoId;
 
 	useEffect(() => {
 		const input = (ref as RefObject<HTMLInputElement>).current;
 		if (input) {
 			input.indeterminate = Boolean(indeterminate);
 		} else {
-			const el = document.getElementById(finalId) as HTMLInputElement | null;
+			const el = document.getElementById(id) as HTMLInputElement | null;
 			if (el) el.indeterminate = Boolean(indeterminate);
 		}
-	}, [indeterminate, ref, finalId]);
+	}, [indeterminate, ref, id]);
 
 	const classes = cn('h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded', inputClassName);
 
 	return (
 		<div className={cn('flex items-center', wrapperClassName)}>
 			{label && labelPosition === 'left' && (
-				<label htmlFor={finalId} className="mr-2 text-sm text-gray-700 cursor-pointer">
+				<label htmlFor={id} className="mr-2 text-sm text-gray-700 cursor-pointer">
 					{label}
 				</label>
 			)}
 
 			<input
-				id={finalId}
+				id={id}
 				ref={ref}
 				type={type}
 				name={name}
@@ -75,7 +73,7 @@ export const Checkbox = forwardRef<HTMLInputElement, Props>(function Checkbox(
 			/>
 
 			{label && labelPosition === 'right' && (
-				<label htmlFor={finalId} className="ml-2 text-sm text-gray-700 cursor-pointer">
+				<label htmlFor={id} className="ml-2 text-sm text-gray-700 cursor-pointer">
 					{label}
 				</label>
 			)}
