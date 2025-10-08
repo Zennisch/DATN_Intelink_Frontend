@@ -6,9 +6,9 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	error?: ReactNode;
 	helpText?: ReactNode;
 	fullWidth?: boolean;
+	labelSrOnly?: boolean;
 	wrapperClassName?: string;
 	inputClassName?: string;
-	labelSrOnly?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
@@ -18,9 +18,9 @@ export const Input = forwardRef<HTMLInputElement, Props>(
 			error,
 			helpText,
 			fullWidth = false,
+			labelSrOnly = false,
 			wrapperClassName = '',
 			inputClassName = '',
-			labelSrOnly = false,
 			className,
 			...props
 		},

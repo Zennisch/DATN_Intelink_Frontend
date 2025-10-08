@@ -7,11 +7,11 @@ type Exclude = 'checked' | 'onChange';
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
 	checked?: boolean;
 	defaultChecked?: boolean;
-	wrapperClassName?: string;
-	inputClassName?: string;
 	indeterminate?: boolean;
 	label?: ReactNode;
 	labelPosition?: LabelPosition;
+	wrapperClassName?: string;
+	inputClassName?: string;
 	onChange?: (checked: boolean, e?: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -19,11 +19,11 @@ export const Checkbox = forwardRef<HTMLInputElement, Props>(function Checkbox(
 	{
 		checked,
 		defaultChecked,
-		wrapperClassName,
-		inputClassName,
 		indeterminate = false,
 		label,
 		labelPosition = 'right',
+		wrapperClassName,
+		inputClassName,
 		disabled,
 		name,
 		value,
@@ -33,8 +33,8 @@ export const Checkbox = forwardRef<HTMLInputElement, Props>(function Checkbox(
 	},
 	ref
 ) {
-  const autoId = useId();
-  const id = props.id ?? autoId;
+	const autoId = useId();
+	const id = props.id ?? autoId;
 
 	useEffect(() => {
 		const input = (ref as RefObject<HTMLInputElement>).current;

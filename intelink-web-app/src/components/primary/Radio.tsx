@@ -7,10 +7,10 @@ type Exclude = 'checked' | 'onChange' | 'type';
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
 	checked?: boolean;
 	defaultChecked?: boolean;
-	wrapperClassName?: string;
-	inputClassName?: string;
 	label?: ReactNode;
 	labelPosition?: LabelPosition;
+	wrapperClassName?: string;
+	inputClassName?: string;
 	onChange?: (checked: boolean, e?: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,10 +18,10 @@ export const Radio = forwardRef<HTMLInputElement, Props>(function Radio(
 	{
 		checked,
 		defaultChecked,
-		wrapperClassName,
-		inputClassName,
 		label,
 		labelPosition = 'right',
+		wrapperClassName = '',
+		inputClassName = '',
 		disabled,
 		name,
 		value,
