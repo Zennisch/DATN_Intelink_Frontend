@@ -25,7 +25,7 @@ export default function SettingsScreen() {
 					style: "destructive",
 					onPress: async () => {
 						try {
-							await logout();
+							await logout(() => router.replace('/(auth)/login'));
 						} catch (error) {
 							console.error("Logout error:", error);
 						}

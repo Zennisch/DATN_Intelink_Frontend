@@ -1,13 +1,31 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { Ionicons } from '@expo/vector-icons';
+import { useStatistics } from "../../hooks/useStatistics";
+import { DimensionType as DT } from "../../services/ShortUrlService";
 
 export default function AnalyticsScreen() {
 	const router = useRouter();
 	const { user } = useAuth();
+	const params = useLocalSearchParams<{ shortcode?: string }>();
+	const shortcode = params?.shortcode || '';
+
+	const dimensionTypes = [
+		DT.REFERRER,
+		DT.REFERRER_TYPE,
+		DT.UTM_SOURCE,
+		DT.UTM_MEDIUM,
+		DT.UTM_CAMPAIGN,
+		DT.COUNTRY,
+		DT.CITY,
+		DT.BROWSER,
+		DT.OS,
+		DT.DEVICE_TYPE,
+	];
+	const { data, loading, error, refetch } = useStatistics(shortcode, dimensionTypes);
 
 	const StatCard = ({ title, value, icon, color }: {
 		title: string;
@@ -30,16 +48,20 @@ export default function AnalyticsScreen() {
 		</View>
 	);
 
-	const ChartPlaceholder = ({ title, description }: {
-		title: string;
-		description: string;
-	}) => (
+	const StatList = ({ title, items }: { title: string; items: { name: string; clicks: number; percentage: number }[] }) => (
 		<View className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
 			<Text className="text-lg font-semibold text-gray-900 mb-2">{title}</Text>
-			<View className="h-40 bg-gray-100 rounded-lg items-center justify-center">
-				<Ionicons name="bar-chart-outline" size={48} color="#9CA3AF" />
-				<Text className="text-gray-500 mt-2">{description}</Text>
-			</View>
+			{items.length === 0 ? (
+				<Text className="text-gray-500">No data</Text>
+			) : (
+				items.map((it, idx) => (
+					<View key={idx} className="flex-row items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+						<Text className="text-gray-800 flex-1" numberOfLines={1}>{it.name}</Text>
+						<Text className="text-gray-600 w-16 text-right">{it.clicks}</Text>
+						<Text className="text-gray-500 w-16 text-right">{it.percentage}%</Text>
+					</View>
+				))
+			)}
 		</View>
 	);
 
@@ -93,25 +115,36 @@ export default function AnalyticsScreen() {
 
 				{/* Charts */}
 				<View className="space-y-6">
-					<ChartPlaceholder
-						title="Click Trends"
-						description="Click activity over time"
-					/>
-					
-					<ChartPlaceholder
-						title="Top URLs"
-						description="Most clicked URLs"
-					/>
-					
-					<ChartPlaceholder
-						title="Geographic Distribution"
-						description="Clicks by location"
-					/>
-					
-					<ChartPlaceholder
-						title="Device Types"
-						description="Mobile vs Desktop clicks"
-					/>
+					<View className="flex-row items-center justify-between">
+						<Text className="text-lg font-semibold text-gray-900">URL Statistics</Text>
+						<TouchableOpacity onPress={() => refetch()}>
+							<Ionicons name="refresh" size={20} color="#6B7280" />
+						</TouchableOpacity>
+					</View>
+					{error ? (
+						<View className="p-4 bg-red-50 border border-red-200 rounded-lg">
+							<Text className="text-red-700">{error}</Text>
+						</View>
+					) : null}
+					{loading && !data ? (
+						<View className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+							<Text className="text-center text-gray-500">Loading...</Text>
+						</View>
+					) : null}
+					{data && (
+						<>
+							<StatList title="Referrers" items={data[DT.REFERRER]?.data || []} />
+							<StatList title="Referrer Types" items={data[DT.REFERRER_TYPE]?.data || []} />
+							<StatList title="UTM Sources" items={data[DT.UTM_SOURCE]?.data || []} />
+							<StatList title="UTM Mediums" items={data[DT.UTM_MEDIUM]?.data || []} />
+							<StatList title="UTM Campaigns" items={data[DT.UTM_CAMPAIGN]?.data || []} />
+							<StatList title="Countries" items={data[DT.COUNTRY]?.data || []} />
+							<StatList title="Cities" items={data[DT.CITY]?.data || []} />
+							<StatList title="Browsers" items={data[DT.BROWSER]?.data || []} />
+							<StatList title="Operating Systems" items={data[DT.OS]?.data || []} />
+							<StatList title="Device Types" items={data[DT.DEVICE_TYPE]?.data || []} />
+						</>
+					)}
 				</View>
 
 				{/* Recent Activity */}

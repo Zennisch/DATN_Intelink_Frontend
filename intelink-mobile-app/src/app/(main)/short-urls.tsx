@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, Linking, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "../../components/atoms/Button";
@@ -63,7 +63,7 @@ export default function ShortUrlsScreen() {
 			await createShortUrl({
 				originalUrl: newUrl,
 				description: "",
-				availableDays: 0, // 0 = never expire; adjust as needed
+				availableDays: 30, // default to 30 days; adjust if needed
 			});
 			setNewUrl("");
 			setToast({
@@ -163,7 +163,8 @@ export default function ShortUrlsScreen() {
 	};
 
 	const handleCopyToClipboard = async (url: string) => {
-		const success = await copyToClipboard(url);
+		const absolute = getAbsoluteShortUrl(url);
+		const success = await copyToClipboard(absolute);
 		if (success) {
 			setToast({
 				visible: true,
@@ -177,6 +178,17 @@ export default function ShortUrlsScreen() {
 				type: "error",
 			});
 		}
+	};
+
+	const getAbsoluteShortUrl = (shortUrl: string) => {
+		// If already absolute, return as-is
+		if (/^https?:\/\//i.test(shortUrl)) return shortUrl;
+		// For web, prefix with current origin; for native, use EXPO_PUBLIC_FRONTEND_URL if available
+		const nativeHost = process.env.EXPO_PUBLIC_FRONTEND_URL;
+		const origin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : undefined;
+		if (Platform.OS === 'web' && origin) return origin.replace(/\/?$/, '/') + shortUrl.replace(/^\/?/, '');
+		if (nativeHost) return nativeHost.replace(/\/?$/, '/') + shortUrl.replace(/^\/?/, '');
+		return shortUrl;
 	};
 
 	const handleSearch = () => {
@@ -345,7 +357,9 @@ export default function ShortUrlsScreen() {
 								<View className="flex-row justify-between items-center mb-2">
 									<View className="flex-1">
 										<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
-										<Text className="text-blue-600 text-sm">{url.shortUrl}</Text>
+										<TouchableOpacity onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl))}>
+											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl)}</Text>
+										</TouchableOpacity>
 									</View>
 								</View>
 								
@@ -369,7 +383,10 @@ export default function ShortUrlsScreen() {
 								</View>
 
 								<View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
-									<TouchableOpacity className="p-1" onPress={() => router.push(`/analytics?shortcode=${url.shortCode}`)}>
+									<TouchableOpacity
+										className="p-1"
+										onPress={() => router.push({ pathname: '/(main)/analytics', params: { shortcode: url.shortCode } })}
+									>
 										<Ionicons name="analytics-outline" size={20} color="#6B7280" />
 									</TouchableOpacity>
 									<View className="flex-row space-x-2">
