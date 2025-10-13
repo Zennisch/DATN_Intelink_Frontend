@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert, Linking, Platform } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "../../components/atoms/Button";
@@ -7,6 +7,7 @@ import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
 import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
+import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import type { SearchShortUrlRequest } from "../../services/ShortUrlService";
 
@@ -162,8 +163,8 @@ export default function ShortUrlsScreen() {
 		}
 	};
 
-	const handleCopyToClipboard = async (url: string) => {
-		const absolute = getAbsoluteShortUrl(url);
+	const handleCopyToClipboard = async (shortUrl: string, shortCode: string) => {
+		const absolute = buildPublicShortUrl(shortCode, shortUrl);
 		const success = await copyToClipboard(absolute);
 		if (success) {
 			setToast({
@@ -180,16 +181,7 @@ export default function ShortUrlsScreen() {
 		}
 	};
 
-	const getAbsoluteShortUrl = (shortUrl: string) => {
-		// If already absolute, return as-is
-		if (/^https?:\/\//i.test(shortUrl)) return shortUrl;
-		// For web, prefix with current origin; for native, use EXPO_PUBLIC_FRONTEND_URL if available
-		const nativeHost = process.env.EXPO_PUBLIC_FRONTEND_URL;
-		const origin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : undefined;
-		if (Platform.OS === 'web' && origin) return origin.replace(/\/?$/, '/') + shortUrl.replace(/^\/?/, '');
-		if (nativeHost) return nativeHost.replace(/\/?$/, '/') + shortUrl.replace(/^\/?/, '');
-		return shortUrl;
-	};
+	const getAbsoluteShortUrl = (shortUrl: string, shortCode?: string) => buildPublicShortUrl(shortCode || "", shortUrl);
 
 	const handleSearch = () => {
 		setCurrentPage(0);
@@ -347,7 +339,7 @@ export default function ShortUrlsScreen() {
 										</Text>
 									</View>
 									<TouchableOpacity
-										onPress={() => handleCopyToClipboard(url.shortUrl)}
+										onPress={() => handleCopyToClipboard(url.shortUrl, url.shortCode)}
 										className="p-2"
 									>
 										<Ionicons name="copy-outline" size={20} color="#6B7280" />
@@ -357,8 +349,8 @@ export default function ShortUrlsScreen() {
 								<View className="flex-row justify-between items-center mb-2">
 									<View className="flex-1">
 										<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
-										<TouchableOpacity onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl))}>
-											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl)}</Text>
+										<TouchableOpacity onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode))}>
+											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}</Text>
 										</TouchableOpacity>
 									</View>
 								</View>
