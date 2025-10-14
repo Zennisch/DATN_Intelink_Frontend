@@ -71,17 +71,7 @@ export default function SettingsScreen() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-gray-50">
-			{/* Header */}
-			<View className="bg-white border-b border-gray-200 px-4 py-3">
-				<View className="flex-row items-center">
-					<TouchableOpacity onPress={() => router.back()} className="mr-4">
-						<Ionicons name="arrow-back" size={24} color="#374151" />
-					</TouchableOpacity>
-					<Text className="text-xl font-semibold text-gray-900">
-						Settings
-					</Text>
-				</View>
-			</View>
+
 
 			<ScrollView className="flex-1">
 				{/* Profile Section */}

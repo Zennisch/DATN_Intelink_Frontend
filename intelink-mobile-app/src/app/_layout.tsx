@@ -11,7 +11,7 @@ export default function RootLayout() {
       <AuthProvider>
         <View className="flex-1">
           {/* <NetworkStatus /> */}
-          <Stack />
+          <Stack screenOptions={{ headerShown: false }} />
         </View>
       </AuthProvider>
     </ErrorBoundary>

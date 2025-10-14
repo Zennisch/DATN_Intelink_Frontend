@@ -208,17 +208,6 @@ export default function ShortUrlsScreen() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-gray-50">
-			{/* Header */}
-			<View className="bg-white border-b border-gray-200 px-4 py-3">
-				<View className="flex-row items-center">
-					<TouchableOpacity onPress={() => router.back()} className="mr-4">
-						<Ionicons name="arrow-back" size={24} color="#374151" />
-					</TouchableOpacity>
-					<Text className="text-xl font-semibold text-gray-900">
-						Short URLs
-					</Text>
-				</View>
-			</View>
 
 			<ScrollView className="flex-1 px-4 py-6">
 				{/* Error Display */}
@@ -377,9 +366,9 @@ export default function ShortUrlsScreen() {
 								<View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
 									<TouchableOpacity
 										className="p-1"
-										onPress={() => router.push({ pathname: '/(main)/analytics', params: { shortcode: url.shortCode } })}
+										onPress={() => router.push({ pathname: '/url-stats', params: { shortcode: url.shortCode } })}
 									>
-										<Ionicons name="analytics-outline" size={20} color="#6B7280" />
+										<Ionicons name="stats-chart" size={20} color="#6B7280" />
 									</TouchableOpacity>
 									<View className="flex-row space-x-2">
 										<TouchableOpacity

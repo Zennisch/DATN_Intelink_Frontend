@@ -45,21 +45,16 @@ export default function UrlStatsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="bg-white border-b border-gray-200 px-4 py-3">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center">
-            <TouchableOpacity onPress={() => router.back()} className="mr-4">
-              <Ionicons name="arrow-back" size={24} color="#374151" />
-            </TouchableOpacity>
-            <Text className="text-xl font-semibold text-gray-900">URL Statistics</Text>
-          </View>
+      <ScrollView className="flex-1 px-4 py-6">
+        <View className="flex-row items-center justify-between mb-4">
+          <TouchableOpacity onPress={() => router.back()} className="flex-row items-center">
+            <Ionicons name="chevron-back" size={20} color="#374151" />
+            <Text className="text-gray-700 ml-1">Back</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => refetch()}>
             <Ionicons name="refresh" size={22} color="#6B7280" />
           </TouchableOpacity>
         </View>
-      </View>
-
-      <ScrollView className="flex-1 px-4 py-6">
         {error ? (
           <View className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
             <Text className="text-red-700">{error}</Text>

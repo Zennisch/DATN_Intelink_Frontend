@@ -210,3 +210,33 @@ export class StatisticsService {
 		return response.data;
 	}
 }
+
+// Time-series statistics
+export type TimeGranularity = 'HOURLY' | 'DAILY' | 'MONTHLY' | 'YEARLY';
+
+export interface TimeBucket { time: string; clicks: number }
+export interface TimeSeriesResponse {
+	granularity: TimeGranularity;
+	from: string;
+	to: string;
+	totalClicks: number;
+	buckets: TimeBucket[];
+}
+
+export interface TopPeakTimesResponse {
+	granularity: TimeGranularity;
+	total: number;
+	topPeakTimes: { time: string; clicks: number }[];
+}
+
+export class TimeStatisticsService {
+	static async getTimeSeries(shortcode: string, params: { customFrom?: string; customTo?: string; granularity: TimeGranularity }): Promise<TimeSeriesResponse> {
+		const res = await api.get<TimeSeriesResponse>(`/statistics/${shortcode}/time`, { params });
+		return res.data;
+	}
+
+	static async getTopPeakTimes(shortcode: string, granularity: TimeGranularity): Promise<TopPeakTimesResponse> {
+		const res = await api.get<TopPeakTimesResponse>(`/statistics/${shortcode}/top-peak-times`, { params: { granularity: granularity.toLowerCase?.() || granularity } as any });
+		return res.data;
+	}
+}

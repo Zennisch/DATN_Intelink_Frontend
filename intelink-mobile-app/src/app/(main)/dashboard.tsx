@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
@@ -10,36 +10,25 @@ export default function DashboardScreen() {
 	const router = useRouter();
 	const { user, logout } = useAuth();
 
-	const handleLogout = async () => {
-		try {
-			await logout();
-		} catch (error) {
-			console.error("Logout error:", error);
-		}
-	};
+		const handleLogout = async () => {
+			try {
+				await logout(() => router.replace('/(auth)/login'));
+			} catch (error) {
+				console.error("Logout error:", error);
+			}
+		};
 
 	return (
-		<SafeAreaView className="flex-1 bg-gray-50">
-			{/* Header */}
-			<View className="bg-white border-b border-gray-200 px-4 py-3">
-				<View className="flex-row items-center justify-between">
-					<Text className="text-xl font-semibold text-gray-900">
-						Dashboard
-					</Text>
-					<TouchableOpacity onPress={handleLogout} className="p-2">
-						<Ionicons name="log-out-outline" size={24} color="#374151" />
-					</TouchableOpacity>
-				</View>
-			</View>
+			<SafeAreaView className="flex-1 bg-gray-50">
 
 			<ScrollView className="flex-1 px-4 py-6">
 				{/* Welcome Section */}
-				<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
+						<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
 					<Text className="text-2xl font-bold text-gray-900 mb-2">
 						Welcome back, {user?.username || 'User'}!
 					</Text>
 					<Text className="text-gray-600">
-						Manage your short URLs and view analytics
+								Manage your short URLs and view statistics
 					</Text>
 				</View>
 
@@ -65,42 +54,51 @@ export default function DashboardScreen() {
 						Quick Actions
 					</Text>
 					<View className="space-y-3">
-						<Button
-							variant="primary"
-							fullWidth
-							icon={<Ionicons name="link" size={20} color="white" />}
-							iconPosition="left"
-							onPress={() => router.push("/(main)/short-urls")}
-						>
+									<Button
+										variant="primary"
+										fullWidth
+										icon={<Ionicons name="link" size={20} color="white" />}
+										iconPosition="left"
+														  onPress={() => router.push("/(main)/short-urls" as any)}
+									>
 							Manage Short URLs
 						</Button>
-						<Button
-							variant="outline"
-							fullWidth
-							icon={<Ionicons name="analytics" size={20} color="#374151" />}
-							iconPosition="left"
-							onPress={() => router.push("/(main)/analytics")}
-						>
-							View Analytics
-						</Button>
+									<Button
+										variant="outline"
+										fullWidth
+										icon={<Ionicons name="stats-chart" size={20} color="#374151" />}
+										iconPosition="left"
+														  onPress={() => router.push("/(main)/statistics" as any)}
+									>
+										View Statistics
+									</Button>
 						<Button
 							variant="outline"
 							fullWidth
 							icon={<Ionicons name="key" size={20} color="#374151" />}
 							iconPosition="left"
-							onPress={() => router.push("/(main)/api-keys")}
+														  onPress={() => router.push("/(main)/api-keys" as any)}
 						>
 							API Keys
 						</Button>
-						<Button
-							variant="outline"
-							fullWidth
-							icon={<Ionicons name="settings" size={20} color="#374151" />}
-							iconPosition="left"
-							onPress={() => router.push("/(main)/settings")}
-						>
-							Settings
-						</Button>
+													<Button
+														variant="outline"
+														fullWidth
+														icon={<Ionicons name="log-out-outline" size={20} color="#374151" />}
+														iconPosition="left"
+														onPress={handleLogout}
+													>
+														Logout
+													</Button>
+									<Button
+										variant="outline"
+										fullWidth
+										icon={<Ionicons name="settings" size={20} color="#374151" />}
+										iconPosition="left"
+										onPress={() => router.push("/settings")}
+									>
+										Settings
+									</Button>
 					</View>
 				</View>
 

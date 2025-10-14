@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+// import { useRouter } from "expo-router";
 import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
@@ -10,7 +10,6 @@ import { copyToClipboard } from "../../utils/clipboard";
 import { ApiKeyService, type ApiKeyResponse, type CreateApiKeyRequest } from "../../services/ApiKeyService";
 
 export default function ApiKeysScreen() {
-	const router = useRouter();
 	const [apiKeys, setApiKeys] = useState<ApiKeyResponse[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
@@ -138,30 +137,19 @@ export default function ApiKeysScreen() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-gray-50">
-			{/* Header */}
-			<View className="bg-white border-b border-gray-200 px-4 py-3">
-				<View className="flex-row items-center justify-between">
-					<View className="flex-row items-center">
-						<TouchableOpacity onPress={() => router.back()} className="mr-4">
-							<Ionicons name="arrow-back" size={24} color="#374151" />
-						</TouchableOpacity>
-						<Text className="text-xl font-semibold text-gray-900">
-							API Keys
-						</Text>
-					</View>
+
+			<ScrollView className="flex-1 px-4 py-6">
+				{/* Actions */}
+				<View className="mb-4 items-end">
 					<Button
 						onPress={() => setShowCreateModal(true)}
 						variant="primary"
-						size="sm"
-						icon={<Ionicons name="add" size={16} color="white" />}
+						icon={<Ionicons name="add" size={20} color="white" />}
 						iconPosition="left"
 					>
-						Create
+						Create API Key
 					</Button>
 				</View>
-			</View>
-
-			<ScrollView className="flex-1 px-4 py-6">
 				{loading ? (
 					<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
 						<Text className="text-center text-gray-500">Loading...</Text>
