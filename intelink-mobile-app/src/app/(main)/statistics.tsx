@@ -56,6 +56,13 @@ export default function StatisticsScreen() {
   const { timeData, loading: timeLoading, error: timeError, fetchTime, peakData, fetchPeak } = useTimeStatistics(selectedShort);
 
   useEffect(() => {
+    // When navigating to this screen with a different shortcode, update selection
+    if (typeof params?.shortcode === 'string' && params.shortcode && params.shortcode !== selectedShort) {
+      setSelectedShort(params.shortcode);
+    }
+  }, [params?.shortcode, selectedShort]);
+
+  useEffect(() => {
     // Load first page of URLs for selection
     fetchShortUrls({ page: 0, size: 20, sortBy: 'createdAt', sortDirection: 'desc' }).then((res) => {
       if (!initialShortcode && res?.content?.length) {

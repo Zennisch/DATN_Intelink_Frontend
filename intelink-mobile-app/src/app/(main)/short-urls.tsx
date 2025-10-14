@@ -338,10 +338,17 @@ export default function ShortUrlsScreen() {
 								<View className="flex-row justify-between items-center mb-2">
 									<View className="flex-1">
 										<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
-										<TouchableOpacity onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode))}>
+										<TouchableOpacity onPress={() => router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } })}>
 											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}</Text>
 										</TouchableOpacity>
 									</View>
+									<TouchableOpacity
+										className="ml-2 p-1"
+										onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode))}
+										accessibilityLabel="Open short URL in browser"
+									>
+										<Ionicons name="open-outline" size={18} color="#2563EB" />
+									</TouchableOpacity>
 								</View>
 								
 								<View className="flex-row justify-between items-center mb-3">
@@ -366,7 +373,7 @@ export default function ShortUrlsScreen() {
 								<View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
 									<TouchableOpacity
 										className="p-1"
-										onPress={() => router.push({ pathname: '/url-stats', params: { shortcode: url.shortCode } })}
+										onPress={() => router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } })}
 									>
 										<Ionicons name="stats-chart" size={20} color="#6B7280" />
 									</TouchableOpacity>

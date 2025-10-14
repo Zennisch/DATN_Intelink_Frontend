@@ -48,12 +48,18 @@ export default function MainLayout() {
 						tabBarIcon: ({ color, size }) => <Ionicons name="settings" color={color} size={size} />,
 					}}
 				/>
-				{/* Hidden route for per-URL statistics, accessible via navigation but not shown as a tab */}
+				{/* Hide legacy/non-tab routes from the tab bar */}
+				<Tabs.Screen
+					name="analytics"
+					options={{
+						href: null,
+						headerShown: false,
+					}}
+				/>
 				<Tabs.Screen
 					name="url-stats"
 					options={{
 						href: null,
-						// keep header hidden
 						headerShown: false,
 					}}
 				/>
