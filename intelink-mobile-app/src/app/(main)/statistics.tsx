@@ -76,6 +76,7 @@ export default function StatisticsScreen() {
       }
       if (mode !== 'TIME') refetch();
     }
+    setSelectedBarInfo(null);
   }, [selectedShort, granularity, fetchTime, refetch, fetchPeak, mode, timeMode, startDate, endDate]);
 
   const toUtcStartOfDay = (date: Date) => {
@@ -353,7 +354,7 @@ export default function StatisticsScreen() {
               ) : (
                 <BarChart
                   data={formattedTimeData.map(d => ({ label: d.x, value: d.y }))}
-                  height={240}
+                  height={260}
                   rotateLabels={formattedTimeData.length > 6}
                   onBarPress={(d) => setSelectedBarInfo(`${d.label}: ${d.value} clicks`)}
                 />
@@ -364,7 +365,7 @@ export default function StatisticsScreen() {
               ) : (
                 <BarChart
                   data={(peakData?.topPeakTimes || []).slice(0, 10).map(p => ({ label: new Date(p.time).toLocaleString(), value: p.clicks }))}
-                  height={240}
+                  height={260}
                   rotateLabels={true}
                   onBarPress={(d) => setSelectedBarInfo(`${d.label}: ${d.value} clicks`)}
                 />

@@ -17,10 +17,10 @@ export function BarChart({ data, height = 200, barColor = '#3B82F6', gap = 12, b
   onBarPress?: (d: BarDatum, index: number) => void;
 }) {
   const max = Math.max(1, ...data.map(d => d.value));
-  const xAxisHeight = showXAxis ? 32 : 0;
-  const topPad = showValues ? 12 : 4;
+  const xAxisHeight = showXAxis ? (rotateLabels ? 44 : 32) : 0;
+  const topPad = showValues ? 18 : 6;
   const chartHeight = height - xAxisHeight;
-  const width = data.length * (barWidth + gap) + gap;
+  const width = data.length * (barWidth + gap) + gap + (rotateLabels ? 16 : 0);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const yValue = (v: number) => Math.max(1, Math.round((v / max) * (chartHeight - topPad)));
   const labels = useMemo(() => data.map(d => (d.label.length > maxLabelChars ? `${d.label.slice(0, maxLabelChars)}…` : d.label)), [data, maxLabelChars]);
@@ -50,7 +50,7 @@ export function BarChart({ data, height = 200, barColor = '#3B82F6', gap = 12, b
                   onPressOut={() => setHoverIndex(null)}
                 />
                 {(showValues || hoverIndex === i) && (
-                  <SvgText x={x + barWidth / 2} y={y - 4} fill="#111827" fontSize="11" fontWeight="600" textAnchor="middle">
+                  <SvgText x={x + barWidth / 2} y={Math.max(12, y - 4)} fill="#111827" fontSize="11" fontWeight="600" textAnchor="middle">
                     {d.value}
                   </SvgText>
                 )}

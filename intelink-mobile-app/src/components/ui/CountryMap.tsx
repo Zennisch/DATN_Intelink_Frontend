@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, View, ActivityIndicator, Text } from 'react-native';
+import { Dimensions, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import Svg, { Path, Rect, Text as SvgText } from 'react-native-svg';
 
 type StatisticsData = { name: string; clicks: number; percentage?: number };
@@ -48,10 +48,12 @@ function quantizeColor(value: number, min: number, max: number, palette: string[
 
 export function CountryMap({ data, title = 'Visitors by Country', width, height }: { data: StatisticsData[]; title?: string; width?: number; height?: number }) {
   const screenWidth = Dimensions.get('window').width;
-  // Keep some horizontal padding to avoid touching screen edges
   const containerPad = 24;
-  const W = width ?? Math.min(900, Math.max(280, screenWidth - containerPad));
-  const H = height ?? Math.round(W * 0.5);
+  // Target width is capped and respects screen width; we'll allow horizontal scroll if needed
+  const targetW = width ?? 720;
+  const containerW = Math.max(280, screenWidth - containerPad);
+  const W = Math.min(targetW, containerW);
+  const H = height ?? Math.round((Math.max(W, containerW)) * 0.5);
 
   const [geo, setGeo] = useState<GeoJSON | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,7 +123,8 @@ export function CountryMap({ data, title = 'Visitors by Country', width, height 
   return (
     <View className="bg-white rounded-lg p-4 border border-gray-200">
       <Text className="text-base font-semibold text-gray-900 mb-2">{title}</Text>
-      <Svg width={W} height={H}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <Svg width={Math.max(W, targetW)} height={H}>
         {geo.features.map((f, idx) => {
           const props = f.properties || {};
           const iso2 = (props['ISO3166-1-Alpha-2'] || props['ISO_A2'] || props['iso_a2'] || '').toString().toUpperCase();
@@ -147,6 +150,7 @@ export function CountryMap({ data, title = 'Visitors by Country', width, height 
         ))}
         <SvgText x={16 + palette.length * 18 + 6} y={H - 14} fill="#374151" fontSize="10">{`Min: ${min}  Max: ${max}`}</SvgText>
       </Svg>
+      </ScrollView>
     </View>
   );
 }
