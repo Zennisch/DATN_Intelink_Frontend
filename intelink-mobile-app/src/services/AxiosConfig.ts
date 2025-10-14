@@ -3,6 +3,10 @@ import { AuthStorage } from '../storages/AuthStorage';
 import { BACKEND_URL } from '../types/environment';
 
 // Create axios instance
+if (__DEV__) {
+	// Surface where the app thinks the backend is (native/web differ)
+	console.log('[Axios] BACKEND_URL =', BACKEND_URL);
+}
 const api = axios.create({
 	baseURL: BACKEND_URL,
 	timeout: 15000,
@@ -15,6 +19,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
 	async (config) => {
+			if (__DEV__) console.log('[Axios] →', (config.baseURL || ''), config.url);
 		const url = config.url || '';
 		const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh') || url.includes('/auth/forgot-password') || url.includes('/auth/verify-email');
 
@@ -35,6 +40,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
 	(response) => response,
 	async (error) => {
+			if (__DEV__) console.log('[Axios] ← error', {
+				url: error?.config?.url,
+				baseURL: error?.config?.baseURL,
+				code: error?.code,
+				status: error?.response?.status,
+				message: error?.message,
+			});
 		const originalRequest = error.config;
 
 		if (error.response?.status === 401 && !originalRequest._retry) {
