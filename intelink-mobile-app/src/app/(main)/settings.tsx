@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert, Switch } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, Switch, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
@@ -11,36 +11,44 @@ export default function SettingsScreen() {
 	const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
 	const [darkMode, setDarkMode] = React.useState(false);
 
+	const confirmLogout = () =>
+		new Promise<boolean>((resolve) => {
+			if (Platform.OS === "web") {
+				// Fallback cho web
+				const ok = window.confirm("Are you sure you want to logout?");
+				return resolve(!!ok);
+			}
+			Alert.alert(
+				"Logout",
+				"Are you sure you want to logout?",
+				[
+					{ text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+					{ text: "Logout", style: "destructive", onPress: () => resolve(true) },
+				],
+				{ cancelable: true }
+			);
+		});
+
 	const handleLogout = async () => {
-		Alert.alert(
-			"Logout",
-			"Are you sure you want to logout?",
-			[
-				{
-					text: "Cancel",
-					style: "cancel"
-				},
-				{
-					text: "Logout",
-					style: "destructive",
-					onPress: async () => {
-						try {
-							await logout(() => router.replace('/(auth)/login'));
-						} catch (error) {
-							console.error("Logout error:", error);
-						}
-					}
-				}
-			]
-		);
+		const ok = await confirmLogout();
+		if (!ok) return;
+
+		try {
+			await logout();            // xóa token/state
+			router.dismissAll?.();
+			router.replace("/login");  // không dùng "/(auth)/login"
+		} catch (error) {
+			console.error("Logout error:", error);
+			Alert.alert("Error", "Logout failed. Please try again.");
+		}
 	};
 
-	const SettingItem = ({ 
-		icon, 
-		title, 
-		subtitle, 
-		onPress, 
-		rightComponent 
+	const SettingItem = ({
+		icon,
+		title,
+		subtitle,
+		onPress,
+		rightComponent
 	}: {
 		icon: string;
 		title: string;
@@ -48,7 +56,7 @@ export default function SettingsScreen() {
 		onPress?: () => void;
 		rightComponent?: React.ReactNode;
 	}) => (
-		<TouchableOpacity 
+		<TouchableOpacity
 			onPress={onPress}
 			className="flex-row items-center justify-between p-4 bg-white border-b border-gray-100"
 		>
