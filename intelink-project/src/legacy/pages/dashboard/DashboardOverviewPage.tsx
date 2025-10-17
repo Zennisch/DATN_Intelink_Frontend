@@ -1,4 +1,28 @@
+import { useAuth } from "../../hooks/useAuth";
+
 export const DashboardOverviewPage = () => {
+	const { user, isLoading } = useAuth();
+
+	if (isLoading) {
+		return (
+			<div className="p-2 space-y-6">
+				<div className="flex items-center justify-center h-64">
+					<div className="text-gray-600">Loading...</div>
+				</div>
+			</div>
+		);
+	}
+
+	if (!user) {
+		return (
+			<div className="p-2 space-y-6">
+				<div className="flex items-center justify-center h-64">
+					<div className="text-gray-600">No user data available</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="p-2 space-y-6">
 				<div>
@@ -6,7 +30,7 @@ export const DashboardOverviewPage = () => {
 						Dashboard
 					</h1>
 					<p className="text-gray-600">
-						Welcome to your Intelink dashboard
+						Welcome back, {user.displayName || user.username}!
 					</p>
 				</div>
 
@@ -19,15 +43,15 @@ export const DashboardOverviewPage = () => {
 						<div className="space-y-2">
 							<div className="flex justify-between">
 								<span className="text-gray-600">Total Links:</span>
-								<span className="font-medium">0</span>
+								<span className="font-medium">{user.totalShortUrls}</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-gray-600">Total Clicks:</span>
-								<span className="font-medium">0</span>
+								<span className="font-medium">{user.totalClicks}</span>
 							</div>
 							<div className="flex justify-between">
-								<span className="text-gray-600">Active Links:</span>
-								<span className="font-medium">0</span>
+								<span className="text-gray-600">Credit Balance:</span>
+								<span className="font-medium">{user.creditBalance} {user.currency}</span>
 							</div>
 						</div>
 					</div>
@@ -37,7 +61,18 @@ export const DashboardOverviewPage = () => {
 						<h2 className="text-lg font-semibold text-gray-900 mb-2">
 							Recent Activity
 						</h2>
-						<p className="text-gray-600 text-sm">No recent activity</p>
+						<div className="text-sm text-gray-600">
+							{user.lastLoginAt ? (
+								<div>
+									<div>Last login:</div>
+									<div className="font-medium">
+										{new Date(user.lastLoginAt).toLocaleString()}
+									</div>
+								</div>
+							) : (
+								<p>No recent activity</p>
+							)}
+						</div>
 					</div>
 
 					{/* Account Info */}
@@ -45,12 +80,111 @@ export const DashboardOverviewPage = () => {
 						<h2 className="text-lg font-semibold text-gray-900 mb-2">
 							Account Information
 						</h2>
-						<div className="space-y-2 text-sm text-gray-600">
-							<div>Plan: Free</div>
-							<div>Links available: 2/10</div>
-							<div>Member since: Today</div>
+						<div className="space-y-2 text-sm">
+							<div className="flex items-center gap-2">
+								{user.profilePictureUrl && (
+									<img 
+										src={user.profilePictureUrl} 
+										alt="Profile" 
+										className="w-8 h-8 rounded-full"
+									/>
+								)}
+								<div>
+									<div className="font-medium text-gray-900">
+										{user.displayName || user.username}
+									</div>
+									<div className="text-gray-600">{user.email}</div>
+								</div>
+							</div>
+							<div className="pt-2 space-y-1">
+								<div className="text-gray-600">
+									Plan: {user.currentSubscription?.planType || 'Free'}
+								</div>
+								<div className="text-gray-600">
+									Links available: {user.totalShortUrls}/{user.currentSubscription?.maxShortUrls || 10}
+								</div>
+								<div className="text-gray-600">
+									Member since: {new Date(user.createdAt).toLocaleDateString()}
+								</div>
+								<div className="text-gray-600">
+									Status: <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
+										user.status === 'ACTIVE' 
+											? 'bg-green-100 text-green-800' 
+											: 'bg-yellow-100 text-yellow-800'
+									}`}>
+										{user.status}
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
+
+					{/* Subscription Info - if user has subscription */}
+					{user.currentSubscription && (
+						<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 md:col-span-2 lg:col-span-3">
+							<h2 className="text-lg font-semibold text-gray-900 mb-4">
+								🎯 Current Subscription
+							</h2>
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+								<div className="bg-blue-50 p-4 rounded-lg">
+									<div className="text-sm text-blue-600 font-medium">Plan Type</div>
+									<div className="text-lg font-semibold text-blue-900">
+										{user.currentSubscription.planType}
+									</div>
+									<div className="text-xs text-blue-700">
+										{user.currentSubscription.planDescription}
+									</div>
+								</div>
+								<div className="bg-green-50 p-4 rounded-lg">
+									<div className="text-sm text-green-600 font-medium">Status</div>
+									<div className="text-lg font-semibold text-green-900">
+										{user.currentSubscription.active ? 'Active' : 'Inactive'}
+									</div>
+									<div className="text-xs text-green-700">
+										{user.currentSubscription.status}
+									</div>
+								</div>
+								<div className="bg-purple-50 p-4 rounded-lg">
+									<div className="text-sm text-purple-600 font-medium">Start Date</div>
+									<div className="text-lg font-semibold text-purple-900">
+										{new Date(user.currentSubscription.startsAt).toLocaleDateString()}
+									</div>
+								</div>
+								<div className="bg-orange-50 p-4 rounded-lg">
+									<div className="text-sm text-orange-600 font-medium">Expires</div>
+									<div className="text-lg font-semibold text-orange-900">
+										{new Date(user.currentSubscription.expiresAt).toLocaleDateString()}
+									</div>
+								</div>
+							</div>
+							<div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+								<div className="flex items-center gap-2">
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'}>
+										Custom Short Codes
+									</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'}>
+										Statistics
+									</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.customDomainEnabled ? 'text-green-700' : 'text-gray-500'}>
+										Custom Domain
+									</span>
+								</div>
+								<div className="flex items-center gap-2">
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'}>
+										API Access
+									</span>
+								</div>
+							</div>
+						</div>
+					)}
 
 					{/* Demo Section */}
 					<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 md:col-span-2 lg:col-span-3">
