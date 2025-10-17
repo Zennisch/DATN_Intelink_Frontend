@@ -26,10 +26,10 @@ export const DashboardOverviewPage = () => {
 	return (
 		<div className="p-2 space-y-6">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
 						Dashboard
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-gray-600 text-center">
 						Welcome back, {user.displayName || user.username}!
 					</p>
 				</div>
@@ -101,7 +101,13 @@ export const DashboardOverviewPage = () => {
 									Plan: {user.currentSubscription?.planType || 'Free'}
 								</div>
 								<div className="text-gray-600">
-									Links available: {user.totalShortUrls}/{user.currentSubscription?.maxShortUrls || 10}
+									Links available: {(() => {
+										const maxLinks = user.currentSubscription?.maxShortUrls || 10;
+										const isUnlimited = maxLinks === -1;
+										return isUnlimited 
+											? `${user.totalShortUrls} (Unlimited)` 
+											: `${user.totalShortUrls}/${maxLinks}`;
+									})()}
 								</div>
 								<div className="text-gray-600">
 									Member since: {new Date(user.createdAt).toLocaleDateString()}

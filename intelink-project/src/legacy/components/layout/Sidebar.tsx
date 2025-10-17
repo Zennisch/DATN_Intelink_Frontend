@@ -195,6 +195,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 											>
 												Manage Plan →
 											</button>
+											<button 
+												className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors mt-2"
+												onClick={() => {
+													navigate("/dashboard/subscriptions");
+													onClose();
+												}}
+											>
+												Subscriptions →
+											</button>
 										</div>
 									);
 								}
