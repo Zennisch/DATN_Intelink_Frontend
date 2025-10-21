@@ -155,12 +155,12 @@ export class ShortUrlService {
 	}
 
 	static async getUnlockInfo(shortCode: string): Promise<UnlockUrlResponse> {
-		const response = await api.get(`${shortCode}/unlock`);
+		const response = await api.get(`/${shortCode}/unlock`);
 		return response.data;
 	}
 
 	static async unlockUrl(shortCode: string, password: string): Promise<UnlockUrlResponse> {
-		const response = await api.post(`${shortCode}/unlock`, { password });
+		const response = await api.post(`/${shortCode}/unlock`, { password });
 		return response.data;
 	}
 
