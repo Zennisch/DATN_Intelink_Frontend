@@ -104,50 +104,50 @@ const buildParams = (search: Partial<SearchShortUrlRequest>) => {
 
 export class ShortUrlService {
 	static async createShortUrl(request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> {
-		const response = await api.post<CreateShortUrlResponse>('/url', request);
+		const response = await api.post<CreateShortUrlResponse>('/api/v1/url', request);
 		return response.data;
 	}
 
 	static async getShortUrls(search: SearchShortUrlRequest = {}): Promise<PagedResponse<ShortUrlListResponse>> {
 		const params = buildParams({ page: search.page, size: search.size });
-		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/url?${params}`);
+		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/api/v1/url?${params}`);
 		return response.data;
 	}
 
 	static async searchShortUrls(search: SearchShortUrlRequest): Promise<PagedResponse<ShortUrlListResponse>> {
 		const params = buildParams(search);
-		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/url/search?${params}`);
+		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/api/v1/url/search?${params}`);
 		return response.data;
 	}
 
 
 	static async getShortUrlByCode(shortCode: string): Promise<ShortUrlDetailResponse> {
-		const response = await api.get<ShortUrlDetailResponse>(`/url/${shortCode}`);
+		const response = await api.get<ShortUrlDetailResponse>(`/api/v1/url/${shortCode}`);
 		return response.data;
 	}
 
 	static async updateShortUrl(shortCode: string, request: UpdateShortUrlRequest): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/url/${shortCode}`, request);
+		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}`, request);
 		return response.data;
 	}
 
 	static async deleteShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.delete<UpdateShortUrlResponse>(`/url/${shortCode}`);
+		const response = await api.delete<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}`);
 		return response.data;
 	}
 
 	static async enableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/url/${shortCode}/enable`);
+		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/enable`);
 		return response.data;
 	}
 
 	static async disableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/url/${shortCode}/disable`);
+		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/disable`);
 		return response.data;
 	}
 
 	static async updatePassword(shortCode: string, currentPassword: string, newPassword: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/url/${shortCode}/password`, {
+		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/password`, {
 			currentPassword,
 			newPassword,
 		});
@@ -155,12 +155,12 @@ export class ShortUrlService {
 	}
 
 	static async getUnlockInfo(shortCode: string): Promise<UnlockUrlResponse> {
-		const response = await api.get<UnlockUrlResponse>(`/${shortCode}/unlock`);
+		const response = await api.get(`${shortCode}/unlock`);
 		return response.data;
 	}
 
 	static async unlockUrl(shortCode: string, password: string): Promise<UnlockUrlResponse> {
-		const response = await api.post<UnlockUrlResponse>(`/${shortCode}/unlock`, { password });
+		const response = await api.post(`${shortCode}/unlock`, { password });
 		return response.data;
 	}
 
@@ -204,7 +204,7 @@ export interface StatisticsResponse {
 
 export class StatisticsService {
 	static async getByDimension(shortcode: string, type: DimensionTypeT): Promise<StatisticsResponse> {
-		const response = await api.get<StatisticsResponse>(`/statistics/${shortcode}/dimension`, {
+		const response = await api.get<StatisticsResponse>(`/api/v1/statistics/${shortcode}/dimension`, {
 			params: { type },
 		});
 		return response.data;
@@ -231,12 +231,12 @@ export interface TopPeakTimesResponse {
 
 export class TimeStatisticsService {
 	static async getTimeSeries(shortcode: string, params: { customFrom?: string; customTo?: string; granularity: TimeGranularity }): Promise<TimeSeriesResponse> {
-		const res = await api.get<TimeSeriesResponse>(`/statistics/${shortcode}/time`, { params });
+		const res = await api.get<TimeSeriesResponse>(`/api/v1/statistics/${shortcode}/time`, { params });
 		return res.data;
 	}
 
 	static async getTopPeakTimes(shortcode: string, granularity: TimeGranularity): Promise<TopPeakTimesResponse> {
-		const res = await api.get<TopPeakTimesResponse>(`/statistics/${shortcode}/top-peak-times`, { params: { granularity: granularity.toLowerCase?.() || granularity } as any });
+		const res = await api.get<TopPeakTimesResponse>(`/api/v1/statistics/${shortcode}/top-peak-times`, { params: { granularity: granularity.toLowerCase?.() || granularity } as any });
 		return res.data;
 	}
 }

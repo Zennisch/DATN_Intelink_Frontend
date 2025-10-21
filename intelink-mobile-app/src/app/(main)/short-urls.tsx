@@ -3,6 +3,9 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "../../components/atoms/Button";
+import CustomShortUrlModal from "../../components/CustomShortUrlModal";
+import UnlockUrlModal from "../../components/UnlockUrlModal";
+import { ShortUrlService } from "../../services/ShortUrlService";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
 import { Ionicons } from '@expo/vector-icons';
@@ -12,8 +15,16 @@ import { useShortUrl } from "../../hooks/useShortUrl";
 import type { SearchShortUrlRequest } from "../../services/ShortUrlService";
 
 export default function ShortUrlsScreen() {
+	const [unlockModalVisible, setUnlockModalVisible] = useState(false);
+	const [unlockLoading, setUnlockLoading] = useState(false);
+	const [unlockError, setUnlockError] = useState<string | undefined>(undefined);
+	const [unlockShortCode, setUnlockShortCode] = useState<string | undefined>(undefined);
+	const [unlockShortUrl, setUnlockShortUrl] = useState<string | undefined>(undefined);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [modalLoading, setModalLoading] = useState(false);
 	const router = useRouter();
 	const [newUrl, setNewUrl] = useState("");
+	const [customSlug, setCustomSlug] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -54,25 +65,16 @@ export default function ShortUrlsScreen() {
 		fetchShortUrls(searchParams);
 	}, [currentPage, searchQuery, statusFilter, fetchShortUrls]);
 
-	const handleCreateShortUrl = async () => {
-		if (!newUrl.trim()) {
-			Alert.alert("Error", "Please enter a valid URL");
-			return;
-		}
-
+	const handleCreateShortUrl = async (urlData) => {
+		setModalLoading(true);
 		try {
-			await createShortUrl({
-				originalUrl: newUrl,
-				description: "",
-				availableDays: 30, // default to 30 days; adjust if needed
-			});
-			setNewUrl("");
+			await createShortUrl(urlData);
 			setToast({
 				visible: true,
 				message: "Short URL created successfully!",
 				type: "success",
 			});
-			// Refresh the list
+			// Refresh list
 			const searchParams: SearchShortUrlRequest = {
 				page: currentPage,
 				size: 10,
@@ -82,12 +84,15 @@ export default function ShortUrlsScreen() {
 				sortDirection: "desc",
 			};
 			await fetchShortUrls(searchParams);
-		} catch {
+			setModalVisible(false);
+		} catch (e: any) {
 			setToast({
 				visible: true,
-				message: "Failed to create short URL",
+				message: e?.response?.data?.message || "Failed to create short URL",
 				type: "error",
 			});
+		} finally {
+			setModalLoading(false);
 		}
 	};
 
@@ -206,10 +211,46 @@ export default function ShortUrlsScreen() {
 		return new Date(dateString).toLocaleDateString();
 	};
 
-	return (
-		<SafeAreaView className="flex-1 bg-gray-50">
-
-			<ScrollView className="flex-1 px-4 py-6">
+			return (
+				<SafeAreaView className="flex-1 bg-gray-50">
+					<CustomShortUrlModal
+						visible={modalVisible}
+						onClose={() => setModalVisible(false)}
+						onSubmit={handleCreateShortUrl}
+						loading={modalLoading}
+					/>
+					<UnlockUrlModal
+						visible={unlockModalVisible}
+						onClose={() => {
+							setUnlockModalVisible(false);
+							setUnlockError(undefined);
+						}}
+						onUnlock={async (password) => {
+							if (!unlockShortCode) return;
+							setUnlockLoading(true);
+							setUnlockError(undefined);
+							try {
+								const res = await ShortUrlService.unlockUrl(unlockShortCode, password);
+								if (res.success && res.redirectUrl) {
+									setUnlockModalVisible(false);
+									setUnlockError(undefined);
+									setUnlockLoading(false);
+									// Open unlocked URL
+									Linking.openURL(res.redirectUrl);
+								} else {
+									setUnlockError(res.message || "Unlock failed");
+								}
+							} catch (e: any) {
+								setUnlockError(e?.response?.data?.message || "Unlock failed");
+							} finally {
+								setUnlockLoading(false);
+							}
+						}}
+						loading={unlockLoading}
+						error={unlockError}
+						shortUrl={unlockShortUrl}
+					/>
+					<ScrollView className="flex-1 px-4 py-6">
 				{/* Error Display */}
 				{error && (
 					<View className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex-row items-center justify-between">
@@ -275,31 +316,19 @@ export default function ShortUrlsScreen() {
 					</View>
 				</View>
 
-				{/* Create New URL */}
-				<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
-					<Text className="text-lg font-semibold text-gray-900 mb-4">
-						Create New Short URL
-					</Text>
-					<View className="space-y-4">
-						<TextInput
-							label="Original URL"
-							placeholder="https://example.com"
-							value={newUrl}
-							onChangeText={setNewUrl}
-							keyboardType="url"
-							autoCapitalize="none"
-							fullWidth
-						/>
-						<Button
-							onPress={handleCreateShortUrl}
-							variant="primary"
-							fullWidth
-							loading={loading}
-						>
-							Create Short URL
-						</Button>
-					</View>
-				</View>
+						{/* Create New URL (now opens modal) */}
+						<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
+							<Text className="text-lg font-semibold text-gray-900 mb-4">
+								Create New Short URL
+							</Text>
+							<Button
+								onPress={() => setModalVisible(true)}
+								variant="primary"
+								fullWidth
+							>
+								Create Short URL
+							</Button>
+						</View>
 
 				{/* URL List */}
 				<View className="space-y-4">
@@ -335,21 +364,39 @@ export default function ShortUrlsScreen() {
 									</TouchableOpacity>
 								</View>
 								
-								<View className="flex-row justify-between items-center mb-2">
-									<View className="flex-1">
-										<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
-										<TouchableOpacity onPress={() => router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } })}>
-											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}</Text>
-										</TouchableOpacity>
-									</View>
-									<TouchableOpacity
-										className="ml-2 p-1"
-										onPress={() => Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode))}
-										accessibilityLabel="Open short URL in browser"
-									>
-										<Ionicons name="open-outline" size={18} color="#2563EB" />
-									</TouchableOpacity>
-								</View>
+												<View className="flex-row justify-between items-center mb-2">
+													<View className="flex-1">
+														<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
+														<TouchableOpacity
+															onPress={() => {
+																if (url.hasPassword) {
+																	setUnlockShortCode(url.shortCode);
+																	setUnlockShortUrl(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
+																	setUnlockModalVisible(true);
+																} else {
+																	router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } });
+																}
+															}}
+														>
+															<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}</Text>
+														</TouchableOpacity>
+													</View>
+													<TouchableOpacity
+														className="ml-2 p-1"
+														onPress={() => {
+															if (url.hasPassword) {
+																setUnlockShortCode(url.shortCode);
+																setUnlockShortUrl(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
+																setUnlockModalVisible(true);
+															} else {
+																Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
+															}
+														}}
+														accessibilityLabel="Open short URL in browser"
+													>
+														<Ionicons name="open-outline" size={18} color="#2563EB" />
+													</TouchableOpacity>
+												</View>
 								
 								<View className="flex-row justify-between items-center mb-3">
 									<View className="flex-row space-x-4">

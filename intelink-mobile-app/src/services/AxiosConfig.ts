@@ -21,7 +21,7 @@ api.interceptors.request.use(
 	async (config) => {
 			if (__DEV__) console.log('[Axios] →', (config.baseURL || ''), config.url);
 		const url = config.url || '';
-		const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh') || url.includes('/auth/forgot-password') || url.includes('/auth/verify-email');
+		const isAuthEndpoint = url.includes('/api/v1/auth/login') || url.includes('/api/v1/auth/register') || url.includes('/api/v1/auth/refresh') || url.includes('/api/v1/auth/forgot-password') || url.includes('/api/v1/auth/verify-email');
 
 		if (!isAuthEndpoint) {
 			const token = await AuthStorage.getAccessToken();
@@ -55,7 +55,7 @@ api.interceptors.response.use(
 			try {
 				const refreshToken = await AuthStorage.getRefreshToken();
 				if (refreshToken) {
-					const response = await axios.post(`${BACKEND_URL}/auth/refresh`, {}, {
+					const response = await axios.post(`${BACKEND_URL}/api/v1/auth/refresh`, {}, {
 						headers: {
 							Authorization: `Bearer ${refreshToken}`,
 						},
