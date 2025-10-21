@@ -1,5 +1,5 @@
 import api from './AxiosConfig';
-
+import axios from 'axios';
 // Align types with intelink-project legacy
 export interface CreateShortUrlRequest {
 	originalUrl: string;
