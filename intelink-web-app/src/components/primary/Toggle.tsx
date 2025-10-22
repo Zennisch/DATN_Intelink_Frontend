@@ -7,7 +7,7 @@ import {
 	useId,
 	useState,
 } from "react";
-import { cn } from "./utils.ts"
+import { cn, FOCUS_STYLES, SPACING, COLORS, SIZES, DISPLAY_MODES } from "./utils.ts"
 
 type Size = "sm" | "md" | "lg"
 type LabelPosition = "left" | "right"
@@ -20,16 +20,29 @@ const sizeMap: Record<Size, { track: string; knob: string }> = {
 }
 
 interface ToggleProps extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
+  // Core behavior props
   checked?: boolean
   defaultChecked?: boolean
-  onChange?: (checked: boolean, e?: ChangeEvent<HTMLInputElement>) => void
+  disabled?: boolean
+  
+  // Content props
   label?: ReactNode
+  
+  // Styling props
+  size?: Size
+  labelPosition?: LabelPosition
+  
+  // State props
+  error?: ReactNode
+  helpText?: ReactNode
+  
+  // Callback props
+  onChange?: (checked: boolean, e?: ChangeEvent<HTMLInputElement>) => void
+  
+  // Styling override props
   wrapperClassName?: string
   inputClassName?: string
   switchClassName?: string
-  size?: Size
-  disabled?: boolean
-  labelPosition?: LabelPosition
 }
 
 export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
@@ -47,16 +60,22 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
     name,
     value,
     className,
+    error,
+    helpText,
     ...props
   },
   ref
 ) {
   const autoId = useId()
-  const finalId = props.id ?? `toggle-${autoId}`
+  const id = props.id ?? autoId
 
   const [internalChecked, setInternalChecked] = useState<boolean>(Boolean(defaultChecked))
   const isControlled = checked !== undefined
   const isOn = isControlled ? Boolean(checked) : internalChecked
+
+  const describedByIds: string[] = [];
+  if (error) describedByIds.push(`${id}-error`);
+  if (helpText) describedByIds.push(`${id}-help`);
 
   useEffect(() => {
     if (isControlled) {
@@ -72,15 +91,14 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
 
   const sizes = sizeMap[size]
 
-  const wrapperClasses = cn("inline-flex items-center", wrapperClassName)
-  const inputClasses = cn("sr-only", inputClassName)
+  const classes = cn("sr-only", inputClassName)
   const switchClasses = cn(
     "relative inline-flex items-center rounded-full cursor-pointer transition-colors",
     disabled
       ? "opacity-50 cursor-not-allowed"
-      : "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500",
+      : FOCUS_STYLES,
     sizes.track,
-    isOn ? "bg-indigo-600" : "bg-gray-200",
+    isOn ? "bg-indigo-600" : COLORS.background.gray,
     switchClassName,
     className
   )
@@ -92,44 +110,60 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle(
   )
 
   return (
-    <div className={wrapperClasses}>
-      {label && labelPosition === "left" && (
-        <label htmlFor={finalId} className="mr-3 text-sm text-gray-700 cursor-pointer">
-          {label}
+    <div className={cn('flex flex-col', wrapperClassName)}>
+      <div className={DISPLAY_MODES.interactive}>
+        {label && labelPosition === "left" && (
+          <label htmlFor={id} className={cn(COLORS.text.secondary, SIZES.text.sm, 'cursor-pointer', SPACING.labelLeft)}>
+            {label}
+          </label>
+        )}
+
+        <input
+          id={id}
+          ref={ref}
+          type="checkbox"
+          name={name}
+          value={value}
+          className={classes}
+          checked={checked}
+          defaultChecked={defaultChecked}
+          disabled={disabled}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={describedByIds.length ? describedByIds.join(' ') : undefined}
+          onChange={handleChange}
+          aria-hidden={true}
+          {...props}
+        />
+
+        <label
+          htmlFor={id}
+          role="switch"
+          aria-checked={isOn}
+          tabIndex={disabled ? -1 : 0}
+          className={switchClasses}
+        >
+          <span
+            className={knobClasses}
+          />
         </label>
+
+        {label && labelPosition === "right" && (
+          <label htmlFor={id} className={cn(COLORS.text.secondary, SIZES.text.sm, 'cursor-pointer', SPACING.labelRight)}>
+            {label}
+          </label>
+        )}
+      </div>
+
+      {helpText && (
+        <p id={`${id}-help`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.muted}`}>
+          {helpText}
+        </p>
       )}
 
-      <input
-        id={finalId}
-        ref={ref}
-        type="checkbox"
-        name={name}
-        value={value}
-        className={inputClasses}
-        checked={checked}
-        defaultChecked={defaultChecked}
-        disabled={disabled}
-        onChange={handleChange}
-        aria-hidden={true}
-        {...props}
-      />
-
-      <label
-        htmlFor={finalId}
-        role="switch"
-        aria-checked={isOn}
-        tabIndex={disabled ? -1 : 0}
-        className={switchClasses}
-      >
-        <span
-          className={knobClasses}
-        />
-      </label>
-
-      {label && labelPosition === "right" && (
-        <label htmlFor={finalId} className="ml-3 text-sm text-gray-700 cursor-pointer">
-          {label}
-        </label>
+      {error && (
+        <p id={`${id}-error`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.error}`} role="alert" aria-live="polite">
+          {error}
+        </p>
       )}
     </div>
   )

@@ -1,23 +1,34 @@
 import {type ChangeEvent, forwardRef, type InputHTMLAttributes, type ReactNode, useEffect, useId, useState} from 'react';
-import {cn} from './utils.ts';
+import {cn, FOCUS_STYLES, SPACING, COLORS, SIZES} from './utils.ts';
 
 type Exclude = 'onChange' | 'type' | 'value';
 
 interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, Exclude> {
+	// Core behavior props
 	min?: number;
 	max?: number;
 	step?: number;
 	value?: number;
 	defaultValue?: number;
+	
+	// Styling props
 	showValue?: boolean;
+	valueFormatter?: (v: number) => ReactNode;
+	
+	// Layout props
 	fullWidth?: boolean;
+	
+	// State props
 	helpText?: ReactNode;
 	error?: ReactNode;
+	
+	// Callback props
+	onChange?: (value: number, e?: ChangeEvent<HTMLInputElement>) => void;
+	
+	// Styling override props
 	wrapperClassName?: string;
 	inputClassName?: string;
 	trackClassName?: string;
-	valueFormatter?: (v: number) => ReactNode;
-	onChange?: (value: number, e?: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
@@ -43,7 +54,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
 	ref
 ) {
 	const autoId = useId();
-	const finalId = props.id ?? `slider-${autoId}`;
+	const id = props.id ?? autoId;
 
 	const isControlled = value !== undefined;
 	const [internalValue, setInternalValue] = useState<number>(isControlled ? (value as number) : defaultValue ?? min);
@@ -62,13 +73,16 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
 
 	const displayedValue = isControlled ? (value as number) : internalValue;
 	const describedByIds: string[] = [];
-	if (helpText) describedByIds.push(`${finalId}-help`);
-	if (error) describedByIds.push(`${finalId}-error`);
+	if (helpText) describedByIds.push(`${id}-help`);
+	if (error) describedByIds.push(`${id}-error`);
 
 	const wrapperClasses = cn(fullWidth ? 'w-full' : '', wrapperClassName);
 	const trackClasses = cn('flex items-center space-x-4', trackClassName);
-	const inputClasses = cn(
-		'h-2 appearance-none rounded-lg bg-gray-200 w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500',
+	const classes = cn(
+		'h-2 appearance-none rounded-lg w-full',
+		COLORS.background.gray,
+		FOCUS_STYLES,
+		error ? COLORS.border.errorFocus : '',
 		inputClassName,
 		className
 	);
@@ -77,7 +91,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
 		<div className={wrapperClasses}>
 			<div className={trackClasses}>
 				<input
-					id={finalId}
+					id={id}
 					ref={ref}
 					type="range"
 					min={min}
@@ -91,25 +105,25 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
 					aria-valuenow={displayedValue}
 					aria-describedby={describedByIds.length ? describedByIds.join(' ') : undefined}
 					disabled={disabled}
-					className={inputClasses}
+					className={classes}
 					{...props}
 				/>
 
 				{showValue && (
-					<div className="w-3 text-center text-sm text-gray-700 tabular-nums">
+					<div className={cn('w-3 text-center tabular-nums', SIZES.text.sm, COLORS.text.secondary)}>
 						{valueFormatter ? valueFormatter(displayedValue) : displayedValue}
 					</div>
 				)}
 			</div>
 
 			{helpText && (
-				<p id={`${finalId}-help`} className="mt-1 text-sm text-gray-500">
+				<p id={`${id}-help`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.muted}`}>
 					{helpText}
 				</p>
 			)}
 
 			{error && (
-				<p id={`${finalId}-error`} className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">
+				<p id={`${id}-error`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.error}`} role="alert" aria-live="polite">
 					{error}
 				</p>
 			)}

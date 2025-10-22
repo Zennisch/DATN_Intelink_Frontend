@@ -1,5 +1,5 @@
 import {type ButtonHTMLAttributes, forwardRef, type ReactNode} from 'react';
-import {cn} from './utils.ts';
+import {cn, FOCUS_STYLES, TRANSITION, SIZES, DISPLAY_MODES} from './utils.ts';
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'social';
 type Size = 'sm' | 'md' | 'lg';
@@ -13,9 +13,9 @@ const variantClasses: Record<Variant, string> = {
 };
 
 const sizeClasses: Record<Size, string> = {
-	sm: 'px-3 py-2 text-sm',
-	md: 'px-4 py-3 text-base',
-	lg: 'px-6 py-4 text-lg',
+	sm: `${SIZES.padding.button.sm} ${SIZES.text.sm}`,
+	md: `${SIZES.padding.button.md} ${SIZES.text.base}`,
+	lg: `${SIZES.padding.button.lg} ${SIZES.text.lg}`,
 };
 
 const DefaultSpinner = (
@@ -33,14 +33,21 @@ const DefaultSpinner = (
 );
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+	// Content props
 	children: ReactNode;
+	icon?: ReactNode;
+	loadingIcon?: ReactNode;
+	
+	// Styling props
 	variant?: Variant;
 	size?: Size;
-	icon?: ReactNode;
 	iconPosition?: IconPosition;
-	loading?: boolean;
-	loadingIcon?: ReactNode;
+	
+	// Layout props
 	fullWidth?: boolean;
+	
+	// State props
+	loading?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
@@ -60,10 +67,14 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
 	},
 	ref
 ) {
-	const baseClasses = `inline-flex items-center justify-center 
-		font-medium rounded-lg transition-all duration-200 
-		focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
-		disabled:opacity-50 disabled:cursor-not-allowed`;
+	const baseClasses = cn(
+		DISPLAY_MODES.button,
+		'font-medium',
+		SIZES.borderRadius,
+		TRANSITION,
+		FOCUS_STYLES,
+		'disabled:opacity-50 disabled:cursor-not-allowed'
+	);
 
 	const widthClass = fullWidth ? 'w-full' : '';
 

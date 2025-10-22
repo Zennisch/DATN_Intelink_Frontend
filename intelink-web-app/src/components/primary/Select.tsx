@@ -1,5 +1,5 @@
 import {type ChangeEvent, forwardRef, type ReactNode, type SelectHTMLAttributes, useId} from 'react';
-import {cn} from './utils.ts';
+import {cn, FOCUS_STYLES, TRANSITION, SPACING, COLORS, SIZES, DISPLAY_MODES} from './utils.ts';
 
 type OptionItem = {
 	value: string | number;
@@ -9,15 +9,24 @@ type OptionItem = {
 type Exclude = 'onChange' | 'children';
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, Exclude> {
+	// Content props
 	options?: OptionItem[];
 	children?: ReactNode;
 	placeholder?: string;
-	error?: ReactNode;
+	
+	// Layout props
 	fullWidth?: boolean;
+	
+	// State props
+	error?: ReactNode;
 	helpText?: ReactNode;
+	
+	// Callback props
+	onChange?: (value: string, e?: ChangeEvent<HTMLSelectElement>) => void;
+	
+	// Styling override props
 	wrapperClassName?: string;
 	selectClassName?: string;
-	onChange?: (value: string, e?: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
@@ -40,15 +49,23 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 	ref
 ) {
 	const autoId = useId();
-	const finalId = props.id ?? `select-${autoId}`;
+	const id = props.id ?? autoId;
 
-	const describedBy: string[] = [];
-	if (helpText) describedBy.push(`${finalId}-help`);
-	if (error) describedBy.push(`${finalId}-error`);
+	const describedByIds: string[] = [];
+	if (helpText) describedByIds.push(`${id}-help`);
+	if (error) describedByIds.push(`${id}-error`);
 
-	const selectClasses = cn(
-		'block w-full px-3 py-2 border rounded-lg text-gray-900 bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 transition-all',
-		error ? 'border-red-500 focus-visible:ring-red-500' : 'border-gray-300',
+	const classes = cn(
+		DISPLAY_MODES.formControl,
+		'w-full',
+		SIZES.padding.input,
+		'border',
+		SIZES.borderRadius,
+		COLORS.text.primary,
+		COLORS.background.white,
+		FOCUS_STYLES,
+		TRANSITION,
+		error ? `${COLORS.border.error} ${COLORS.border.errorFocus}` : COLORS.border.default,
 		selectClassName,
 		className
 	);
@@ -56,11 +73,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 	return (
 		<div className={cn(fullWidth ? 'w-full' : '', wrapperClassName)}>
 			<select
-				id={finalId}
+				id={id}
 				ref={ref}
-				className={selectClasses}
+				className={classes}
 				aria-invalid={error ? 'true' : undefined}
-				aria-describedby={describedBy.length ? describedBy.join(' ') : undefined}
+				aria-describedby={describedByIds.length ? describedByIds.join(' ') : undefined}
 				value={value}
 				defaultValue={defaultValue}
 				disabled={disabled}
@@ -85,13 +102,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 			</select>
 
 			{helpText && (
-				<p id={`${finalId}-help`} className="mt-1 text-sm text-gray-500">
+				<p id={`${id}-help`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.muted}`}>
 					{helpText}
 				</p>
 			)}
 
 			{error && (
-				<p id={`${finalId}-error`} className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">
+				<p id={`${id}-error`} className={`${SPACING.helpText} ${SIZES.text.sm} ${COLORS.text.error}`} role="alert" aria-live="polite">
 					{error}
 				</p>
 			)}
