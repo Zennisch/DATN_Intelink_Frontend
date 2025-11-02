@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Modal } from "../primary";
 import { CreateShortUrlForm } from "./CreateShortUrlForm";
 import { CreateShortUrlFooter } from "./CreateShortUrlFooter";
-import { AccessControlExample } from "./AccessControlExample";
+import {
+	AccessControlSection,
+	type AccessControlData,
+} from "./AccessControlSection";
 
 interface CreateShortUrlModalProps {
 	open: boolean;
@@ -24,6 +27,13 @@ export const CreateShortUrlModal = ({
 		maxUsage: "",
 	});
 
+	// Access Control state
+	const [accessControl, setAccessControl] = useState<AccessControlData>({
+		mode: "allow",
+		countries: [],
+		ipRanges: [],
+	});
+
 	const handleInputChange =
 		(field: keyof typeof formData) => (value: string) => {
 			setFormData((prev) => ({ ...prev, [field]: value }));
@@ -37,6 +47,11 @@ export const CreateShortUrlModal = ({
 			availableDays: "30",
 			maxUsage: "",
 		});
+		setAccessControl({
+			mode: "allow",
+			countries: [],
+			ipRanges: [],
+		});
 		setIsExtraExpanded(false);
 		onClose();
 	};
@@ -45,6 +60,13 @@ export const CreateShortUrlModal = ({
 		e.preventDefault();
 		// Logic will be implemented later
 		console.log("Form submitted:", formData);
+		console.log("Access Control:", accessControl);
+	};
+
+	// Debug function to log access control data
+	const handleDebugLog = () => {
+		console.log("Access Control Data:", accessControl);
+		alert(JSON.stringify(accessControl, null, 2));
 	};
 
 	return (
@@ -52,7 +74,7 @@ export const CreateShortUrlModal = ({
 			open={open}
 			onClose={handleClose}
 			title="Create Short URL"
-			size={isExtraExpanded ? "full" : "2xl"}
+			size={isExtraExpanded ? "full" : "4xl"}
 			className="transition-all duration-200"
 		>
 			<form onSubmit={handleSubmit} className="space-y-6">
@@ -95,25 +117,20 @@ export const CreateShortUrlModal = ({
 								</h3>
 							</div>
 
-							{/* Placeholder for future features */}
-							{/* <div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg">
-								<div className="text-center space-y-2">
-									<i className="fas fa-magic text-4xl text-gray-400"></i>
-									<p className="text-gray-500 text-sm font-medium">
-										Advanced features coming soon
-									</p>
-									<p className="text-gray-400 text-xs">
-										Tags, QR codes, expiration time, and more...
-									</p>
-								</div>
-							</div> */}
-							<AccessControlExample />
+							{/* Access Control Section */}
+							<AccessControlSection
+								data={accessControl}
+								onChange={setAccessControl}
+							/>
 						</div>
 					</div>
 				</div>
 
 				{/* Footer Actions */}
-				<CreateShortUrlFooter onCancel={handleClose} />
+				<CreateShortUrlFooter
+					onCancel={handleClose}
+					onDebugLog={handleDebugLog} // Comment this line to hide debug button
+				/>
 			</form>
 		</Modal>
 	);

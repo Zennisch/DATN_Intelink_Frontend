@@ -43,19 +43,21 @@ export const AccessControlPreview = ({
 			}`}
 		>
 			<div className="flex items-start gap-3">
-				<i
-					className={`fas ${isAllow ? "fa-shield-check text-green-600" : "fa-shield-xmark text-red-600"} text-lg mt-0.5`}
-				></i>
 				<div className="flex-1 min-w-0">
+					<div className="flex items-center gap-2">
+						<i
+							className={`fas ${isAllow ? "fa-check-circle text-green-600" : "fa-ban text-red-600"} text-base`}
+						></i>
+						<p
+							className={`text-sm font-semibold ${isAllow ? "text-green-900" : "text-red-900"}`}
+						>
+							{isAllow
+								? "Whitelist Mode (Allow Only)"
+								: "Blacklist Mode (Block)"}
+						</p>
+					</div>
 					<p
-						className={`text-sm font-semibold ${isAllow ? "text-green-900" : "text-red-900"}`}
-					>
-						{isAllow
-							? "🔒 Whitelist Mode (Allow Only)"
-							: "🚫 Blacklist Mode (Block)"}
-					</p>
-					<p
-						className={`text-xs mt-1 ${isAllow ? "text-green-700" : "text-red-700"}`}
+						className={`text-xs mt-2 ${isAllow ? "text-green-700" : "text-red-700"}`}
 					>
 						{isAllow
 							? "Only selected locations can access this link"
@@ -66,7 +68,7 @@ export const AccessControlPreview = ({
 						{/* Countries Summary */}
 						{hasCountries && (
 							<div className="flex items-start gap-2">
-								<i className="fas fa-map-marker-alt text-xs text-gray-500 mt-1"></i>
+								<i className="fas fa-map-marker-alt text-xs text-gray-500"></i>
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-medium text-gray-700">
 										{countries.length}{" "}

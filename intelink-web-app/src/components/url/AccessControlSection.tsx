@@ -187,11 +187,24 @@ export const AccessControlSection = ({
 							Access Preview
 						</h4>
 					</div>
-					{data.countries.length > 0 && (
-						<button
-							type="button"
-							onClick={() => setShowMap(!showMap)}
-							className={`
+					<div className="flex items-center gap-2">
+						{hasRestrictions && (
+							<button
+								type="button"
+								onClick={() =>
+									onChange({ mode: data.mode, countries: [], ipRanges: [] })
+								}
+								className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-all duration-200"
+							>
+								<i className="fas fa-times-circle text-sm"></i>
+								<span>Clear All</span>
+							</button>
+						)}
+						{data.countries.length > 0 && (
+							<button
+								type="button"
+								onClick={() => setShowMap(!showMap)}
+								className={`
 							flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md
 							transition-all duration-200
 							${
@@ -200,13 +213,14 @@ export const AccessControlSection = ({
 									: "bg-gray-100 text-gray-700 hover:bg-gray-200"
 							}
 						`}
-						>
-							<i
-								className={`fas fa-${showMap ? "list" : "map-marked-alt"} text-sm`}
-							></i>
-							<span>{showMap ? "Hide Map" : "Show Map"}</span>
-						</button>
-					)}
+							>
+								<i
+									className={`fas fa-${showMap ? "list" : "map-marked-alt"} text-sm`}
+								></i>
+								<span>{showMap ? "Hide Map" : "Show Map"}</span>
+							</button>
+						)}
+					</div>
 				</div>
 				<AccessControlPreview
 					mode={data.mode}
@@ -215,21 +229,6 @@ export const AccessControlSection = ({
 					showMap={showMap}
 				/>
 			</div>
-			{/* Quick Actions */}
-			{hasRestrictions && (
-				<div className="flex justify-end pt-2 border-t border-gray-100">
-					<button
-						type="button"
-						onClick={() =>
-							onChange({ mode: data.mode, countries: [], ipRanges: [] })
-						}
-						className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-all duration-200"
-					>
-						<i className="fas fa-times-circle text-sm"></i>
-						<span>Clear All Restrictions</span>
-					</button>
-				</div>
-			)}
 		</div>
 	);
 };
