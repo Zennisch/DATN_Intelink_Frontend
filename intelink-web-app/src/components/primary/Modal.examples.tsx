@@ -1,9 +1,9 @@
-import {useState} from 'react';
-import {Modal, Button, Input} from './index';
+import { useState } from "react";
+import { Modal, Button, Input } from "./index";
 
 /**
  * Modal Component Usage Examples
- * 
+ *
  * Demonstrates various use cases for the Modal component following
  * the established design pattern of the component library.
  */
@@ -21,7 +21,7 @@ export function ModalExamples() {
 		// Simulate API call
 		setTimeout(() => {
 			setLoadingOpen(false);
-			alert('Form submitted!');
+			alert("Form submitted!");
 		}, 2000);
 	};
 
@@ -32,9 +32,16 @@ export function ModalExamples() {
 			{/* Basic Modal */}
 			<div>
 				<Button onClick={() => setBasicOpen(true)}>Open Basic Modal</Button>
-				<Modal open={basicOpen} onClose={() => setBasicOpen(false)} title="Basic Modal">
+				<Modal
+					open={basicOpen}
+					onClose={() => setBasicOpen(false)}
+					title="Basic Modal"
+				>
 					<p>This is a basic modal with default settings.</p>
-					<p className="mt-2">It includes a close button and can be closed by clicking the backdrop or pressing Escape.</p>
+					<p className="mt-2">
+						It includes a close button and can be closed by clicking the
+						backdrop or pressing Escape.
+					</p>
 				</Modal>
 			</div>
 
@@ -57,7 +64,7 @@ export function ModalExamples() {
 							<Button
 								variant="primary"
 								onClick={() => {
-									alert('Confirmed!');
+									alert("Confirmed!");
 									setConfirmOpen(false);
 								}}
 							>
@@ -67,7 +74,9 @@ export function ModalExamples() {
 					}
 				>
 					<p>Are you sure you want to perform this action?</p>
-					<p className="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
+					<p className="mt-2 text-sm text-gray-500">
+						This action cannot be undone.
+					</p>
 				</Modal>
 			</div>
 
@@ -89,7 +98,7 @@ export function ModalExamples() {
 							<Button
 								variant="primary"
 								onClick={() => {
-									alert('Form saved!');
+									alert("Form saved!");
 									setFormOpen(false);
 								}}
 							>
@@ -100,8 +109,18 @@ export function ModalExamples() {
 				>
 					<form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
 						<Input label="Full Name" placeholder="Enter your name" fullWidth />
-						<Input label="Email" type="email" placeholder="Enter your email" fullWidth />
-						<Input label="Phone" type="tel" placeholder="Enter your phone" fullWidth />
+						<Input
+							label="Email"
+							type="email"
+							placeholder="Enter your email"
+							fullWidth
+						/>
+						<Input
+							label="Phone"
+							type="tel"
+							placeholder="Enter your phone"
+							fullWidth
+						/>
 					</form>
 				</Modal>
 			</div>
@@ -126,17 +145,28 @@ export function ModalExamples() {
 				<Button onClick={() => setSizeOpen(true)} variant="secondary">
 					Open Large Modal
 				</Button>
-				<Modal open={sizeOpen} onClose={() => setSizeOpen(false)} title="Large Modal" size="xl">
+				<Modal
+					open={sizeOpen}
+					onClose={() => setSizeOpen(false)}
+					title="Large Modal"
+					size="xl"
+				>
 					<div className="space-y-4">
 						<p>This is a large modal that can contain more content.</p>
 						<p>Available sizes: sm, md (default), lg, xl, full</p>
 						<div className="bg-gray-100 p-4 rounded">
 							<h3 className="font-semibold mb-2">Example Content Section</h3>
-							<p>You can add any content here including forms, tables, images, etc.</p>
+							<p>
+								You can add any content here including forms, tables, images,
+								etc.
+							</p>
 						</div>
 						<div className="bg-gray-100 p-4 rounded">
 							<h3 className="font-semibold mb-2">Another Section</h3>
-							<p>The modal body is scrollable when content exceeds the viewport height.</p>
+							<p>
+								The modal body is scrollable when content exceeds the viewport
+								height.
+							</p>
 						</div>
 					</div>
 				</Modal>
@@ -144,7 +174,9 @@ export function ModalExamples() {
 
 			{/* Position Variants */}
 			<div>
-				<Button onClick={() => setPositionOpen(true)}>Open Top Positioned Modal</Button>
+				<Button onClick={() => setPositionOpen(true)}>
+					Open Top Positioned Modal
+				</Button>
 				<Modal
 					open={positionOpen}
 					onClose={() => setPositionOpen(false)}
@@ -152,7 +184,9 @@ export function ModalExamples() {
 					position="top"
 				>
 					<p>This modal appears at the top of the screen.</p>
-					<p className="mt-2">Available positions: center (default), top, bottom</p>
+					<p className="mt-2">
+						Available positions: center (default), top, bottom
+					</p>
 				</Modal>
 			</div>
 
@@ -172,7 +206,9 @@ export function ModalExamples() {
 					<div className="text-center py-4">
 						<div className="text-4xl mb-4">🎉</div>
 						<h3 className="text-xl font-semibold mb-2">Success!</h3>
-						<p className="text-gray-600">Your changes have been saved successfully.</p>
+						<p className="text-gray-600">
+							Your changes have been saved successfully.
+						</p>
 					</div>
 				</Modal>
 			</div>

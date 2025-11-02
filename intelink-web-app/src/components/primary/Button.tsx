@@ -1,16 +1,21 @@
-import {type ButtonHTMLAttributes, forwardRef, type ReactNode} from 'react';
-import {cn, FOCUS_STYLES, TRANSITION, SIZES, DISPLAY_MODES} from './utils.ts';
+import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
+import { cn, FOCUS_STYLES, TRANSITION, SIZES, DISPLAY_MODES } from "./utils.ts";
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'social' | 'ghost';
-type Size = 'sm' | 'md' | 'lg';
-type IconPosition = 'left' | 'right';
+type Variant = "primary" | "secondary" | "outline" | "social" | "ghost";
+type Size = "sm" | "md" | "lg";
+type IconPosition = "left" | "right";
 
 const variantClasses: Record<Variant, string> = {
-	primary: 'bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500',
-	secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500',
-	outline: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300',
-	social: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300',
-	ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-500',
+	primary:
+		"bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500",
+	secondary:
+		"bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500",
+	outline:
+		"bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300",
+	social:
+		"bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300",
+	ghost:
+		"bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-500",
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -28,8 +33,19 @@ const DefaultSpinner = (
 		role="img"
 		aria-hidden="true"
 	>
-		<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-		<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+		<circle
+			className="opacity-25"
+			cx="12"
+			cy="12"
+			r="10"
+			stroke="currentColor"
+			strokeWidth="4"
+		></circle>
+		<path
+			className="opacity-75"
+			fill="currentColor"
+			d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+		></path>
 	</svg>
 );
 
@@ -38,15 +54,15 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 	children: ReactNode;
 	icon?: ReactNode;
 	loadingIcon?: ReactNode;
-	
+
 	// Styling props
 	variant?: Variant;
 	size?: Size;
 	iconPosition?: IconPosition;
-	
+
 	// Layout props
 	fullWidth?: boolean;
-	
+
 	// State props
 	loading?: boolean;
 }
@@ -54,32 +70,38 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
 	{
 		children,
-		variant = 'secondary',
-		size = 'md',
+		variant = "secondary",
+		size = "md",
 		icon,
-		iconPosition = 'left',
+		iconPosition = "left",
 		loading = false,
 		loadingIcon,
 		className,
 		disabled,
 		fullWidth = false,
-		type = 'button',
+		type = "button",
 		...props
 	},
-	ref
+	ref,
 ) {
 	const baseClasses = cn(
 		DISPLAY_MODES.button,
-		'font-medium',
+		"font-medium",
 		SIZES.borderRadius,
 		TRANSITION,
 		FOCUS_STYLES,
-		'disabled:opacity-50 disabled:cursor-not-allowed'
+		"disabled:opacity-50 disabled:cursor-not-allowed",
 	);
 
-	const widthClass = fullWidth ? 'w-full' : '';
+	const widthClass = fullWidth ? "w-full" : "";
 
-	const classes = cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className);
+	const classes = cn(
+		baseClasses,
+		variantClasses[variant],
+		sizeClasses[size],
+		widthClass,
+		className,
+	);
 
 	const isLoadingVisual = loading;
 
@@ -93,20 +115,32 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
 			aria-disabled={disabled || loading || undefined}
 			{...props}
 		>
-			{isLoadingVisual && iconPosition === 'left' && (
-				<span className="mr-2 inline-flex" role="status" aria-hidden={loadingIcon ? 'false' : 'true'}>
+			{isLoadingVisual && iconPosition === "left" && (
+				<span
+					className="mr-2 inline-flex"
+					role="status"
+					aria-hidden={loadingIcon ? "false" : "true"}
+				>
 					{loadingIcon ?? DefaultSpinner}
 				</span>
 			)}
 
-			{!loading && icon && iconPosition === 'left' && <span className="mr-2 inline-flex">{icon}</span>}
+			{!loading && icon && iconPosition === "left" && (
+				<span className="mr-2 inline-flex">{icon}</span>
+			)}
 
 			{children}
 
-			{!loading && icon && iconPosition === 'right' && <span className="ml-2 inline-flex">{icon}</span>}
+			{!loading && icon && iconPosition === "right" && (
+				<span className="ml-2 inline-flex">{icon}</span>
+			)}
 
-			{isLoadingVisual && iconPosition === 'right' && (
-				<span className="ml-2 inline-flex" role="status" aria-hidden={loadingIcon ? 'false' : 'true'}>
+			{isLoadingVisual && iconPosition === "right" && (
+				<span
+					className="ml-2 inline-flex"
+					role="status"
+					aria-hidden={loadingIcon ? "false" : "true"}
+				>
 					{loadingIcon ?? DefaultSpinner}
 				</span>
 			)}

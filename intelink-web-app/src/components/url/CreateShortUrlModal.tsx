@@ -1,0 +1,236 @@
+import { useState } from "react";
+import { Modal, Button, Input, Checkbox } from "../primary";
+
+interface CreateShortUrlModalProps {
+	open: boolean;
+	onClose: () => void;
+}
+
+export const CreateShortUrlModal = ({
+	open,
+	onClose,
+}: CreateShortUrlModalProps) => {
+	const [isExtraExpanded, setIsExtraExpanded] = useState(false);
+	const [hasPassword, setHasPassword] = useState(false);
+	const [hasMaxUsage, setHasMaxUsage] = useState(false);
+
+	// Form state (UI only - no validation logic)
+	const [formData, setFormData] = useState({
+		originalUrl: "",
+		customCode: "",
+		password: "",
+		availableDays: "30",
+		maxUsage: "",
+	});
+
+	const handleInputChange =
+		(field: keyof typeof formData) => (value: string) => {
+			setFormData((prev) => ({ ...prev, [field]: value }));
+		};
+
+	const handleClose = () => {
+		setFormData({
+			originalUrl: "",
+			customCode: "",
+			password: "",
+			availableDays: "30",
+			maxUsage: "",
+		});
+		setHasPassword(false);
+		setHasMaxUsage(false);
+		setIsExtraExpanded(false);
+		onClose();
+	};
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		// Logic will be implemented later
+		console.log("Form submitted:", formData);
+	};
+
+	return (
+		<Modal
+			open={open}
+			onClose={handleClose}
+			title="Create Short URL"
+			size="full"
+			containerClassName="max-w-6xl"
+		>
+			<form onSubmit={handleSubmit} className="space-y-6">
+				{/* Main Content Grid */}
+				<div className="flex gap-6 relative">
+					{/* Default Section */}
+					<div className="flex-1 space-y-5">
+						<div className="pb-3 border-b border-gray-200">
+							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+								Basic Information
+							</h3>
+						</div>
+
+						{/* Original URL */}
+						<Input
+							label="Original URL"
+							placeholder="https://example.com/your-very-long-url..."
+							value={formData.originalUrl}
+							onChange={(e) => handleInputChange("originalUrl")(e.target.value)}
+							fullWidth
+							helpText="Enter the full URL you want to shorten"
+						/>
+
+						{/* Custom Code */}
+						<Input
+							label="Custom Short Code"
+							placeholder="my-custom-link"
+							value={formData.customCode}
+							onChange={(e) => handleInputChange("customCode")(e.target.value)}
+							fullWidth
+							helpText="Leave empty for auto-generated code"
+						/>
+
+						{/* Available Days */}
+						<Input
+							label="Available Days"
+							type="number"
+							placeholder="30"
+							value={formData.availableDays}
+							onChange={(e) =>
+								handleInputChange("availableDays")(e.target.value)
+							}
+							fullWidth
+							helpText="How many days this link will be active"
+						/>
+
+						{/* Password Protection */}
+						<div className="space-y-3">
+							<Checkbox
+								checked={hasPassword}
+								onChange={setHasPassword}
+								label="Protect with Password"
+							/>
+
+							{hasPassword && (
+								<div className="pl-7 animate-fadeIn">
+									<Input
+										label="Password"
+										type="password"
+										placeholder="Enter protection password"
+										value={formData.password}
+										onChange={(e) =>
+											handleInputChange("password")(e.target.value)
+										}
+										fullWidth
+									/>
+								</div>
+							)}
+						</div>
+
+						{/* Max Usage */}
+						<div className="space-y-3">
+							<Checkbox
+								checked={hasMaxUsage}
+								onChange={setHasMaxUsage}
+								label="Limit Maximum Usage"
+							/>
+
+							{hasMaxUsage && (
+								<div className="pl-7 animate-fadeIn">
+									<Input
+										label="Maximum Usage Count"
+										type="number"
+										placeholder="100"
+										value={formData.maxUsage}
+										onChange={(e) =>
+											handleInputChange("maxUsage")(e.target.value)
+										}
+										fullWidth
+										helpText="Number of times this link can be used"
+									/>
+								</div>
+							)}
+						</div>
+					</div>
+
+					{/* Expand/Collapse Button */}
+					<div className="flex items-center">
+						<button
+							type="button"
+							onClick={() => setIsExtraExpanded(!isExtraExpanded)}
+							className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							aria-label={
+								isExtraExpanded
+									? "Collapse extra options"
+									: "Expand extra options"
+							}
+						>
+							<i
+								className={`fas fa-chevron-${isExtraExpanded ? "left" : "right"} transition-transform duration-300`}
+							></i>
+						</button>
+					</div>
+
+					{/* Extra Section */}
+					<div
+						className={`flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
+							isExtraExpanded ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
+						}`}
+					>
+						<div className="space-y-5">
+							<div className="pb-3 border-b border-gray-200">
+								<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+									Advanced Options
+								</h3>
+							</div>
+
+							{/* Placeholder for future features */}
+							<div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg">
+								<div className="text-center space-y-2">
+									<i className="fas fa-magic text-4xl text-gray-400"></i>
+									<p className="text-gray-500 text-sm font-medium">
+										Advanced features coming soon
+									</p>
+									<p className="text-gray-400 text-xs">
+										Tags, QR codes, expiration time, and more...
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Footer Actions */}
+				<div className="flex items-center justify-between pt-6 border-t border-gray-200">
+					<div className="text-sm text-gray-500">
+						<i className="fas fa-info-circle mr-1"></i>
+						All fields are optional except Original URL
+					</div>
+					<div className="flex gap-3">
+						<Button type="button" variant="ghost" onClick={handleClose}>
+							Cancel
+						</Button>
+						<Button type="submit" variant="primary">
+							<i className="fas fa-link mr-2"></i>
+							Create Short URL
+						</Button>
+					</div>
+				</div>
+			</form>
+
+			{/* Custom CSS for animations */}
+			<style>{`
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(-8px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+				.animate-fadeIn {
+					animation: fadeIn 0.2s ease-out;
+				}
+			`}</style>
+		</Modal>
+	);
+};

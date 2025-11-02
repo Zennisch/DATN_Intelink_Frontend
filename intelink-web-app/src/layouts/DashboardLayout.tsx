@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardMain } from "./DashboardMain";
-import { ModalExamples } from "../components/primary/Modal.examples";
+import { CreateShortUrlModal } from "../components/url/CreateShortUrlModal";
 
 interface DashboardLayoutProps {}
 
@@ -19,9 +19,10 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 				setCreateNewModalOpen={setCreateNewModalOpen}
 			/>
 			<DashboardMain currentPage={currentPage} />
-			{createNewModalOpen && (
-				<ModalExamples />
-			)}
+			<CreateShortUrlModal
+				open={createNewModalOpen}
+				onClose={() => setCreateNewModalOpen(false)}
+			/>
 		</div>
 	);
 };
