@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthStorage } from '../storages/AuthStorage';
+import { AuthStorage } from "../storages/AuthStorage";
 
 const getApi = () => {
 	const backendUrl = import.meta.env.VITE_BACKEND_URL;
