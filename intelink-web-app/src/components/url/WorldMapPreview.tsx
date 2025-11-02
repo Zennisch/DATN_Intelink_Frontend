@@ -1,4 +1,9 @@
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import {
+	ComposableMap,
+	Geographies,
+	Geography,
+	ZoomableGroup,
+} from "react-simple-maps";
 import { Tooltip } from "react-tooltip";
 import { useState } from "react";
 import { getCountryByCode } from "../../utils/countries";
@@ -20,6 +25,8 @@ export const WorldMapPreview = ({
 	height = 350,
 }: WorldMapPreviewProps) => {
 	const [tooltipContent, setTooltipContent] = useState("");
+	const [zoom, setZoom] = useState(1);
+	const [center, setCenter] = useState<[number, number]>([0, 20]);
 
 	const getCountryColor = (geoId: string) => {
 		const isSelected = selectedCountries.includes(geoId);
@@ -78,7 +85,17 @@ export const WorldMapPreview = ({
 							height: "100%",
 						}}
 					>
-					<Geographies geography={geoUrl}>
+						<ZoomableGroup
+							zoom={zoom}
+							minZoom={1}
+							maxZoom={8}
+							center={center}
+							onMoveEnd={(position) => {
+								setZoom(position.zoom);
+								setCenter(position.coordinates);
+							}}
+						>
+							<Geographies geography={geoUrl}>
 						{({ geographies }: { geographies: any[] }) =>
 							geographies.map((geo: any) => {
 								// Extract ISO code from properties - Natural Earth GeoJSON provides ISO_A2
@@ -123,6 +140,7 @@ export const WorldMapPreview = ({
 							})
 						}
 					</Geographies>
+						</ZoomableGroup>
 				</ComposableMap>
 				</div>
 			</div>
@@ -141,6 +159,38 @@ export const WorldMapPreview = ({
 					zIndex: 1000,
 				}}
 			/>
+
+			{/* Zoom Controls */}
+			<div className="absolute top-4 right-4 flex flex-col gap-2">
+				<button
+					type="button"
+					onClick={() => setZoom(Math.min(zoom * 1.5, 8))}
+					className="w-9 h-9 flex items-center justify-center bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					title="Zoom In"
+				>
+					<i className="fas fa-plus text-gray-700 text-sm"></i>
+				</button>
+				<button
+					type="button"
+					onClick={() => setZoom(Math.max(zoom / 1.5, 1))}
+					className="w-9 h-9 flex items-center justify-center bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					title="Zoom Out"
+				>
+					<i className="fas fa-minus text-gray-700 text-sm"></i>
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						setZoom(1);
+						setCenter([0, 20]);
+					}}
+					className="w-9 h-9 flex items-center justify-center bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					title="Reset View"
+				>
+					<i className="fas fa-expand text-gray-700 text-xs"></i>
+				</button>
+			</div>
+
 			{/* Enhanced Legend */}
 			<div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg shadow-md p-3">
 				<div className="flex items-center gap-3 text-xs">
