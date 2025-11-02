@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal } from "../primary";
 import { CreateShortUrlForm } from "./CreateShortUrlForm";
 import { CreateShortUrlFooter } from "./CreateShortUrlFooter";
+import { AccessControlExample } from "./AccessControlExample";
 
 interface CreateShortUrlModalProps {
 	open: boolean;
@@ -64,7 +65,7 @@ export const CreateShortUrlModal = ({
 					/>
 
 					{/* Expand/Collapse Button */}
-					<div className="flex items-center">
+					<div className="flex items-start">
 						<button
 							type="button"
 							onClick={() => setIsExtraExpanded(!isExtraExpanded)}
@@ -95,7 +96,7 @@ export const CreateShortUrlModal = ({
 							</div>
 
 							{/* Placeholder for future features */}
-							<div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg">
+							{/* <div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg">
 								<div className="text-center space-y-2">
 									<i className="fas fa-magic text-4xl text-gray-400"></i>
 									<p className="text-gray-500 text-sm font-medium">
@@ -105,7 +106,8 @@ export const CreateShortUrlModal = ({
 										Tags, QR codes, expiration time, and more...
 									</p>
 								</div>
-							</div>
+							</div> */}
+              <AccessControlExample />
 						</div>
 					</div>
 				</div>

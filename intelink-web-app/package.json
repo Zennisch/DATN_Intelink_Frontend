@@ -14,9 +14,13 @@
 		"@fortawesome/fontawesome-free": "^7.1.0",
 		"@tailwindcss/vite": "^4.1.14",
 		"axios": "^1.12.2",
+		"cidr-regex": "^5.0.1",
+		"country-flag-emoji": "^1.0.3",
+		"ip-range-check": "^0.2.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-router-dom": "^7.9.3",
+		"react-select": "^5.10.2",
 		"tailwindcss": "^4.1.14"
 	},
 	"devDependencies": {
