@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Modal, Button, Input, Checkbox } from "../primary";
+import { Modal } from "../primary";
+import { CreateShortUrlForm } from "./CreateShortUrlForm";
+import { CreateShortUrlFooter } from "./CreateShortUrlFooter";
 
 interface CreateShortUrlModalProps {
 	open: boolean;
@@ -11,8 +13,6 @@ export const CreateShortUrlModal = ({
 	onClose,
 }: CreateShortUrlModalProps) => {
 	const [isExtraExpanded, setIsExtraExpanded] = useState(false);
-	const [hasPassword, setHasPassword] = useState(false);
-	const [hasMaxUsage, setHasMaxUsage] = useState(false);
 
 	// Form state (UI only - no validation logic)
 	const [formData, setFormData] = useState({
@@ -36,8 +36,6 @@ export const CreateShortUrlModal = ({
 			availableDays: "30",
 			maxUsage: "",
 		});
-		setHasPassword(false);
-		setHasMaxUsage(false);
 		setIsExtraExpanded(false);
 		onClose();
 	};
@@ -53,101 +51,17 @@ export const CreateShortUrlModal = ({
 			open={open}
 			onClose={handleClose}
 			title="Create Short URL"
-			size={isExtraExpanded ? "6xl" : "2xl"}
+			size={isExtraExpanded ? "full" : "2xl"}
 			className="transition-all duration-200"
 		>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{/* Main Content Grid */}
 				<div className="flex gap-6 relative">
 					{/* Default Section */}
-					<div className="flex-1 space-y-4">
-						<div className="pb-3 border-b border-gray-200">
-							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
-								Basic Information
-							</h3>
-						</div>
-						{/* Original URL */}
-						<Input
-							label="Original URL"
-							placeholder="https://example.com/your-very-long-url..."
-							value={formData.originalUrl}
-							onChange={(e) => handleInputChange("originalUrl")(e.target.value)}
-							fullWidth
-							helpText="Enter the full URL you want to shorten"
-						/>
-
-						{/* Custom Code */}
-						<Input
-							label="Custom Short Code"
-							placeholder="my-custom-link"
-							value={formData.customCode}
-							onChange={(e) => handleInputChange("customCode")(e.target.value)}
-							fullWidth
-							helpText="Leave empty for auto-generated code"
-						/>
-
-						{/* Available Days */}
-						<Input
-							label="Available Days"
-							type="number"
-							placeholder="30"
-							value={formData.availableDays}
-							onChange={(e) =>
-								handleInputChange("availableDays")(e.target.value)
-							}
-							fullWidth
-							helpText="How many days this link will be active"
-						/>
-
-						{/* Password Protection */}
-						<div className="space-y-3">
-							<Checkbox
-								checked={hasPassword}
-								onChange={setHasPassword}
-								label="Protect with Password"
-							/>
-
-							{hasPassword && (
-								<div className="pl-7 animate-fadeIn">
-									<Input
-										label="Password"
-										type="password"
-										placeholder="Enter protection password"
-										value={formData.password}
-										onChange={(e) =>
-											handleInputChange("password")(e.target.value)
-										}
-										fullWidth
-									/>
-								</div>
-							)}
-						</div>
-
-						{/* Max Usage */}
-						<div className="space-y-3">
-							<Checkbox
-								checked={hasMaxUsage}
-								onChange={setHasMaxUsage}
-								label="Limit Maximum Usage"
-							/>
-
-							{hasMaxUsage && (
-								<div className="pl-7 animate-fadeIn">
-									<Input
-										label="Maximum Usage Count"
-										type="number"
-										placeholder="100"
-										value={formData.maxUsage}
-										onChange={(e) =>
-											handleInputChange("maxUsage")(e.target.value)
-										}
-										fullWidth
-										helpText="Number of times this link can be used"
-									/>
-								</div>
-							)}
-						</div>
-					</div>
+					<CreateShortUrlForm
+						formData={formData}
+						onInputChange={handleInputChange}
+					/>
 
 					{/* Expand/Collapse Button */}
 					<div className="flex items-center">
@@ -197,21 +111,7 @@ export const CreateShortUrlModal = ({
 				</div>
 
 				{/* Footer Actions */}
-				<div className="flex items-center justify-between pt-6 border-t border-gray-200">
-					<div className="text-sm text-gray-500">
-						<i className="fas fa-info-circle mr-1"></i>
-						All fields are optional except Original URL
-					</div>
-					<div className="flex gap-3">
-						<Button type="button" variant="ghost" onClick={handleClose}>
-							Cancel
-						</Button>
-						<Button type="submit" variant="primary">
-							<i className="fas fa-link mr-2"></i>
-							Create Short URL
-						</Button>
-					</div>
-				</div>
+				<CreateShortUrlFooter onCancel={handleClose} />
 			</form>
 		</Modal>
 	);

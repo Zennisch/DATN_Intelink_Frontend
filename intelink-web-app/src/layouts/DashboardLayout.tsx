@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardMain } from "./DashboardMain";
-import { CreateShortUrlModal } from "../components/url/CreateShortUrlModal";
+import { CreateShortUrlModal } from "../components/url";
 
 interface DashboardLayoutProps {}
 
