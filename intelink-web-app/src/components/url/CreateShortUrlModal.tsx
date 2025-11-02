@@ -74,55 +74,47 @@ export const CreateShortUrlModal = ({
 			open={open}
 			onClose={handleClose}
 			title="Create Short URL"
-			size={isExtraExpanded ? "full" : "4xl"}
-			className="transition-all duration-200"
+			size="4xl"
+			className="transition-all duration-200 max-h-[90vh] overflow-y-auto"
 		>
 			<form onSubmit={handleSubmit} className="space-y-6">
-				{/* Main Content Grid */}
-				<div className="flex gap-6 relative">
-					{/* Default Section */}
-					<CreateShortUrlForm
-						formData={formData}
-						onInputChange={handleInputChange}
-					/>
+				{/* Main Content - Always Visible */}
+				<CreateShortUrlForm
+					formData={formData}
+					onInputChange={handleInputChange}
+				/>
 
-					{/* Expand/Collapse Button */}
-					<div className="flex items-start">
-						<button
-							type="button"
-							onClick={() => setIsExtraExpanded(!isExtraExpanded)}
-							className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-							aria-label={
-								isExtraExpanded
-									? "Collapse extra options"
-									: "Expand extra options"
-							}
-						>
-							<i
-								className={`fas fa-chevron-${isExtraExpanded ? "left" : "right"} transition-transform duration-200`}
-							></i>
-						</button>
-					</div>
-
-					{/* Extra Section */}
-					<div
-						className={`flex-1 overflow-hidden transition-all duration-200 ease-in-out ${
-							isExtraExpanded ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
-						}`}
+				{/* Expand/Collapse Button */}
+				<div className="flex justify-center">
+					<button
+						type="button"
+						onClick={() => setIsExtraExpanded(!isExtraExpanded)}
+						className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+						aria-label={
+							isExtraExpanded
+								? "Collapse advanced options"
+								: "Expand advanced options"
+						}
 					>
-						<div className="space-y-5">
-							<div className="pb-3 border-b border-gray-200">
-								<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
-									Advanced Options
-								</h3>
-							</div>
+						<span className="text-sm font-medium">Advanced Options</span>
+						<i
+							className={`fas fa-chevron-${isExtraExpanded ? "up" : "down"} transition-transform duration-200 text-xs`}
+						></i>
+					</button>
+				</div>
 
-							{/* Access Control Section */}
-							<AccessControlSection
-								data={accessControl}
-								onChange={setAccessControl}
-							/>
-						</div>
+				{/* Extra Section - Collapsible */}
+				<div
+					className={`overflow-visible transition-all duration-300 ease-in-out ${
+						isExtraExpanded ? "max-h-[1200px] opacity-100" : "max-h-0 opacity-0"
+					}`}
+				>
+					<div className="space-y-5 pt-2">
+						{/* Access Control Section */}
+						<AccessControlSection
+							data={accessControl}
+							onChange={setAccessControl}
+						/>
 					</div>
 				</div>
 

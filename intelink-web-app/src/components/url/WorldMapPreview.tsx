@@ -17,7 +17,7 @@ const geoUrl =
 export const WorldMapPreview = ({
 	mode,
 	selectedCountries,
-	height = 400,
+	height = 350,
 }: WorldMapPreviewProps) => {
 	const [tooltipContent, setTooltipContent] = useState("");
 
@@ -63,23 +63,21 @@ export const WorldMapPreview = ({
 	const hasSelections = selectedCountries.length > 0;
 
 	return (
-		<div className="relative rounded-lg overflow-hidden">
-			{/* Map Container */}
-			<div
-				className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
-				style={{ height: `${height}px` }}
-			>
-				<ComposableMap
-					projection="geoMercator"
-					projectionConfig={{
-						scale: 120,
-						center: [0, 20],
-					}}
-					style={{
-						width: "100%",
-						height: "100%",
-					}}
-				>
+		<div className="relative w-full">
+			{/* Map Container with aspect ratio */}
+			<div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+				<div style={{ height: `${height}px`, width: "100%" }}>
+					<ComposableMap
+						projection="geoMercator"
+						projectionConfig={{
+							scale: 120,
+							center: [0, 20],
+						}}
+						style={{
+							width: "100%",
+							height: "100%",
+						}}
+					>
 					<Geographies geography={geoUrl}>
 						{({ geographies }: { geographies: any[] }) =>
 							geographies.map((geo: any) => {
@@ -126,6 +124,7 @@ export const WorldMapPreview = ({
 						}
 					</Geographies>
 				</ComposableMap>
+				</div>
 			</div>
 			{/* Tooltip */}
 			<Tooltip
