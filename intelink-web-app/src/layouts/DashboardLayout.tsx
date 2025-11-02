@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { DashboardSidebar } from "./DashboardSidebar";
-import { OverviewPage } from "../pages/OverviewPage";
-import { LinksPage } from "../pages/LinksPage";
-import { StatisticsPage } from "../pages/StatisticsPage";
-import { APIsPage } from "../pages/APIsPage";
-import { DomainsPage } from "../pages/DomainsPage";
+import { OverviewPage, LinksPage, StatisticsPage, APIsPage, DomainsPage } from "../pages/dashboard";
 
 interface DashboardLayoutProps {}
 
