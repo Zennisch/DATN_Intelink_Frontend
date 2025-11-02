@@ -53,20 +53,19 @@ export const CreateShortUrlModal = ({
 			open={open}
 			onClose={handleClose}
 			title="Create Short URL"
-			size="full"
-			containerClassName="max-w-6xl"
+			size={isExtraExpanded ? "6xl" : "2xl"}
+			className="transition-all duration-200"
 		>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{/* Main Content Grid */}
 				<div className="flex gap-6 relative">
 					{/* Default Section */}
-					<div className="flex-1 space-y-5">
+					<div className="flex-1 space-y-4">
 						<div className="pb-3 border-b border-gray-200">
 							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
 								Basic Information
 							</h3>
 						</div>
-
 						{/* Original URL */}
 						<Input
 							label="Original URL"
@@ -214,23 +213,6 @@ export const CreateShortUrlModal = ({
 					</div>
 				</div>
 			</form>
-
-			{/* Custom CSS for animations */}
-			<style>{`
-				@keyframes fadeIn {
-					from {
-						opacity: 0;
-						transform: translateY(-8px);
-					}
-					to {
-						opacity: 1;
-						transform: translateY(0);
-					}
-				}
-				.animate-fadeIn {
-					animation: fadeIn 0.2s ease-out;
-				}
-			`}</style>
 		</Modal>
 	);
 };

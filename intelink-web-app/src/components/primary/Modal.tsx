@@ -7,7 +7,17 @@ import {
 } from "react";
 import { cn, FOCUS_STYLES, TRANSITION, COLORS, SIZES } from "./utils.ts";
 
-type Size = "sm" | "md" | "lg" | "xl" | "full";
+type Size =
+	| "sm"
+	| "md"
+	| "lg"
+	| "xl"
+	| "2xl"
+	| "3xl"
+	| "4xl"
+	| "5xl"
+	| "6xl"
+	| "full";
 type Position = "center" | "top" | "bottom";
 
 const sizeClasses: Record<Size, string> = {
@@ -15,7 +25,12 @@ const sizeClasses: Record<Size, string> = {
 	md: "max-w-md",
 	lg: "max-w-lg",
 	xl: "max-w-xl",
-	full: "max-w-full mx-4",
+	"2xl": "max-w-2xl",
+	"3xl": "max-w-3xl",
+	"4xl": "max-w-4xl",
+	"5xl": "max-w-5xl",
+	"6xl": "max-w-6xl",
+	full: "max-w-full",
 };
 
 const positionClasses: Record<Position, string> = {
