@@ -10,16 +10,20 @@ interface NavigationButton {
 interface DashboardSidebarProps {
 	currentPage: Page;
 	setCurrentPage: (page: Page) => void;
+	setCreateNewModalOpen: (open: boolean) => void;
 }
 
 export const DashboardSidebar = ({
 	currentPage,
 	setCurrentPage,
+	setCreateNewModalOpen,
 }: DashboardSidebarProps) => {
 	const createNewButton: NavigationButton = {
 		text: "Create New",
 		icon: "fas fa-plus-circle",
-		onClick: () => {},
+		onClick: () => {
+			setCreateNewModalOpen(true);
+		},
 	};
 
 	const navigationButtons: Array<NavigationButton & { page: Page }> = [
