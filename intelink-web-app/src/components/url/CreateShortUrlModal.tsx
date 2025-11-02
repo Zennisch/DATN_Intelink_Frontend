@@ -162,14 +162,14 @@ export const CreateShortUrlModal = ({
 							}
 						>
 							<i
-								className={`fas fa-chevron-${isExtraExpanded ? "left" : "right"} transition-transform duration-300`}
+								className={`fas fa-chevron-${isExtraExpanded ? "left" : "right"} transition-transform duration-200`}
 							></i>
 						</button>
 					</div>
 
 					{/* Extra Section */}
 					<div
-						className={`flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
+						className={`flex-1 overflow-hidden transition-all duration-200 ease-in-out ${
 							isExtraExpanded ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
 						}`}
 					>
