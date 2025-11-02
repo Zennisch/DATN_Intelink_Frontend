@@ -66,7 +66,7 @@ export const AccessControlSection = ({
 						}
 					`}
 					>
-						<i className="fas fa-shield-check"></i>
+						<i className="fas fa-check-circle"></i>
 						<span>Allow Only</span>
 					</button>
 					<button
@@ -81,7 +81,7 @@ export const AccessControlSection = ({
 						}
 					`}
 					>
-						<i className="fas fa-shield-xmark"></i>
+						<i className="fas fa-ban"></i>
 						<span>Block Specific</span>
 					</button>
 				</div>
