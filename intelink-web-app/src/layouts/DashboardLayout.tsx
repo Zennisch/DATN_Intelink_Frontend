@@ -17,7 +17,7 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 
 	const navigationButtons: NavigationButton[] = [
 		{
-			text: "Dashboard",
+			text: "Overview",
 			icon: "fas fa-tachometer-alt",
 			onClick: () => {},
 		},
@@ -71,7 +71,8 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 					<div>
 						<Button
 							variant="primary"
-							className="w-full text-gray-300! bg-cyan-600! hover:bg-gray-700! justify-start mb-4"
+              size="sm"
+							className="w-full text-gray-300! bg-blue-700! hover:bg-gray-700! justify-start mb-4"
 							icon={<i className={createNewButton.icon}></i>}
 							onClick={createNewButton.onClick}
 						>
@@ -81,6 +82,7 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 						{navigationButtons.map((button, index) => (
 							<Button
 								key={index}
+                size="sm"
 								variant="ghost"
 								className="w-full text-gray-300! hover:bg-gray-700 justify-start"
 								icon={<i className={button.icon}></i>}
@@ -93,6 +95,7 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 					<div>
 						<Button
 							variant="ghost"
+              size="sm"
 							className="w-full text-gray-300! hover:bg-gray-700 justify-start"
 							icon={<i className={logoutButton.icon}></i>}
 							onClick={logoutButton.onClick}
