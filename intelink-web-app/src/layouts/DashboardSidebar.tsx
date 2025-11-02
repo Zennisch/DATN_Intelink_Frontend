@@ -1,12 +1,11 @@
 import { Button } from "../components/primary";
+import type { Page } from "./DashboardLayout";
 
 interface NavigationButton {
 	text: string;
 	icon: string;
 	onClick: () => void;
 }
-
-type Page = "overview" | "links" | "statistics" | "apis" | "domains";
 
 interface DashboardSidebarProps {
 	setCurrentPage: (page: Page) => void;
