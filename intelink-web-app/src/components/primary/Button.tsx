@@ -1,7 +1,7 @@
 import {type ButtonHTMLAttributes, forwardRef, type ReactNode} from 'react';
 import {cn, FOCUS_STYLES, TRANSITION, SIZES, DISPLAY_MODES} from './utils.ts';
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'social';
+type Variant = 'primary' | 'secondary' | 'outline' | 'social' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 type IconPosition = 'left' | 'right';
 
@@ -10,6 +10,7 @@ const variantClasses: Record<Variant, string> = {
 	secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500',
 	outline: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300',
 	social: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-500 border border-gray-300',
+	ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-500',
 };
 
 const sizeClasses: Record<Size, string> = {

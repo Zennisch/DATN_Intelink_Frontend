@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "./App.css";
+import { DashboardLayout } from "./layouts/DashboardLayout";
 
 function App() {
 	useEffect(() => {
@@ -19,12 +20,7 @@ function App() {
 		}, 1000);
 	}, []);
 
-	return (
-		<>
-			<h1 className="text-3xl font-bold underline">Hello world!</h1>
-			<i className="fa fa-check-circle"> Font Awesome is working!</i>
-		</>
-	);
+	return <DashboardLayout />;
 }
 
 export default App;
