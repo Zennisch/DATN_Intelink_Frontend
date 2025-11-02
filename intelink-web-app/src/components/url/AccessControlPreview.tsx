@@ -1,12 +1,14 @@
 import {getCountryByCode} from '../../utils/countries';
+import {WorldMapPreview} from './WorldMapPreview';
 
 interface AccessControlPreviewProps {
 	mode: 'allow' | 'block';
 	countries: string[];
 	ipRanges: string[];
+	showMap?: boolean;
 }
 
-export const AccessControlPreview = ({mode, countries, ipRanges}: AccessControlPreviewProps) => {
+export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false}: AccessControlPreviewProps) => {
 	const hasCountries = countries.length > 0;
 	const hasIPs = ipRanges.length > 0;
 	const hasRestrictions = hasCountries || hasIPs;
@@ -110,6 +112,16 @@ export const AccessControlPreview = ({mode, countries, ipRanges}: AccessControlP
 					</div>
 				</div>
 			</div>
+
+			{/* World Map Preview - only show if enabled and countries are selected */}
+			{showMap && hasCountries && (
+				<div className="mt-6">
+					<WorldMapPreview
+						selectedCountries={countries}
+						mode={mode}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

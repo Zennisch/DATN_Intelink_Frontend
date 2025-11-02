@@ -17,6 +17,7 @@ interface AccessControlSectionProps {
 
 export const AccessControlSection = ({data, onChange}: AccessControlSectionProps) => {
 	const [activeTab, setActiveTab] = useState<'geography' | 'network'>('geography');
+	const [showMap, setShowMap] = useState(false);
 
 	const handleModeChange = (mode: 'allow' | 'block') => {
 		onChange({...data, mode});
@@ -131,8 +132,20 @@ export const AccessControlSection = ({data, onChange}: AccessControlSectionProps
 
 			{/* Preview Section */}
 			<div className="pt-4 border-t border-gray-200">
-				<p className="text-xs font-medium text-gray-700 mb-3">Preview:</p>
-				<AccessControlPreview mode={data.mode} countries={data.countries} ipRanges={data.ipRanges} />
+				<div className="flex items-center justify-between mb-3">
+					<p className="text-xs font-medium text-gray-700">Preview:</p>
+					{data.countries.length > 0 && (
+						<button
+							type="button"
+							onClick={() => setShowMap(!showMap)}
+							className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+						>
+							<i className={`fas fa-${showMap ? 'list' : 'map-marked-alt'}`}></i>
+							{showMap ? 'Hide Map' : 'Show Map'}
+						</button>
+					)}
+				</div>
+				<AccessControlPreview mode={data.mode} countries={data.countries} ipRanges={data.ipRanges} showMap={showMap} />
 			</div>
 
 			{/* Quick Actions */}

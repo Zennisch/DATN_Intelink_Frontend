@@ -5,3 +5,4 @@ export {AccessControlSection, type AccessControlData} from './AccessControlSecti
 export {CountrySelector} from './CountrySelector';
 export {IPRangeInput} from './IPRangeInput';
 export {AccessControlPreview} from './AccessControlPreview';
+export {WorldMapPreview} from './WorldMapPreview';
