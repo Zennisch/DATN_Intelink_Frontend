@@ -1,3 +1,4 @@
+import { Logo } from "../components/etc/Logo";
 import { Button } from "../components/primary";
 import type { Page } from "./DashboardLayout";
 
@@ -77,16 +78,7 @@ export const DashboardSidebar = ({
 
 	return (
 		<div className="flex flex-col w-52 bg-[#2a2a2a] p-4 gap-4">
-			<div className="flex items-center justify-start px-4">
-				<a href="/" className="flex flex-row justify-start items-center gap-2">
-					<img
-						src="/assets/logo.png"
-						alt="Intelink Logo"
-						className="h-8 w-8 mb-2"
-					/>
-					<h2 className="text-gray-300 text-2xl font-bold">Intelink</h2>
-				</a>
-			</div>
+			<Logo />
 
 			{/* Navigation Buttons */}
 			<div className="flex flex-1 flex-col justify-between">
