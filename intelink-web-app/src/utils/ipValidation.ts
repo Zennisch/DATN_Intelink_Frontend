@@ -1,10 +1,10 @@
-import cidrRegex from 'cidr-regex';
+import cidrRegex from "cidr-regex";
 
 /**
  * Validates if a string is a valid IPv4 address
  */
 export const isValidIPv4 = (ip: string): boolean => {
-	const parts = ip.split('.');
+	const parts = ip.split(".");
 	if (parts.length !== 4) return false;
 
 	return parts.every((part) => {
@@ -17,7 +17,7 @@ export const isValidIPv4 = (ip: string): boolean => {
  * Validates if a string is a valid CIDR notation
  */
 export const isValidCIDR = (cidr: string): boolean => {
-	return cidrRegex.v4({exact: true}).test(cidr);
+	return cidrRegex.v4({ exact: true }).test(cidr);
 };
 
 /**
@@ -36,7 +36,7 @@ export const getIPValidationError = (value: string): string | undefined => {
 	if (!value.trim()) return undefined;
 
 	if (!validateIPOrCIDR(value)) {
-		return 'Invalid IP or CIDR format. Examples: 192.168.1.1 or 192.168.1.0/24';
+		return "Invalid IP or CIDR format. Examples: 192.168.1.1 or 192.168.1.0/24";
 	}
 
 	return undefined;
@@ -48,7 +48,7 @@ export const getIPValidationError = (value: string): string | undefined => {
 export const calculateCIDRSize = (cidr: string): number => {
 	if (!isValidCIDR(cidr)) return 0;
 
-	const [, mask] = cidr.split('/');
+	const [, mask] = cidr.split("/");
 	const maskBits = parseInt(mask, 10);
 
 	// 2^(32 - mask) gives total IPs in range
@@ -60,8 +60,8 @@ export const calculateCIDRSize = (cidr: string): number => {
  */
 export const formatCIDRSize = (cidr: string): string => {
 	const size = calculateCIDRSize(cidr);
-	if (size === 0) return '';
-	if (size === 1) return '1 IP';
+	if (size === 0) return "";
+	if (size === 1) return "1 IP";
 	if (size < 1000) return `${size} IPs`;
 	if (size < 1000000) return `${(size / 1000).toFixed(1)}K IPs`;
 	return `${(size / 1000000).toFixed(1)}M IPs`;

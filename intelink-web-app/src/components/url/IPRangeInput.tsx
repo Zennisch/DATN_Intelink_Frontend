@@ -1,6 +1,10 @@
-import {useState} from 'react';
-import {Input, Button} from '../primary';
-import {getIPValidationError, formatCIDRSize, isValidCIDR} from '../../utils/ipValidation';
+import { useState } from "react";
+import { Input, Button } from "../primary";
+import {
+	getIPValidationError,
+	formatCIDRSize,
+	isValidCIDR,
+} from "../../utils/ipValidation";
 
 interface IPRangeInputProps {
 	ipRanges: string[];
@@ -8,8 +12,12 @@ interface IPRangeInputProps {
 	disabled?: boolean;
 }
 
-export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInputProps) => {
-	const [currentInput, setCurrentInput] = useState('');
+export const IPRangeInput = ({
+	ipRanges,
+	onChange,
+	disabled = false,
+}: IPRangeInputProps) => {
+	const [currentInput, setCurrentInput] = useState("");
 	const [error, setError] = useState<string | undefined>();
 
 	const handleAdd = () => {
@@ -24,12 +32,12 @@ export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInpu
 
 		// Check for duplicates
 		if (ipRanges.includes(trimmed)) {
-			setError('This IP/CIDR is already added');
+			setError("This IP/CIDR is already added");
 			return;
 		}
 
 		onChange([...ipRanges, trimmed]);
-		setCurrentInput('');
+		setCurrentInput("");
 		setError(undefined);
 	};
 
@@ -38,7 +46,7 @@ export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInpu
 	};
 
 	const handleKeyPress = (e: React.KeyboardEvent) => {
-		if (e.key === 'Enter') {
+		if (e.key === "Enter") {
 			e.preventDefault();
 			handleAdd();
 		}
@@ -46,10 +54,12 @@ export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInpu
 
 	return (
 		<div className="space-y-3">
-			<label className="block text-sm font-medium text-gray-700">IP Addresses / CIDR Ranges</label>
+			<label className="block text-sm font-medium text-gray-700">
+				IP Addresses / CIDR Ranges
+			</label>
 
 			{/* Input Section */}
-			<div className="flex gap-2">
+			<div className="flex gap-3">
 				<div className="flex-1">
 					<Input
 						placeholder="192.168.1.0/24 or 10.0.0.1"
@@ -78,7 +88,8 @@ export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInpu
 
 			{/* Help Text */}
 			<p className="text-xs text-gray-500">
-				Enter single IP (e.g., 192.168.1.1) or CIDR notation (e.g., 192.168.1.0/24)
+				Enter single IP (e.g., 192.168.1.1) or CIDR notation (e.g.,
+				192.168.1.0/24)
 			</p>
 
 			{/* List of added ranges */}
@@ -95,7 +106,9 @@ export const IPRangeInput = ({ipRanges, onChange, disabled = false}: IPRangeInpu
 							>
 								<div className="flex items-center gap-2 flex-1 min-w-0">
 									<i className="fas fa-network-wired text-gray-400 text-sm shrink-0"></i>
-									<code className="text-sm font-mono text-gray-700 truncate">{range}</code>
+									<code className="text-sm font-mono text-gray-700 truncate">
+										{range}
+									</code>
 									{isValidCIDR(range) && (
 										<span className="text-xs text-gray-500 shrink-0">
 											({formatCIDRSize(range)})

@@ -1,14 +1,19 @@
-import {getCountryByCode} from '../../utils/countries';
-import {WorldMapPreview} from './WorldMapPreview';
+import { getCountryByCode } from "../../utils/countries";
+import { WorldMapPreview } from "./WorldMapPreview";
 
 interface AccessControlPreviewProps {
-	mode: 'allow' | 'block';
+	mode: "allow" | "block";
 	countries: string[];
 	ipRanges: string[];
 	showMap?: boolean;
 }
 
-export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false}: AccessControlPreviewProps) => {
+export const AccessControlPreview = ({
+	mode,
+	countries,
+	ipRanges,
+	showMap = false,
+}: AccessControlPreviewProps) => {
 	const hasCountries = countries.length > 0;
 	const hasIPs = ipRanges.length > 0;
 	const hasRestrictions = hasCountries || hasIPs;
@@ -29,26 +34,32 @@ export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false
 		);
 	}
 
-	const isAllow = mode === 'allow';
+	const isAllow = mode === "allow";
 
 	return (
 		<div
 			className={`rounded-lg border p-4 ${
-				isAllow ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+				isAllow ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
 			}`}
 		>
 			<div className="flex items-start gap-3">
 				<i
-					className={`fas ${isAllow ? 'fa-shield-check text-green-600' : 'fa-shield-xmark text-red-600'} text-lg mt-0.5`}
+					className={`fas ${isAllow ? "fa-shield-check text-green-600" : "fa-shield-xmark text-red-600"} text-lg mt-0.5`}
 				></i>
 				<div className="flex-1 min-w-0">
-					<p className={`text-sm font-semibold ${isAllow ? 'text-green-900' : 'text-red-900'}`}>
-						{isAllow ? '🔒 Whitelist Mode (Allow Only)' : '🚫 Blacklist Mode (Block)'}
-					</p>
-					<p className={`text-xs mt-1 ${isAllow ? 'text-green-700' : 'text-red-700'}`}>
+					<p
+						className={`text-sm font-semibold ${isAllow ? "text-green-900" : "text-red-900"}`}
+					>
 						{isAllow
-							? 'Only selected locations can access this link'
-							: 'Everyone can access except selected locations'}
+							? "🔒 Whitelist Mode (Allow Only)"
+							: "🚫 Blacklist Mode (Block)"}
+					</p>
+					<p
+						className={`text-xs mt-1 ${isAllow ? "text-green-700" : "text-red-700"}`}
+					>
+						{isAllow
+							? "Only selected locations can access this link"
+							: "Everyone can access except selected locations"}
 					</p>
 
 					<div className="mt-3 space-y-2">
@@ -58,23 +69,27 @@ export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false
 								<i className="fas fa-map-marker-alt text-xs text-gray-500 mt-1"></i>
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-medium text-gray-700">
-										{countries.length} {countries.length === 1 ? 'Country' : 'Countries'}:
+										{countries.length}{" "}
+										{countries.length === 1 ? "Country" : "Countries"}:
 									</p>
-									<div className="flex flex-wrap gap-1 mt-1">
+									<div className="flex flex-wrap gap-1.5 mt-1.5">
 										{countries.slice(0, 5).map((code) => {
 											const country = getCountryByCode(code);
 											return (
 												<span
 													key={code}
-													className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-white border border-gray-200"
+													className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-white border border-gray-200 font-medium hover:border-gray-300 hover:shadow-sm transition-all duration-150"
 													title={country?.name}
 												>
-													{country?.flag} {country?.name}
+													<span className="text-base leading-none">
+														{country?.flag}
+													</span>
+													<span>{country?.name}</span>
 												</span>
 											);
 										})}
 										{countries.length > 5 && (
-											<span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-white border border-gray-200 text-gray-600">
+											<span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 border border-gray-200 text-gray-700 font-semibold">
 												+{countries.length - 5} more
 											</span>
 										)}
@@ -89,19 +104,20 @@ export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false
 								<i className="fas fa-network-wired text-xs text-gray-500 mt-1"></i>
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-medium text-gray-700">
-										{ipRanges.length} IP {ipRanges.length === 1 ? 'Range' : 'Ranges'}:
+										{ipRanges.length} IP{" "}
+										{ipRanges.length === 1 ? "Range" : "Ranges"}:
 									</p>
-									<div className="flex flex-wrap gap-1 mt-1">
+									<div className="flex flex-wrap gap-1.5 mt-1.5">
 										{ipRanges.slice(0, 3).map((range, idx) => (
 											<code
 												key={idx}
-												className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-white border border-gray-200 font-mono"
+												className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-white border border-gray-200 font-mono hover:border-gray-300 hover:shadow-sm transition-all duration-150"
 											>
 												{range}
 											</code>
 										))}
 										{ipRanges.length > 3 && (
-											<span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-white border border-gray-200 text-gray-600">
+											<span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 border border-gray-200 text-gray-700 font-semibold">
 												+{ipRanges.length - 3} more
 											</span>
 										)}
@@ -113,13 +129,12 @@ export const AccessControlPreview = ({mode, countries, ipRanges, showMap = false
 				</div>
 			</div>
 
-			{/* World Map Preview - only show if enabled and countries are selected */}
+			{/* World Map Preview with Smooth Animation */}
 			{showMap && hasCountries && (
-				<div className="mt-6">
-					<WorldMapPreview
-						selectedCountries={countries}
-						mode={mode}
-					/>
+				<div className="mt-4 overflow-hidden transition-all duration-300 ease-in-out">
+					<div className="border-t border-gray-200 pt-4">
+						<WorldMapPreview selectedCountries={countries} mode={mode} />
+					</div>
 				</div>
 			)}
 		</div>
