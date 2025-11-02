@@ -35,6 +35,14 @@ export const AccessControlSection = ({
 		onChange({ ...data, ipRanges });
 	};
 
+	const handleCountryToggle = (countryCode: string) => {
+		const isSelected = data.countries.includes(countryCode);
+		const newCountries = isSelected
+			? data.countries.filter((c) => c !== countryCode)
+			: [...data.countries, countryCode];
+		handleCountriesChange(newCountries);
+	};
+
 	const hasRestrictions = data.countries.length > 0 || data.ipRanges.length > 0;
 
 	return (
@@ -227,6 +235,7 @@ export const AccessControlSection = ({
 					countries={data.countries}
 					ipRanges={data.ipRanges}
 					showMap={showMap}
+					onCountryToggle={handleCountryToggle}
 				/>
 			</div>
 		</div>

@@ -6,6 +6,7 @@ interface AccessControlPreviewProps {
 	countries: string[];
 	ipRanges: string[];
 	showMap?: boolean;
+	onCountryToggle?: (countryCode: string) => void;
 }
 
 export const AccessControlPreview = ({
@@ -13,6 +14,7 @@ export const AccessControlPreview = ({
 	countries,
 	ipRanges,
 	showMap = false,
+	onCountryToggle,
 }: AccessControlPreviewProps) => {
 	const hasCountries = countries.length > 0;
 	const hasIPs = ipRanges.length > 0;
@@ -135,7 +137,11 @@ export const AccessControlPreview = ({
 			{showMap && hasCountries && (
 				<div className="mt-4 overflow-hidden transition-all duration-300 ease-in-out">
 					<div className="border-t border-gray-200 pt-4">
-						<WorldMapPreview selectedCountries={countries} mode={mode} />
+						<WorldMapPreview
+							selectedCountries={countries}
+							mode={mode}
+							onCountryToggle={onCountryToggle}
+						/>
 					</div>
 				</div>
 			)}

@@ -12,6 +12,7 @@ interface WorldMapPreviewProps {
 	mode: "allow" | "block";
 	selectedCountries: string[];
 	height?: number;
+	onCountryToggle?: (countryCode: string) => void;
 }
 
 // Use CDN for map data to avoid bundle size increase
@@ -23,6 +24,7 @@ export const WorldMapPreview = ({
 	mode,
 	selectedCountries,
 	height = 350,
+	onCountryToggle,
 }: WorldMapPreviewProps) => {
 	const [tooltipContent, setTooltipContent] = useState("");
 	const [zoom, setZoom] = useState(1);
@@ -57,7 +59,10 @@ export const WorldMapPreview = ({
 					? "⚪ Not Allowed"
 					: "⚪ Not Blocked";
 
-			setTooltipContent(`${country.flag} ${country.name} - ${status}`);
+			const action = isSelected ? "Click to remove" : "Click to add";
+			setTooltipContent(
+				`${country.flag} ${country.name} - ${status} • ${action}`,
+			);
 		} else {
 			setTooltipContent(`Country: ${geoId}`);
 		}
@@ -135,6 +140,7 @@ export const WorldMapPreview = ({
 										data-tooltip-id="world-map-tooltip"
 										onMouseEnter={() => handleMouseEnter(isoCode)}
 										onMouseLeave={handleMouseLeave}
+										onClick={() => onCountryToggle?.(isoCode)}
 									/>
 								);
 							})
