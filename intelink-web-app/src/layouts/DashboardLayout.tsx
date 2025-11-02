@@ -11,7 +11,10 @@ export const DashboardLayout = ({}: DashboardLayoutProps) => {
 
 	return (
 		<div className="flex flex-row min-h-screen">
-			<DashboardSidebar setCurrentPage={setCurrentPage} />
+			<DashboardSidebar
+				currentPage={currentPage}
+				setCurrentPage={setCurrentPage}
+			/>
 			<DashboardMain currentPage={currentPage} />
 		</div>
 	);

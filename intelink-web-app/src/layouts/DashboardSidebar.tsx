@@ -8,20 +8,25 @@ interface NavigationButton {
 }
 
 interface DashboardSidebarProps {
+	currentPage: Page;
 	setCurrentPage: (page: Page) => void;
 }
 
-export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
+export const DashboardSidebar = ({
+	currentPage,
+	setCurrentPage,
+}: DashboardSidebarProps) => {
 	const createNewButton: NavigationButton = {
 		text: "Create New",
 		icon: "fas fa-plus-circle",
 		onClick: () => {},
 	};
 
-	const navigationButtons: NavigationButton[] = [
+	const navigationButtons: Array<NavigationButton & { page: Page }> = [
 		{
 			text: "Overview",
 			icon: "fas fa-tachometer-alt",
+			page: "overview",
 			onClick: () => {
 				setCurrentPage("overview");
 			},
@@ -29,6 +34,7 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 		{
 			text: "Links",
 			icon: "fas fa-link",
+			page: "links",
 			onClick: () => {
 				setCurrentPage("links");
 			},
@@ -36,6 +42,7 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 		{
 			text: "Statistics",
 			icon: "fas fa-chart-bar",
+			page: "statistics",
 			onClick: () => {
 				setCurrentPage("statistics");
 			},
@@ -43,6 +50,7 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 		{
 			text: "APIs",
 			icon: "fas fa-cogs",
+			page: "apis",
 			onClick: () => {
 				setCurrentPage("apis");
 			},
@@ -50,6 +58,7 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 		{
 			text: "Domains",
 			icon: "fas fa-globe",
+			page: "domains",
 			onClick: () => {
 				setCurrentPage("domains");
 			},
@@ -77,7 +86,7 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 
 			{/* Navigation Buttons */}
 			<div className="flex flex-1 flex-col justify-between">
-				<div>
+				<div className="flex flex-col gap-2">
 					<Button
 						variant="primary"
 						size="sm"
@@ -88,18 +97,25 @@ export const DashboardSidebar = ({ setCurrentPage }: DashboardSidebarProps) => {
 						Create New
 					</Button>
 
-					{navigationButtons.map((button, index) => (
-						<Button
-							key={index}
-							size="sm"
-							variant="ghost"
-							className="w-full text-gray-300! hover:bg-gray-700 justify-start"
-							icon={<i className={button.icon}></i>}
-							onClick={button.onClick}
-						>
-							{button.text}
-						</Button>
-					))}
+					{navigationButtons.map((button, index) => {
+						const isActive = currentPage === button.page;
+						return (
+							<Button
+								key={index}
+								size="sm"
+								variant="ghost"
+								className={`w-full justify-start ${
+									isActive
+										? "text-white! bg-gray-700!"
+										: "text-gray-300! hover:bg-gray-700"
+								}`}
+								icon={<i className={button.icon}></i>}
+								onClick={button.onClick}
+							>
+								{button.text}
+							</Button>
+						);
+					})}
 				</div>
 				<div>
 					<Button
