@@ -182,7 +182,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 								{/* Dropdown Menu */}
 								<div className="absolute right-0 top-5 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden group-hover:block">
 									<div className="py-1">
-										{onViewStats && (
+										{/* {onViewStats && (
 											<button
 												onClick={() => onViewStats(shortUrl.shortCode)}
 												className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
@@ -200,7 +200,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 												<i className="fas fa-edit w-4 h-4"></i>
 												Edit
 											</button>
-										)}
+										)} */}
 
 										{onToggleStatus && (
 											<button

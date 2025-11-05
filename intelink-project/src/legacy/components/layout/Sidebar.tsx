@@ -127,25 +127,89 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 					</nav>
 
 					{/* Upgrade Section */}
-					<div className="px-4 py-4 border-t border-gray-200">
-						<div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
-							<div className="text-sm font-medium mb-1">
-								2/10 links available
-							</div>
-							<div className="text-xs opacity-90 mb-3">
-								Enjoying Intelink? Consider upgrading your plan so you can go
-								limitless.
-							</div>
-							<button className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors"
-								onClick={() => {
-									navigate("/plans");
-									onClose();
-								}}
-							>
-								Upgrade now →
-							</button>
+					{user && (
+						<div className="px-4 py-4 border-t border-gray-200">
+							{(() => {
+								const maxLinks = user.currentSubscription?.maxShortUrls || 10;
+								const isUnlimited = maxLinks === -1;
+								const isNearLimit = !isUnlimited && user.totalShortUrls >= maxLinks * 0.8;
+								const isFreeUser = !user.currentSubscription || user.currentSubscription.planType === 'FREE';
+								
+								// Show upgrade section for free users or users approaching limits (but not unlimited users)
+								const shouldShowUpgrade = isFreeUser || (isNearLimit && !isUnlimited);
+
+								if (shouldShowUpgrade) {
+									return (
+										<div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
+											<div className="text-sm font-medium mb-1">
+												{isUnlimited 
+													? `${user.totalShortUrls} links created`
+													: `${user.totalShortUrls}/${maxLinks} links available`
+												}
+											</div>
+											<div className="text-xs opacity-90 mb-3">
+												{isFreeUser
+													? "Enjoying Intelink? Consider upgrading your plan so you can go limitless."
+													: "You're approaching your link limit. Consider upgrading for more capacity."
+												}
+											</div>
+											<button 
+												className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors"
+												onClick={() => {
+													navigate("/plans");
+													onClose();
+												}}
+											>
+												{isFreeUser ? "Upgrade now →" : "View plans →"}
+											</button>
+										</div>
+									);
+								} else {
+									// Show current plan info for premium users not approaching limits
+									return (
+										<div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
+											<div className="flex items-center mb-2">
+												<span className="text-white text-lg mr-2">✨</span>
+												<div className="text-sm font-medium text-white">
+													{user.currentSubscription?.planType} Plan
+												</div>
+											</div>
+											<div className="text-xs text-white opacity-90 mb-2">
+												{isUnlimited 
+													? `${user.totalShortUrls} links created (Unlimited)`
+													: `${user.totalShortUrls}/${maxLinks} links used`
+												}
+											</div>
+											<div className="text-xs text-white opacity-90 mb-3">
+												{user.currentSubscription?.active 
+													? `Active until ${new Date(user.currentSubscription.expiresAt).toLocaleDateString()}`
+													: "Plan inactive"
+												}
+											</div>
+											<button 
+												className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors"
+												onClick={() => {
+													navigate("/plans");
+													onClose();
+												}}
+											>
+												Manage Plan →
+											</button>
+											<button 
+												className="w-full bg-white text-blue-600 text-sm font-medium py-2 px-3 rounded-md hover:bg-gray-50 transition-colors mt-2"
+												onClick={() => {
+													navigate("/dashboard/subscriptions");
+													onClose();
+												}}
+											>
+												Subscriptions →
+											</button>
+										</div>
+									);
+								}
+							})()}
 						</div>
-					</div>
+					)}
 
 					{/* Sign Out */}
 					<div className="px-4 py-4 border-t border-gray-200">

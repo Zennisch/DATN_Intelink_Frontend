@@ -4,6 +4,7 @@ import { StatisticsContent } from "../../components/dashboard/StatisticsContent.
 import { ApisPage } from "./ApisPage.tsx";
 import { DomainsPage } from "./DomainsPage.tsx";
 import { SettingsPage } from "./SettingsPage.tsx";
+import SubscriptionsPage from "../SubscriptionsPage.tsx";
 
 export const dashboardRoutes = [
 	{
@@ -33,5 +34,9 @@ export const dashboardRoutes = [
 	{
 		path: "settings",
 		component: <SettingsPage />
+	},
+	{
+		path: "subscriptions",
+		component: <SubscriptionsPage />
 	}
 ];
