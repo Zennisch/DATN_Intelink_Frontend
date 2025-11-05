@@ -11,6 +11,7 @@ import { useShortUrl } from "../../hooks/useShortUrl";
 import { BarChart } from "../../components/ui/BarChart";
 import { PieChart } from "../../components/ui/PieChart";
 import { CountryMap } from "../../components/ui/CountryMap";
+import { LineChart } from "../../components/ui/LineChart";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function StatisticsScreen() {
@@ -154,8 +155,9 @@ export default function StatisticsScreen() {
     </View>
   );
 
-  const formattedTimeData = useMemo(() => {
-    if (!timeData?.buckets) return [] as { x: string; y: number }[];
+  // Generate line chart data with fake allows and blocks data
+  const lineChartData = useMemo(() => {
+    if (!timeData?.buckets) return [];
     const fmt = (iso: string) => {
       const date = new Date(iso);
       switch (granularity) {
@@ -170,7 +172,20 @@ export default function StatisticsScreen() {
           return `${date.getHours().toString().padStart(2, '0')}:00`;
       }
     };
-    return timeData.buckets.map(b => ({ x: fmt(b.time), y: b.clicks }));
+    
+    return timeData.buckets.map(b => {
+      const clicks = b.clicks;
+      // Generate random allows and blocks based on clicks
+      const allows = Math.floor(clicks * (0.7 + Math.random() * 0.2)); // 70-90% of clicks
+      const blocks = clicks - allows + Math.floor(Math.random() * 10); // remaining + some random
+      
+      return {
+        time: fmt(b.time),
+        clicks,
+        allows,
+        blocks
+      };
+    });
   }, [timeData, granularity]);
 
   const GranularityButton = ({ g, label }: { g: TimeGranularity; label: string }) => (
@@ -359,11 +374,10 @@ export default function StatisticsScreen() {
               (timeLoading && !timeData) ? (
                 <Text className="text-center text-gray-500">Loading chart...</Text>
               ) : (
-                <BarChart
-                  data={formattedTimeData.map(d => ({ label: d.x, value: d.y }))}
-                  height={260}
-                  rotateLabels={formattedTimeData.length > 6}
-                  onBarPress={(d) => setSelectedBarInfo(`${d.label}: ${d.value} clicks`)}
+                <LineChart
+                  data={lineChartData}
+                  height={280}
+                  rotateLabels={lineChartData.length > 6}
                 />
               )
             ) : (
