@@ -247,9 +247,12 @@ export default function StatisticsScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
       {/* No top header - tabs control navigation */}
-      <ScrollView className="flex-1 px-4 py-6">
+      <ScrollView 
+        className="flex-1 px-4" 
+        contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+      >
         {/* URL Selector */}
         <View className="mb-4">
           <Text className="text-lg font-semibold text-gray-900 mb-2">Select URL</Text>
@@ -307,7 +310,7 @@ export default function StatisticsScreen() {
         {mode === 'TIME' && (
           <View className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-6">
             <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-lg font-semibold text-gray-900">Clicks over Time</Text>
+              <Text className="text-lg font-semibold text-gray-900">Over Time</Text>
               <View className="flex-row items-center space-x-2">
                 <TouchableOpacity onPress={() => setTimeMode('REGULAR')} className={`px-3 py-1 rounded ${timeMode === 'REGULAR' ? 'bg-blue-600' : 'bg-gray-100'}`}>
                   <Text className={`${timeMode === 'REGULAR' ? 'text-white' : 'text-gray-700'} text-xs`}>Regular</Text>

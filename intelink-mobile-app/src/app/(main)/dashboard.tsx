@@ -19,9 +19,11 @@ export default function DashboardScreen() {
 		};
 
 	return (
-			<SafeAreaView className="flex-1 bg-gray-50">
-
-			<ScrollView className="flex-1 px-4 py-6">
+			<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+			<ScrollView 
+				className="flex-1 px-4" 
+				contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+			>
 				{/* Welcome Section */}
 						<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
 					<Text className="text-2xl font-bold text-gray-900 mb-2">

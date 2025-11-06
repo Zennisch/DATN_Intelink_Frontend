@@ -212,7 +212,7 @@ export default function ShortUrlsScreen() {
 	};
 
 			return (
-				<SafeAreaView className="flex-1 bg-gray-50">
+				<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
 					<CustomShortUrlModal
 						visible={modalVisible}
 						onClose={() => setModalVisible(false)}
@@ -250,7 +250,10 @@ export default function ShortUrlsScreen() {
 						error={unlockError}
 						shortUrl={unlockShortUrl}
 					/>
-					<ScrollView className="flex-1 px-4 py-6">
+					<ScrollView 
+						className="flex-1 px-4" 
+						contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+					>
 				{/* Error Display */}
 				{error && (
 					<View className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex-row items-center justify-between">

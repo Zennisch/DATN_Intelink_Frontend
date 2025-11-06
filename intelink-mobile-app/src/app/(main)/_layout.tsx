@@ -28,6 +28,13 @@ export default function MainLayout() {
 					}}
 				/>
 				<Tabs.Screen
+					name="overview"
+					options={{
+						tabBarLabel: 'Overview',
+						tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" color={color} size={size} />,
+					}}
+				/>
+				<Tabs.Screen
 					name="statistics"
 					options={{
 						tabBarLabel: 'Statistics',

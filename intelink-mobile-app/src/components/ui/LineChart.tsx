@@ -35,7 +35,7 @@ export function LineChart({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   
   // Calculate dimensions
-  const yAxisWidth = showYAxis ? 13 : 0;
+  const yAxisWidth = showYAxis ? 20 : 0;
   const xAxisHeight = showXAxis ? (rotateLabels ? 44 : 32) : 0;
   const topPad = 30;
   const rightPad = 10;
