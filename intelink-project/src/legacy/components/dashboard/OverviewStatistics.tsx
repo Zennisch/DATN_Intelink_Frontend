@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { OverviewStatisticsService } from "../../services/OverviewStatisticsService";
 import type { CountryStatisticsResponse, TimeSeriesResponse } from "../../services/OverviewStatisticsService";
+import { CountryMapChart } from "../statistic/CountryMapChart";
+import { LineChart } from "../ui/LineChart";
 
 type TabType = "country" | "timeseries";
 type Granularity = "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY";
@@ -105,10 +107,51 @@ export const OverviewStatistics = () => {
 		return 1;
 	}, [activeTab, countryData, timeSeriesData]);
 
-	const applyPreset = (days: number) => {
+	// Convert country data to map format
+	const countryMapData = useMemo(() => {
+		if (!countryData) return [];
+		
+		const total = countryData.data.reduce((sum, d) => sum + d.views, 0);
+		
+		return countryData.data.map(item => ({
+			name: item.country,
+			clicks: item.views,
+			percentage: total > 0 ? (item.views / total) * 100 : 0
+		}));
+	}, [countryData]);
+
+	// Convert time series data to line chart format with fake allows and blocks
+	const lineChartData = useMemo(() => {
+		if (!timeSeriesData) return [];
+		
+		return timeSeriesData.data.map(item => {
+			const clicks = item.views;
+			// Generate fake allows: 70-90% of clicks
+			const allowsPercentage = 0.7 + Math.random() * 0.2;
+			const allows = Math.floor(clicks * allowsPercentage);
+			// Generate fake blocks: remaining + some random variance
+			const blocks = Math.max(0, clicks - allows + Math.floor(Math.random() * clicks * 0.1));
+			
+			return {
+				time: item.date,
+				clicks,
+				allows,
+				blocks,
+			};
+		});
+	}, [timeSeriesData]);
+
+	const applyPreset = (days: number | null) => {
 		const end = new Date();
 		const start = new Date();
-		start.setDate(end.getDate() - days);
+		
+		if (days === null) {
+			// All time: set to a very early date (e.g., 10 years ago)
+			start.setFullYear(end.getFullYear() - 10);
+		} else {
+			start.setDate(end.getDate() - days);
+		}
+		
 		setStartDate(start.toISOString().split("T")[0]);
 		setEndDate(end.toISOString().split("T")[0]);
 	};
@@ -205,6 +248,12 @@ export const OverviewStatistics = () => {
 					>
 						Last 90 days
 					</button>
+					<button
+						onClick={() => applyPreset(null)}
+						className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+					>
+						All Time
+					</button>
 				</div>
 			</div>
 
@@ -238,36 +287,49 @@ export const OverviewStatistics = () => {
 						</div>
 					</div>
 
-					{/* Bar Chart */}
-					<div>
-						<h3 className="text-lg font-semibold text-gray-900 mb-4">Views by Country</h3>
-						<div className="space-y-3">
-							{countryData.data.map((item, index) => {
-								const percentage = (item.views / maxValue) * 100;
-								return (
-									<div key={item.country} className="flex items-center gap-3">
-										<div className="w-12 text-sm text-gray-600 font-medium">
-											#{index + 1}
-										</div>
-										<div className="flex-1">
-											<div className="flex items-center justify-between mb-1">
-												<span className="text-sm font-medium text-gray-900">
-													{COUNTRY_NAMES[item.country] || item.country}
-												</span>
-												<span className="text-sm text-gray-600">
-													{item.views.toLocaleString()} views
-												</span>
+					{/* Map Visualization & Bar Chart Side by Side */}
+					<div className="grid grid-cols-10 gap-4 h-[600px]">
+						{/* Map - 7 columns */}
+						<div className="col-span-7 h-full">
+							<CountryMapChart 
+								data={countryMapData} 
+								title="Geographic Distribution of Views"
+							/>
+						</div>
+
+						{/* Bar Chart - 3 columns */}
+						<div className="col-span-3 h-full">
+							<div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col">
+								<h3 className="text-base font-semibold text-gray-900 mb-3 text-center">Top Countries</h3>
+								<div className="space-y-2 overflow-y-auto flex-1">
+									{countryData.data.slice(0, 10).map((item, index) => {
+										const percentage = (item.views / maxValue) * 100;
+										return (
+											<div key={item.country} className="space-y-1">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<span className="text-xs text-gray-600 font-medium w-6">
+															#{index + 1}
+														</span>
+														<span className="text-xs font-medium text-gray-900 truncate">
+															{COUNTRY_NAMES[item.country] || item.country}
+														</span>
+													</div>
+													<span className="text-xs text-gray-600 whitespace-nowrap ml-2">
+														{item.views.toLocaleString()}
+													</span>
+												</div>
+												<div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden ml-8">
+													<div
+														className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+														style={{ width: `${percentage}%` }}
+													/>
+												</div>
 											</div>
-											<div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-												<div
-													className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
-													style={{ width: `${percentage}%` }}
-												/>
-											</div>
-										</div>
-									</div>
-								);
-							})}
+										);
+									})}
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -328,57 +390,31 @@ export const OverviewStatistics = () => {
 					{/* Summary */}
 					<div className="grid grid-cols-3 gap-4">
 						<div className="bg-purple-50 rounded-lg p-4">
-							<div className="text-sm text-purple-600 font-medium">Total Views</div>
+							<div className="text-sm text-purple-600 font-medium">Total Clicks</div>
 							<div className="text-2xl font-bold text-purple-900">
-								{timeSeriesData.totalViews.toLocaleString()}
+								{lineChartData.reduce((sum, d) => sum + d.clicks, 0).toLocaleString()}
 							</div>
 						</div>
-						<div className="bg-indigo-50 rounded-lg p-4">
-							<div className="text-sm text-indigo-600 font-medium">Data Points</div>
-							<div className="text-2xl font-bold text-indigo-900">
-								{timeSeriesData.data.length}
+						<div className="bg-green-50 rounded-lg p-4">
+							<div className="text-sm text-green-600 font-medium">Total Allows</div>
+							<div className="text-2xl font-bold text-green-900">
+								{lineChartData.reduce((sum, d) => sum + d.allows, 0).toLocaleString()}
 							</div>
 						</div>
-						<div className="bg-pink-50 rounded-lg p-4">
-							<div className="text-sm text-pink-600 font-medium">Average/Period</div>
-							<div className="text-2xl font-bold text-pink-900">
-								{timeSeriesData.data.length > 0
-									? Math.round(timeSeriesData.totalViews / timeSeriesData.data.length)
-									: 0}
+						<div className="bg-red-50 rounded-lg p-4">
+							<div className="text-sm text-red-600 font-medium">Total Blocks</div>
+							<div className="text-2xl font-bold text-red-900">
+								{lineChartData.reduce((sum, d) => sum + d.blocks, 0).toLocaleString()}
 							</div>
 						</div>
 					</div>
 
-					{/* Bar Chart */}
+					{/* Line Chart */}
 					<div>
-						<h3 className="text-lg font-semibold text-gray-900 mb-4">
-							Views over Time ({timeSeriesData.granularity})
-						</h3>
-						<div className="space-y-2 max-h-[500px] overflow-y-auto">
-							{timeSeriesData.data.map((item, index) => {
-								const percentage = (item.views / maxValue) * 100;
-								return (
-									<div key={`${item.date}-${index}`} className="flex items-center gap-3">
-										<div className="w-24 text-sm text-gray-600 font-mono">
-											{item.date}
-										</div>
-										<div className="flex-1">
-											<div className="flex items-center justify-between mb-1">
-												<span className="text-sm text-gray-600">
-													{item.views} views
-												</span>
-											</div>
-											<div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-												<div
-													className="bg-gradient-to-r from-purple-500 to-pink-600 h-3 rounded-full transition-all duration-300"
-													style={{ width: `${percentage}%` }}
-												/>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
+						<LineChart 
+							data={lineChartData} 
+							title={`Views over Time (${timeSeriesData.granularity})`}
+						/>
 					</div>
 
 					{/* Table */}
