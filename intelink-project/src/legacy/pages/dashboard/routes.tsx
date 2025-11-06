@@ -1,6 +1,7 @@
 import { DashboardOverviewPage } from "./DashboardOverviewPage.tsx";
 import { ShortUrlPage } from "./ShortUrlPage.tsx";
 import { StatisticsContent } from "../../components/dashboard/StatisticsContent.tsx";
+import { OverviewStatisticsPage } from "./OverviewStatisticsPage.tsx";
 import { ApisPage } from "./ApisPage.tsx";
 import { DomainsPage } from "./DomainsPage.tsx";
 import { SettingsPage } from "./SettingsPage.tsx";
@@ -18,6 +19,10 @@ export const dashboardRoutes = [
 	{
 		path: "short-urls",
 		component: <ShortUrlPage />
+	},
+	{
+		path: "overview-stats",
+		component: <OverviewStatisticsPage />
 	},
 	{
 		path: "statistics",
