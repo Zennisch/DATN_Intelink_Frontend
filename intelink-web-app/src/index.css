@@ -17,33 +17,16 @@
 		sans-serif;
 }
 
-/* Animation for form field expansion */
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(-8px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+.field-container {
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	transform: translateY(-8px);
+	transition: all 0.3s ease-out;
 }
 
-@keyframes fadeOut {
-	from {
-		opacity: 1;
-		transform: translateY(0);
-	}
-	to {
-		opacity: 0;
-		transform: translateY(-8px);
-	}
-}
-
-.animate-fadeIn {
-	animation: fadeIn 0.2s ease-out;
-}
-
-.animate-fadeOut {
-	animation: fadeOut 0.2s ease-out;
+.field-container.expanded {
+	max-height: 200px;
+	opacity: 1;
+	transform: translateY(0);
 }

@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Checkbox, Input, Modal } from "../primary";
-import type { AccessControlData } from "./AccessControlSection";
+import { Button, Checkbox, Input, Modal } from "../primary";
+import {
+	AccessControlSection,
+	type AccessControlData,
+} from "./AccessControlSection";
 
 interface CreateShortUrlModalProps {
 	open: boolean;
@@ -16,11 +19,6 @@ export const CreateShortUrlModal = ({
 	const [hasPassword, setHasPassword] = useState(false);
 	const [hasAvailableDays, setHasAvailableDays] = useState(true);
 	const [hasMaxUsage, setHasMaxUsage] = useState(false);
-
-	// States for managing animation
-	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-	const [isAvailableDaysVisible, setIsAvailableDaysVisible] = useState(true);
-	const [isMaxUsageVisible, setIsMaxUsageVisible] = useState(false);
 
 	const [formData, setFormData] = useState({
 		originalUrl: "",
@@ -40,36 +38,6 @@ export const CreateShortUrlModal = ({
 		(field: keyof typeof formData) => (value: string) => {
 			setFormData((prev) => ({ ...prev, [field]: value }));
 		};
-
-	const handlePasswordToggle = (checked: boolean) => {
-		if (checked) {
-			setHasPassword(true);
-			setIsPasswordVisible(true);
-		} else {
-			setIsPasswordVisible(false);
-			setTimeout(() => setHasPassword(false), 200);
-		}
-	};
-
-	const handleAvailableDaysToggle = (checked: boolean) => {
-		if (checked) {
-			setHasAvailableDays(true);
-			setIsAvailableDaysVisible(true);
-		} else {
-			setIsAvailableDaysVisible(false);
-			setTimeout(() => setHasAvailableDays(false), 200);
-		}
-	};
-
-	const handleMaxUsageToggle = (checked: boolean) => {
-		if (checked) {
-			setHasMaxUsage(true);
-			setIsMaxUsageVisible(true);
-		} else {
-			setIsMaxUsageVisible(false);
-			setTimeout(() => setHasMaxUsage(false), 200);
-		}
-	};
 
 	const handleSubmit = () => {};
 
@@ -100,6 +68,7 @@ export const CreateShortUrlModal = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<div className="flex flex-1 flex-col gap-6">
+					{/* Basic Settings Section */}
 					<div className="flex flex-col gap-2">
 						<div className="pb-2 border-b border-gray-200">
 							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
@@ -132,6 +101,7 @@ export const CreateShortUrlModal = ({
 						</div>
 					</div>
 
+					{/* Extra Settings Section */}
 					<div className="flex flex-col gap-2">
 						<div className="pb-2 border-b border-gray-200">
 							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
@@ -142,82 +112,118 @@ export const CreateShortUrlModal = ({
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasAvailableDays}
-									onChange={handleAvailableDaysToggle}
+									onChange={setHasAvailableDays}
 									label="Limit Available Days"
 								/>
-								{hasAvailableDays && (
-									<div
-										className={
-											isAvailableDaysVisible ? "animate-fadeIn" : "animate-fadeOut"
+								<div
+									className={`field-container ${hasAvailableDays ? "expanded" : ""}`}
+								>
+									<Input
+										label="Available Days"
+										type="number"
+										placeholder="30"
+										value={formData.availableDays}
+										onChange={(e) =>
+											handleInputChange("availableDays")(e.target.value)
 										}
-									>
-										<Input
-											label="Available Days"
-											type="number"
-											placeholder="30"
-											value={formData.availableDays}
-											onChange={(e) =>
-												handleInputChange("availableDays")(e.target.value)
-											}
-											fullWidth
-											helpText="How many days this link will be active"
-										/>
-									</div>
-								)}
+										fullWidth
+										helpText="How many days this link will be active"
+									/>
+								</div>
 							</div>
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasMaxUsage}
-									onChange={handleMaxUsageToggle}
+									onChange={setHasMaxUsage}
 									label="Limit Maximum Usage"
 								/>
-								{hasMaxUsage && (
-									<div
-										className={
-											isMaxUsageVisible ? "animate-fadeIn" : "animate-fadeOut"
+								<div
+									className={`field-container ${hasMaxUsage ? "expanded" : ""}`}
+								>
+									<Input
+										label="Maximum Usage"
+										type="number"
+										placeholder="100"
+										value={formData.maxUsage}
+										onChange={(e) =>
+											handleInputChange("maxUsage")(e.target.value)
 										}
-									>
-										<Input
-											label="Maximum Usage"
-											type="number"
-											placeholder="100"
-											value={formData.maxUsage}
-											onChange={(e) =>
-												handleInputChange("maxUsage")(e.target.value)
-											}
-											fullWidth
-											helpText="Maximum number of times this link can be used"
-										/>
-									</div>
-								)}
+										fullWidth
+										helpText="Maximum number of times this link can be used"
+									/>
+								</div>
 							</div>
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasPassword}
-									onChange={handlePasswordToggle}
+									onChange={setHasPassword}
 									label="Protect with Password"
 								/>
-								{hasPassword && (
-									<div
-										className={
-											isPasswordVisible ? "animate-fadeIn" : "animate-fadeOut"
+								<div
+									className={`field-container ${hasPassword ? "expanded" : ""}`}
+								>
+									<Input
+										label="Password"
+										type="password"
+										placeholder="Enter protection password"
+										value={formData.password}
+										onChange={(e) =>
+											handleInputChange("password")(e.target.value)
 										}
-									>
-										<Input
-											label="Password"
-											type="password"
-											placeholder="Enter protection password"
-											value={formData.password}
-											onChange={(e) =>
-												handleInputChange("password")(e.target.value)
-											}
-											fullWidth
-										/>
-									</div>
-								)}
+										fullWidth
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
+
+					{/* Expand/Collapse Button */}
+					<div className="flex justify-center">
+						<button
+							type="button"
+							onClick={() => setIsExtraExpanded(!isExtraExpanded)}
+							className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							aria-label={
+								isExtraExpanded
+									? "Collapse advanced options"
+									: "Expand advanced options"
+							}
+						>
+							<span className="text-sm font-medium">Advanced Settings</span>
+							<i
+								className={`fas fa-chevron-${isExtraExpanded ? "up" : "down"} transition-transform duration-200 text-xs`}
+							></i>
+						</button>
+					</div>
+
+					{/* Advanced Options Section */}
+					<div
+						className={`overflow-visible transition-all duration-300 ease-in-out ${isExtraExpanded ? "" : "hidden"}`}
+					>
+						<div className="flex flex-col gap-4">
+							<div className="pb-2 border-b border-gray-200">
+								<h1 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+									Advanced Settings
+								</h1>
+							</div>
+							{/* Access Control Section */}
+							<AccessControlSection
+								data={accessControl}
+								onChange={setAccessControl}
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* Footer Actions */}
+				<div className="flex items-center justify-end border-t pt-4 mt-4 border-gray-200 gap-4">
+					<Button type="button" variant="ghost" size="sm" onClick={handleClose}>
+						Cancel
+					</Button>
+					<Button type="submit" variant="primary" size="sm">
+						<i className="fas fa-link mr-2"></i>
+						Create Short URL
+					</Button>
 				</div>
 			</form>
 		</Modal>
