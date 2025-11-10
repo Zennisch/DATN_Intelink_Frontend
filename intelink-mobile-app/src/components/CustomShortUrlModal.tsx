@@ -38,6 +38,7 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
   const [errors, setErrors] = useState<Partial<Record<keyof CreateShortUrlRequest, string>>>({});
   const [hasPassword, setHasPassword] = useState(false);
   const [hasMaxUsage, setHasMaxUsage] = useState(false);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   const validateForm = (): Partial<Record<keyof CreateShortUrlRequest, string>> => {
     const newErrors: Partial<Record<keyof CreateShortUrlRequest, string>> = {};
@@ -121,7 +122,7 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
       setErrors((prev) => ({ ...prev, maxUsage: undefined }));
     }
   };
-
+  
   return (
     <Modal
       visible={visible}
@@ -132,52 +133,57 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
       <View className="flex-1 justify-center items-center bg-black/40">
         <View className="bg-white rounded-lg p-6 w-11/12 max-w-md shadow-lg">
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text className="text-lg font-semibold mb-4 text-gray-900">
+            <Text className="text-lg font-semibold mb-6 text-gray-900">
               Create Short URL
             </Text>
-            <TextInput
-              label="Original URL*"
-              placeholder="https://example.com/very-long-url..."
-              value={formData.originalUrl}
-              onChangeText={v => handleInputChange("originalUrl", v)}
-              error={errors.originalUrl}
-              fullWidth
-              autoCapitalize="none"
-              keyboardType="url"
-              editable={!loading}
-            />
-            <TextInput
-              label="Custom Short Code"
-              placeholder="Custom alias (optional)"
-              value={formData.customCode || ""}
-              onChangeText={v => handleInputChange("customCode", v)}
-              error={errors.customCode}
-              fullWidth
-              autoCapitalize="none"
-              editable={!loading}
-            />
-            <TextInput
-              label="Description"
-              placeholder="Description for this short URL..."
-              value={formData.description || ""}
-              onChangeText={v => handleInputChange("description", v)}
-              fullWidth
-              editable={!loading}
-              multiline
-              numberOfLines={2}
-              style={{ minHeight: 48 }}
-            />
-            <TextInput
-              label="Available Days*"
-              placeholder="30"
-              value={formData.availableDays.toString()}
-              onChangeText={v => handleInputChange("availableDays", parseInt(v) || 0)}
-              error={errors.availableDays}
-              fullWidth
-              keyboardType="numeric"
-              editable={!loading}
-            />
-            <View className="flex-row items-center mt-2 mb-1">
+            <View className="mb-4">
+              <TextInput
+                label="Original URL*"
+                placeholder="https://example.com/very-long-url..."
+                value={formData.originalUrl}
+                onChangeText={v => handleInputChange("originalUrl", v)}
+                error={errors.originalUrl}
+                fullWidth
+                autoCapitalize="none"
+                keyboardType="url"
+                editable={!loading}
+              />
+            </View>
+            <View className="mb-4">
+              <TextInput
+                label="Custom Short Code"
+                placeholder="Custom alias (optional)"
+                value={formData.customCode || ""}
+                onChangeText={v => handleInputChange("customCode", v)}
+                error={errors.customCode}
+                fullWidth
+                autoCapitalize="none"
+                editable={!loading}
+              />
+            </View>
+            <View className="mb-4">
+              <TextInput
+                label="Description"
+                placeholder="Description for this short URL..."
+                value={formData.description || ""}
+                onChangeText={v => handleInputChange("description", v)}
+                fullWidth
+                editable={!loading}
+              />
+            </View>
+            <View className="mb-4">
+              <TextInput
+                label="Available Days*"
+                placeholder="30"
+                value={formData.availableDays.toString()}
+                onChangeText={v => handleInputChange("availableDays", parseInt(v) || 0)}
+                error={errors.availableDays}
+                fullWidth
+                keyboardType="numeric"
+                editable={!loading}
+              />
+            </View>
+            <View className="flex-row items-center mt-3 mb-2">
               <Checkbox
                 checked={hasPassword}
                 onChange={handlePasswordToggle}
@@ -186,18 +192,20 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
               />
             </View>
             {hasPassword && (
-              <TextInput
-                label="Password"
-                placeholder="Enter password"
-                value={formData.password || ""}
-                onChangeText={v => handleInputChange("password", v)}
-                error={errors.password}
-                fullWidth
-                secureTextEntry
-                editable={!loading}
-              />
+              <View className="mb-4">
+                <TextInput
+                  label="Password"
+                  placeholder="Enter password"
+                  value={formData.password || ""}
+                  onChangeText={v => handleInputChange("password", v)}
+                  error={errors.password}
+                  fullWidth
+                  secureTextEntry
+                  editable={!loading}
+                />
+              </View>
             )}
-            <View className="flex-row items-center mt-2 mb-1">
+            <View className="flex-row items-center mt-3 mb-2">
               <Checkbox
                 checked={hasMaxUsage}
                 onChange={handleMaxUsageToggle}
@@ -206,18 +214,39 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
               />
             </View>
             {hasMaxUsage && (
-              <TextInput
-                label="Max Usage"
-                placeholder="100"
-                value={formData.maxUsage?.toString() || ""}
-                onChangeText={v => handleInputChange("maxUsage", parseInt(v) || 0)}
-                error={errors.maxUsage}
-                fullWidth
-                keyboardType="numeric"
-                editable={!loading}
-              />
+              <View className="mb-4">
+                <TextInput
+                  label="Max Usage"
+                  placeholder="100"
+                  value={formData.maxUsage?.toString() || ""}
+                  onChangeText={v => handleInputChange("maxUsage", parseInt(v) || 0)}
+                  error={errors.maxUsage}
+                  fullWidth
+                  keyboardType="numeric"
+                  editable={!loading}
+                />
+              </View>
             )}
-            <View className="flex-row justify-end mt-6 space-x-2">
+            
+            {/* Advanced Options Button */}
+            <View className="mt-4 mb-3">
+              <TouchableOpacity 
+                className="bg-gray-100 rounded-lg py-3 px-4"
+                disabled={loading}
+                onPress={() => setShowAdvancedOptions(!showAdvancedOptions)}
+              >
+                <View className="flex-row items-center justify-center">
+                  <Text className="text-gray-900 text-center font-medium mr-2">
+                    Advanced Options
+                  </Text>
+                  <Text className="text-gray-900 text-lg">
+                    {showAdvancedOptions ? '▲' : '▼'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-end mt-3 space-x-2">
               <TouchableOpacity onPress={handleClose} disabled={loading}>
                 <Text className="text-gray-500 px-4 py-2">Cancel</Text>
               </TouchableOpacity>

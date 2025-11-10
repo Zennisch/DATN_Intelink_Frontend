@@ -352,19 +352,52 @@ export default function ShortUrlsScreen() {
 					) : (
 						shortUrls.map((url) => (
 							<View key={url.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-								<View className="flex-row justify-between items-start mb-2">
+								{/* Header with 3-dot menu */}
+								<View className="flex-row justify-between items-start mb-3">
 									<View className="flex-1 mr-2">
 										<Text className="text-sm text-gray-500 mb-1">Original URL</Text>
 										<Text className="text-gray-900 text-sm" numberOfLines={2}>
 											{url.originalUrl}
 										</Text>
 									</View>
-									<TouchableOpacity
-										onPress={() => handleCopyToClipboard(url.shortUrl, url.shortCode)}
-										className="p-2"
-									>
-										<Ionicons name="copy-outline" size={20} color="#6B7280" />
-									</TouchableOpacity>
+									<View className="flex-row items-center">
+										<TouchableOpacity
+											onPress={() => handleCopyToClipboard(url.shortUrl, url.shortCode)}
+											className="p-2"
+										>
+											<Ionicons name="copy-outline" size={20} color="#6B7280" />
+										</TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => {
+												Alert.alert(
+													"URL Options",
+													`Manage ${url.shortCode}`,
+													[
+														{
+															text: "View Statistics",
+															onPress: () => router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } })
+														},
+														{
+															text: url.status === 'ENABLED' ? 'Disable' : 'Enable',
+															onPress: () => handleToggleStatus(url.shortCode, url.status)
+														},
+														{
+															text: "Delete",
+															onPress: () => handleDeleteShortUrl(url.shortCode),
+															style: "destructive"
+														},
+														{
+															text: "Cancel",
+															style: "cancel"
+														}
+													]
+												);
+											}}
+											className="p-2"
+										>
+											<Ionicons name="ellipsis-vertical" size={20} color="#6B7280" />
+										</TouchableOpacity>
+									</View>
 								</View>
 								
 												<View className="flex-row justify-between items-center mb-2">

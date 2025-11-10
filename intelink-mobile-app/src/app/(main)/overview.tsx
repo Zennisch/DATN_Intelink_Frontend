@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { OverviewStatisticsService, type Granularity, type CountryStatisticsResponse, type TimeSeriesResponse } from "../../services/OverviewStatisticsService";
+import { OverviewStatisticsService, type Granularity, type CountryStatisticsResponse, type TimeSeriesResponse, type DimensionType, type DimensionStatisticsResponse } from "../../services/OverviewStatisticsService";
 import { CountryMap } from "../../components/ui/CountryMap";
 import { LineChart } from "../../components/ui/LineChart";
 import { COUNTRY_NAMES } from "../../constants/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-type TabType = "country" | "timeseries";
+type TabType = "country" | "timeseries" | "dimension";
 
 export default function OverviewScreen() {
 	const [activeTab, setActiveTab] = useState<TabType>("country");
 	const [countryData, setCountryData] = useState<CountryStatisticsResponse | null>(null);
 	const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesResponse | null>(null);
+	const [dimensionData, setDimensionData] = useState<Map<DimensionType, DimensionStatisticsResponse>>(new Map());
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +23,28 @@ export default function OverviewScreen() {
 	const [showStartPicker, setShowStartPicker] = useState(false);
 	const [showEndPicker, setShowEndPicker] = useState(false);
 	const [granularity, setGranularity] = useState<Granularity>("DAILY");
+	const [selectedPreset, setSelectedPreset] = useState<number | null | undefined>(30); // Track selected preset
+	
+	// Dimension state
+	const [selectedDimensions, setSelectedDimensions] = useState<DimensionType[]>(["COUNTRY"]);
+	const [limit, setLimit] = useState(10);
+
+	const DIMENSION_OPTIONS: { value: DimensionType; label: string }[] = [
+		{ value: "COUNTRY", label: "Country" },
+		{ value: "REFERRER", label: "Referrer" },
+		{ value: "REFERRER_TYPE", label: "Referrer Type" },
+		{ value: "UTM_SOURCE", label: "UTM Source" },
+		{ value: "UTM_MEDIUM", label: "UTM Medium" },
+		{ value: "UTM_CAMPAIGN", label: "UTM Campaign" },
+		{ value: "BROWSER", label: "Browser" },
+		{ value: "OS", label: "OS" },
+		{ value: "DEVICE_TYPE", label: "Device Type" },
+		{ value: "CITY", label: "City" },
+		{ value: "REGION", label: "Region" },
+		{ value: "TIMEZONE", label: "Timezone" },
+		{ value: "ISP", label: "ISP" },
+		{ value: "LANGUAGE", label: "Language" },
+	];
 
 	// Auto-fetch when dates change
 	useEffect(() => {
@@ -57,12 +80,39 @@ export default function OverviewScreen() {
 			}
 		};
 
+		const fetchDimensionStats = async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				const from = `${startDate.toISOString().split("T")[0]}T00:00:00Z`;
+				const to = `${endDate.toISOString().split("T")[0]}T23:59:59Z`;
+				
+				const promises = selectedDimensions.map(dim =>
+					OverviewStatisticsService.getDimensionStatistics(dim, from, to, limit)
+				);
+				const results = await Promise.all(promises);
+				
+				const newData = new Map<DimensionType, DimensionStatisticsResponse>();
+				results.forEach((result, idx) => {
+					newData.set(selectedDimensions[idx], result);
+				});
+				setDimensionData(newData);
+			} catch (err) {
+				const error = err as { response?: { data?: { message?: string } } };
+				setError(error.response?.data?.message || "Failed to fetch dimension statistics");
+			} finally {
+				setLoading(false);
+			}
+		};
+
 		if (activeTab === "country") {
 			fetchCountryStats();
-		} else {
+		} else if (activeTab === "timeseries") {
 			fetchTimeSeriesStats();
+		} else if (activeTab === "dimension") {
+			fetchDimensionStats();
 		}
-	}, [startDate, endDate, activeTab, granularity]);
+	}, [startDate, endDate, activeTab, granularity, selectedDimensions, limit]);
 
 	// Convert country data to map format
 	const countryMapData = useMemo(() => {
@@ -107,6 +157,7 @@ export default function OverviewScreen() {
 		
 		setStartDate(start);
 		setEndDate(end);
+		setSelectedPreset(days);
 	};
 
 	const formatDateLabel = (date: Date) => {
@@ -162,11 +213,11 @@ export default function OverviewScreen() {
 				<View className="flex-row space-x-2 mb-4">
 					<TouchableOpacity
 						onPress={() => setActiveTab("country")}
-						className={`flex-1 px-4 py-2 rounded-lg ${
+						className={`flex-1 px-3 py-2 rounded-lg ${
 							activeTab === "country" ? 'bg-blue-600' : 'bg-gray-100'
 						}`}
 					>
-						<Text className={`text-center font-medium ${
+						<Text className={`text-center font-medium text-xs ${
 							activeTab === "country" ? 'text-white' : 'text-gray-700'
 						}`}>
 							By Country
@@ -174,14 +225,26 @@ export default function OverviewScreen() {
 					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={() => setActiveTab("timeseries")}
-						className={`flex-1 px-4 py-2 rounded-lg ${
+						className={`flex-1 px-3 py-2 rounded-lg ${
 							activeTab === "timeseries" ? 'bg-blue-600' : 'bg-gray-100'
 						}`}
 					>
-						<Text className={`text-center font-medium ${
+						<Text className={`text-center font-medium text-xs ${
 							activeTab === "timeseries" ? 'text-white' : 'text-gray-700'
 						}`}>
 							Time Series
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setActiveTab("dimension")}
+						className={`flex-1 px-3 py-2 rounded-lg ${
+							activeTab === "dimension" ? 'bg-blue-600' : 'bg-gray-100'
+						}`}
+					>
+						<Text className={`text-center font-medium text-xs ${
+							activeTab === "dimension" ? 'text-white' : 'text-gray-700'
+						}`}>
+							By Dimension
 						</Text>
 					</TouchableOpacity>
 				</View>
@@ -213,27 +276,51 @@ export default function OverviewScreen() {
 					<View className="flex-row flex-wrap gap-2">
 						<TouchableOpacity
 							onPress={() => applyPreset(7)}
-							className="px-3 py-1 rounded bg-gray-100"
+							className={`px-3 py-1 rounded ${
+								selectedPreset === 7 ? 'bg-blue-600' : 'bg-gray-100'
+							}`}
 						>
-							<Text className="text-xs text-gray-700">Last 7 days</Text>
+							<Text className={`text-xs ${
+								selectedPreset === 7 ? 'text-white font-medium' : 'text-gray-700'
+							}`}>
+								Last 7 days
+							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => applyPreset(30)}
-							className="px-3 py-1 rounded bg-gray-100"
+							className={`px-3 py-1 rounded ${
+								selectedPreset === 30 ? 'bg-blue-600' : 'bg-gray-100'
+							}`}
 						>
-							<Text className="text-xs text-gray-700">Last 30 days</Text>
+							<Text className={`text-xs ${
+								selectedPreset === 30 ? 'text-white font-medium' : 'text-gray-700'
+							}`}>
+								Last 30 days
+							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => applyPreset(90)}
-							className="px-3 py-1 rounded bg-gray-100"
+							className={`px-3 py-1 rounded ${
+								selectedPreset === 90 ? 'bg-blue-600' : 'bg-gray-100'
+							}`}
 						>
-							<Text className="text-xs text-gray-700">Last 90 days</Text>
+							<Text className={`text-xs ${
+								selectedPreset === 90 ? 'text-white font-medium' : 'text-gray-700'
+							}`}>
+								Last 90 days
+							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => applyPreset(null)}
-							className="px-3 py-1 rounded bg-blue-100"
+							className={`px-3 py-1 rounded ${
+								selectedPreset === null ? 'bg-blue-600' : 'bg-gray-100'
+							}`}
 						>
-							<Text className="text-xs text-blue-700 font-medium">All Time</Text>
+							<Text className={`text-xs ${
+								selectedPreset === null ? 'text-white font-medium' : 'text-gray-700'
+							}`}>
+								All Time
+							</Text>
 						</TouchableOpacity>
 					</View>
 
@@ -261,6 +348,7 @@ export default function OverviewScreen() {
 								if (date) {
 									if (endDate && date > endDate) setEndDate(date);
 									setStartDate(date);
+									setSelectedPreset(undefined); // Clear preset selection
 								}
 							}}
 							maximumDate={endDate}
@@ -273,7 +361,10 @@ export default function OverviewScreen() {
 							display={Platform.OS === 'ios' ? 'inline' : 'default'}
 							onChange={(event, date) => {
 								setShowEndPicker(false);
-								if (date) setEndDate(date);
+								if (date) {
+									setEndDate(date);
+									setSelectedPreset(undefined); // Clear preset selection
+								}
 							}}
 							minimumDate={startDate}
 							maximumDate={new Date()}
@@ -388,6 +479,260 @@ export default function OverviewScreen() {
 								rotateLabels={lineChartData.length > 6}
 							/>
 						</View>
+					</View>
+				)}
+
+				{/* Dimension Statistics */}
+				{!loading && !error && activeTab === "dimension" && (
+					<View>
+						{/* Dimension Selector */}
+						<View className="bg-white rounded-lg p-4 mb-4 shadow-sm border border-gray-200">
+							<Text className="text-base font-semibold text-gray-900 mb-3">
+								Select Dimensions
+							</Text>
+							
+							{/* Action buttons */}
+							<View className="flex-row space-x-2 mb-3">
+								<TouchableOpacity
+									onPress={() => setSelectedDimensions(DIMENSION_OPTIONS.map(d => d.value))}
+									className="flex-1 px-3 py-2 rounded bg-blue-100"
+								>
+									<Text className="text-xs text-blue-700 text-center font-medium">
+										Select All
+									</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									onPress={() => setSelectedDimensions([])}
+									className="flex-1 px-3 py-2 rounded bg-gray-100"
+								>
+									<Text className="text-xs text-gray-700 text-center font-medium">
+										Clear All
+									</Text>
+								</TouchableOpacity>
+							</View>
+
+							{/* Dimension checkboxes - scrollable */}
+							<ScrollView 
+								className="max-h-48"
+								showsVerticalScrollIndicator={true}
+								nestedScrollEnabled={true}
+							>
+								<View className="space-y-2">
+									{DIMENSION_OPTIONS.map(option => (
+										<TouchableOpacity
+											key={option.value}
+											onPress={() => {
+												setSelectedDimensions(prev => 
+													prev.includes(option.value)
+														? prev.filter(d => d !== option.value)
+														: [...prev, option.value]
+												);
+											}}
+											className="flex-row items-center py-2 px-2 rounded"
+										>
+											<View className={`w-5 h-5 rounded border-2 mr-3 items-center justify-center ${
+												selectedDimensions.includes(option.value)
+													? 'bg-blue-600 border-blue-600'
+													: 'border-gray-300'
+											}`}>
+												{selectedDimensions.includes(option.value) && (
+													<Text className="text-white text-xs">✓</Text>
+												)}
+											</View>
+											<Text className="text-sm text-gray-900">{option.label}</Text>
+										</TouchableOpacity>
+									))}
+								</View>
+							</ScrollView>
+
+							{/* Limit selector */}
+							<View className="mt-3 pt-3 border-t border-gray-200">
+								<Text className="text-xs text-gray-600 mb-2">Top Items Limit</Text>
+								<View className="flex-row space-x-2">
+									{[5, 10, 15, 20].map(val => (
+										<TouchableOpacity
+											key={val}
+											onPress={() => setLimit(val)}
+											className={`px-3 py-1 rounded-full ${
+												limit === val ? 'bg-blue-600' : 'bg-gray-100'
+											}`}
+										>
+											<Text className={`text-xs ${
+												limit === val ? 'text-white' : 'text-gray-700'
+											}`}>
+												{val}
+											</Text>
+										</TouchableOpacity>
+									))}
+								</View>
+							</View>
+						</View>
+
+						{/* Display selected dimensions data */}
+						{selectedDimensions.length === 0 ? (
+							<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
+								<Text className="text-center text-gray-500">
+									Please select at least one dimension to view statistics
+								</Text>
+							</View>
+						) : (
+							<View>
+								{/* Bar Charts Section */}
+								<View className="mb-4">
+									<View className="grid grid-cols-1 gap-4">
+										{selectedDimensions.map(dimension => {
+											const data = dimensionData.get(dimension);
+											if (!data || data.stats.length === 0) return null;
+
+											const total = data.stats.reduce((sum, s) => sum + s.clicks, 0);
+											const dimensionLabel = DIMENSION_OPTIONS.find(d => d.value === dimension)?.label || dimension;
+
+											return (
+												<View key={dimension} className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+													<Text className="text-base font-semibold text-gray-900 mb-3">
+														{dimensionLabel}
+													</Text>
+													
+													{/* Bar chart items */}
+													<View className="space-y-3">
+														{data.stats.map((stat, index) => {
+															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
+															const displayValue = dimension === "COUNTRY" 
+																? (COUNTRY_NAMES[stat.value] || stat.value)
+																: stat.value;
+
+															return (
+																<View key={stat.value} className="space-y-1.5">
+																	{/* Info row */}
+																	<View className="flex-row items-center gap-3">
+																		<Text className="text-gray-600 text-xs w-7">
+																			#{index + 1}
+																		</Text>
+																		<Text className="flex-1 text-sm text-gray-900 truncate" numberOfLines={1}>
+																			{displayValue}
+																		</Text>
+																		<Text className="text-xs text-gray-600 min-w-[45px] text-right">
+																			{percentage.toFixed(1)}%
+																		</Text>
+																		<Text className="text-sm font-medium text-gray-900 min-w-[70px] text-right">
+																			{stat.clicks.toLocaleString()}
+																		</Text>
+																	</View>
+																	
+																	{/* Progress bar */}
+																	<View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+																		<View 
+																			className="h-full bg-blue-600 rounded-full"
+																			style={{ width: `${percentage}%` }}
+																		/>
+																	</View>
+																</View>
+															);
+														})}
+													</View>
+
+													{/* Total */}
+													<View className="mt-3 pt-3 border-t border-gray-200">
+														<View className="flex-row justify-between items-center">
+															<Text className="text-sm font-medium text-gray-700">Total</Text>
+															<Text className="text-sm font-bold text-gray-900">
+																{total.toLocaleString()} clicks
+															</Text>
+														</View>
+													</View>
+												</View>
+											);
+										})}
+									</View>
+								</View>
+
+								{/* Detailed Data Tables Section */}
+								<View className="mb-4">
+									<Text className="text-lg font-semibold text-gray-900 mb-3">
+										Detailed Data Tables
+									</Text>
+									<View className="space-y-4">
+										{selectedDimensions.map(dimension => {
+											const data = dimensionData.get(dimension);
+											if (!data || data.stats.length === 0) return null;
+
+											const total = data.stats.reduce((sum, s) => sum + s.clicks, 0);
+											const dimensionLabel = DIMENSION_OPTIONS.find(d => d.value === dimension)?.label || dimension;
+
+											return (
+												<View key={`table-${dimension}`} className="bg-white rounded-lg shadow-sm border border-gray-200">
+													<View className="px-4 py-3 border-b border-gray-200">
+														<Text className="text-base font-semibold text-gray-900">
+															{dimensionLabel} - Detailed Stats
+														</Text>
+													</View>
+													
+													{/* Table header */}
+													<View className="flex-row bg-gray-50 px-4 py-2 border-b border-gray-200">
+														<Text className="text-xs font-medium text-gray-600 w-12">
+															Rank
+														</Text>
+														<Text className="text-xs font-medium text-gray-600 flex-1">
+															{dimensionLabel}
+														</Text>
+														<Text className="text-xs font-medium text-gray-600 w-16 text-right">
+															%
+														</Text>
+														<Text className="text-xs font-medium text-gray-600 w-20 text-right">
+															Clicks
+														</Text>
+													</View>
+
+													{/* Table rows - scrollable */}
+													<ScrollView 
+														className="max-h-64"
+														showsVerticalScrollIndicator={true}
+														nestedScrollEnabled={true}
+													>
+														{data.stats.map((stat, index) => {
+															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
+															const displayValue = dimension === "COUNTRY" 
+																? (COUNTRY_NAMES[stat.value] || stat.value)
+																: stat.value;
+
+															return (
+																<View 
+																	key={stat.value} 
+																	className="flex-row px-4 py-2 border-b border-gray-100"
+																>
+																	<Text className="text-sm text-gray-600 w-12">
+																		#{index + 1}
+																	</Text>
+																	<Text className="text-sm text-gray-900 flex-1" numberOfLines={1}>
+																		{displayValue}
+																	</Text>
+																	<Text className="text-sm text-gray-600 w-16 text-right">
+																		{percentage.toFixed(1)}%
+																	</Text>
+																	<Text className="text-sm font-medium text-gray-900 w-20 text-right">
+																		{stat.clicks.toLocaleString()}
+																	</Text>
+																</View>
+															);
+														})}
+													</ScrollView>
+
+													{/* Table footer */}
+													<View className="flex-row bg-gray-50 px-4 py-2 border-t border-gray-200">
+														<Text className="text-sm font-semibold text-gray-900 flex-1">
+															Total
+														</Text>
+														<Text className="text-sm font-semibold text-gray-900 w-20 text-right">
+															{total.toLocaleString()}
+														</Text>
+													</View>
+												</View>
+											);
+										})}
+									</View>
+								</View>
+							</View>
+						)}
 					</View>
 				)}
 
