@@ -17,6 +17,11 @@ export const CreateShortUrlModal = ({
 	const [hasAvailableDays, setHasAvailableDays] = useState(true);
 	const [hasMaxUsage, setHasMaxUsage] = useState(false);
 
+	// States for managing animation
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isAvailableDaysVisible, setIsAvailableDaysVisible] = useState(true);
+	const [isMaxUsageVisible, setIsMaxUsageVisible] = useState(false);
+
 	const [formData, setFormData] = useState({
 		originalUrl: "",
 		customCode: "",
@@ -35,6 +40,36 @@ export const CreateShortUrlModal = ({
 		(field: keyof typeof formData) => (value: string) => {
 			setFormData((prev) => ({ ...prev, [field]: value }));
 		};
+
+	const handlePasswordToggle = (checked: boolean) => {
+		if (checked) {
+			setHasPassword(true);
+			setIsPasswordVisible(true);
+		} else {
+			setIsPasswordVisible(false);
+			setTimeout(() => setHasPassword(false), 200);
+		}
+	};
+
+	const handleAvailableDaysToggle = (checked: boolean) => {
+		if (checked) {
+			setHasAvailableDays(true);
+			setIsAvailableDaysVisible(true);
+		} else {
+			setIsAvailableDaysVisible(false);
+			setTimeout(() => setHasAvailableDays(false), 200);
+		}
+	};
+
+	const handleMaxUsageToggle = (checked: boolean) => {
+		if (checked) {
+			setHasMaxUsage(true);
+			setIsMaxUsageVisible(true);
+		} else {
+			setIsMaxUsageVisible(false);
+			setTimeout(() => setHasMaxUsage(false), 200);
+		}
+	};
 
 	const handleSubmit = () => {};
 
@@ -107,11 +142,15 @@ export const CreateShortUrlModal = ({
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasAvailableDays}
-									onChange={setHasAvailableDays}
+									onChange={handleAvailableDaysToggle}
 									label="Limit Available Days"
 								/>
 								{hasAvailableDays && (
-									<div className="animate-fadeIn">
+									<div
+										className={
+											isAvailableDaysVisible ? "animate-fadeIn" : "animate-fadeOut"
+										}
+									>
 										<Input
 											label="Available Days"
 											type="number"
@@ -129,11 +168,15 @@ export const CreateShortUrlModal = ({
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasMaxUsage}
-									onChange={setHasMaxUsage}
+									onChange={handleMaxUsageToggle}
 									label="Limit Maximum Usage"
 								/>
 								{hasMaxUsage && (
-									<div className="animate-fadeIn">
+									<div
+										className={
+											isMaxUsageVisible ? "animate-fadeIn" : "animate-fadeOut"
+										}
+									>
 										<Input
 											label="Maximum Usage"
 											type="number"
@@ -151,11 +194,15 @@ export const CreateShortUrlModal = ({
 							<div className="w-1/3 space-y-3">
 								<Checkbox
 									checked={hasPassword}
-									onChange={setHasPassword}
+									onChange={handlePasswordToggle}
 									label="Protect with Password"
 								/>
 								{hasPassword && (
-									<div className="animate-fadeIn">
+									<div
+										className={
+											isPasswordVisible ? "animate-fadeIn" : "animate-fadeOut"
+										}
+									>
 										<Input
 											label="Password"
 											type="password"
