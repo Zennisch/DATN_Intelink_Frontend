@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CountrySelector } from "./CountrySelector";
 import { IPRangeInput } from "./IPRangeInput";
 import { AccessControlPreview } from "./AccessControlPreview";
+import { Button } from "../primary";
 
 export interface AccessControlData {
 	mode: "allow" | "block";
@@ -46,9 +47,9 @@ export const AccessControlSection = ({
 	const hasRestrictions = data.countries.length > 0 || data.ipRanges.length > 0;
 
 	return (
-		<div className="space-y-5">
+		<div className="space-y-2">
 			{/* Header */}
-			<div className="pb-3 border-b border-gray-200">
+			<div>
 				<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
 					Access Control
 				</h3>
@@ -57,47 +58,39 @@ export const AccessControlSection = ({
 				</p>
 			</div>
 			{/* Mode Selector - Compact Pills */}
-			<div className="space-y-3">
-				<label className="block text-sm font-medium text-gray-700">
+			<div className="space-x-2 space-y-2">
+				<span className="text-sm font-medium">
 					Access Mode
-				</label>
+				</span>
 				<div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
-					<button
-						type="button"
+					<Button
+						variant="ghost"
+						size="sm"
 						onClick={() => handleModeChange("allow")}
-						className={`
-						flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
-						${
-							data.mode === "allow"
-								? "bg-white text-green-700 shadow-sm ring-1 ring-green-600/20"
-								: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-						}
-					`}
+						className={`gap-2 ${data.mode === "allow" 
+							? "bg-white text-green-700 shadow-sm ring-1 ring-green-600" 
+							: ""}`}
 					>
 						<i className="fas fa-check-circle"></i>
-						<span>Allow Only</span>
-					</button>
-					<button
-						type="button"
+						Allow Only
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
 						onClick={() => handleModeChange("block")}
-						className={`
-						flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
-						${
-							data.mode === "block"
-								? "bg-white text-red-700 shadow-sm ring-1 ring-red-600/20"
-								: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-						}
-					`}
+						className={`gap-2 ${data.mode === "block" 
+							? "bg-white text-red-700 shadow-sm ring-1 ring-red-600" 
+							: ""}`}
 					>
 						<i className="fas fa-ban"></i>
-						<span>Block Specific</span>
-					</button>
+						Block Specific
+					</Button>
 				</div>
-				<p className="text-xs text-gray-500 leading-relaxed">
+				<span className="text-xs text-gray-500 leading-relaxed">
 					{data.mode === "allow"
 						? "✓ Whitelist mode: Only selected locations can access (more secure)"
 						: "✗ Blacklist mode: Everyone can access except selected locations"}
-				</p>
+				</span>
 			</div>
 			{/* Enhanced Tabs with Prominent Badges */}
 			<div className="border-b border-gray-200">
