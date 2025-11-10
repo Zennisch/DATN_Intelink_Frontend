@@ -16,16 +16,16 @@ export const CreateShortUrlModal = ({
 }: CreateShortUrlModalProps) => {
 	const [isExtraExpanded, setIsExtraExpanded] = useState(false);
 
-	const [hasPassword, setHasPassword] = useState(false);
-	const [hasAvailableDays, setHasAvailableDays] = useState(true);
+	const [hasAvailableDays, setHasAvailableDays] = useState(false);
 	const [hasMaxUsage, setHasMaxUsage] = useState(false);
+	const [hasPassword, setHasPassword] = useState(false);
 
 	const [formData, setFormData] = useState({
 		originalUrl: "",
 		customCode: "",
-		password: "",
 		availableDays: "30",
 		maxUsage: "100",
+		password: "",
 	});
 
 	const [accessControl, setAccessControl] = useState<AccessControlData>({
@@ -69,7 +69,7 @@ export const CreateShortUrlModal = ({
 			<form onSubmit={handleSubmit}>
 				<div className="flex flex-1 flex-col gap-6">
 					{/* Basic Settings Section */}
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-3">
 						<div className="pb-2 border-b border-gray-200">
 							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
 								Basic Settings
@@ -102,7 +102,7 @@ export const CreateShortUrlModal = ({
 					</div>
 
 					{/* Extra Settings Section */}
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-3">
 						<div className="pb-2 border-b border-gray-200">
 							<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
 								Extra Settings
@@ -116,7 +116,7 @@ export const CreateShortUrlModal = ({
 									label="Limit Available Days"
 								/>
 								<div
-									className={`field-container ${hasAvailableDays ? "expanded" : ""}`}
+									className={`field-container p-1 ${hasAvailableDays ? "expanded" : ""}`}
 								>
 									<Input
 										label="Available Days"
@@ -138,7 +138,7 @@ export const CreateShortUrlModal = ({
 									label="Limit Maximum Usage"
 								/>
 								<div
-									className={`field-container ${hasMaxUsage ? "expanded" : ""}`}
+									className={`field-container p-1 ${hasMaxUsage ? "expanded" : ""}`}
 								>
 									<Input
 										label="Maximum Usage"
@@ -160,7 +160,7 @@ export const CreateShortUrlModal = ({
 									label="Protect with Password"
 								/>
 								<div
-									className={`field-container ${hasPassword ? "expanded" : ""}`}
+									className={`field-container p-1 ${hasPassword ? "expanded" : ""}`}
 								>
 									<Input
 										label="Password"
