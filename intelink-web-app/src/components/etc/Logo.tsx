@@ -7,7 +7,7 @@ export const Logo = () => {
 					alt="Intelink Logo"
 					className="h-8 w-8 mb-2"
 				/>
-				<h2 className="text-black text-2xl font-bold">Intelink</h2>
+				<h2 className="text-black text-2xl font-semibold">Intelink</h2>
 			</a>
 		</div>
 	);

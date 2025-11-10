@@ -21,7 +21,7 @@ export const DashboardSidebar = ({
 }: DashboardSidebarProps) => {
 	const createNewButton: NavigationButton = {
 		text: "Create New",
-		icon: "fas fa-plus-circle",
+		icon: "🆕",
 		onClick: () => {
 			setCreateNewModalOpen(true);
 		},
@@ -29,14 +29,14 @@ export const DashboardSidebar = ({
 
 	const logoutButton: NavigationButton = {
 		text: "Log Out",
-		icon: "fas fa-sign-out-alt",
+		icon: "🚪",
 		onClick: () => {},
 	};
 
 	const navigationButtons: Array<NavigationButton & { page: Page }> = [
 		{
 			text: "Overview",
-			icon: "fas fa-tachometer-alt",
+			icon: "📊",
 			page: "overview",
 			onClick: () => {
 				setCurrentPage("overview");
@@ -44,7 +44,7 @@ export const DashboardSidebar = ({
 		},
 		{
 			text: "Links",
-			icon: "fas fa-link",
+			icon: "🔗",
 			page: "links",
 			onClick: () => {
 				setCurrentPage("links");
@@ -52,7 +52,7 @@ export const DashboardSidebar = ({
 		},
 		{
 			text: "Statistics",
-			icon: "fas fa-chart-bar",
+			icon: "📈",
 			page: "statistics",
 			onClick: () => {
 				setCurrentPage("statistics");
@@ -60,7 +60,7 @@ export const DashboardSidebar = ({
 		},
 		{
 			text: "APIs",
-			icon: "fas fa-cogs",
+			icon: "⚙️",
 			page: "apis",
 			onClick: () => {
 				setCurrentPage("apis");
@@ -68,7 +68,7 @@ export const DashboardSidebar = ({
 		},
 		{
 			text: "Domains",
-			icon: "fas fa-globe",
+			icon: "🌐",
 			page: "domains",
 			onClick: () => {
 				setCurrentPage("domains");
@@ -87,7 +87,7 @@ export const DashboardSidebar = ({
 						variant="ghost"
 						size="sm"
 						className="w-full justify-start mb-4"
-						icon={<i className={createNewButton.icon}></i>}
+						icon={<span>{createNewButton.icon}</span>}
 						onClick={createNewButton.onClick}
 					>
 						Create New
@@ -103,7 +103,7 @@ export const DashboardSidebar = ({
 								className={`w-full justify-start ${
 									isActive ? "text-black bg-gray-200!" : ""
 								}`}
-								icon={<i className={button.icon}></i>}
+								icon={<span>{button.icon}</span>}
 								onClick={button.onClick}
 							>
 								{button.text}
@@ -116,7 +116,7 @@ export const DashboardSidebar = ({
 						variant="ghost"
 						size="sm"
 						className="w-full justify-start"
-						icon={<i className={logoutButton.icon}></i>}
+						icon={<span>{logoutButton.icon}</span>}
 						onClick={logoutButton.onClick}
 					>
 						{logoutButton.text}
