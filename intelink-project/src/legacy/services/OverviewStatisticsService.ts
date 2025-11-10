@@ -25,6 +25,35 @@ export interface TimeSeriesResponse {
 	data: TimeSeriesDataPoint[];
 }
 
+export interface DimensionStatistic {
+	value: string;
+	clicks: number;
+}
+
+export interface DimensionStatisticsResponse {
+	dimension: string;
+	limit: number;
+	from: string | null;
+	to: string | null;
+	stats: DimensionStatistic[];
+}
+
+export type DimensionType = 
+	| "COUNTRY" 
+	| "REFERRER" 
+	| "REFERRER_TYPE" 
+	| "UTM_SOURCE" 
+	| "UTM_MEDIUM" 
+	| "UTM_CAMPAIGN" 
+	| "BROWSER" 
+	| "OS" 
+	| "DEVICE_TYPE" 
+	| "CITY" 
+	| "REGION" 
+	| "TIMEZONE" 
+	| "ISP" 
+	| "LANGUAGE";
+
 export class OverviewStatisticsService {
 	static async getCountryStatistics(
 		from?: string,
@@ -51,6 +80,24 @@ export class OverviewStatisticsService {
 		if (to) params.append("to", to);
 
 		const response = await axios.get(`/statistics/timeseries?${params.toString()}`);
+		return response.data;
+	}
+
+	static async getDimensionStatistics(
+		dimension: DimensionType = "COUNTRY",
+		from?: string,
+		to?: string,
+		limit: number = 20,
+		shortCodes?: string
+	): Promise<DimensionStatisticsResponse> {
+		const params = new URLSearchParams();
+		params.append("dimension", dimension);
+		params.append("limit", limit.toString());
+		if (from) params.append("from", from);
+		if (to) params.append("to", to);
+		if (shortCodes) params.append("shortCodes", shortCodes);
+
+		const response = await axios.get(`/statistics/by-dimension?${params.toString()}`);
 		return response.data;
 	}
 }
