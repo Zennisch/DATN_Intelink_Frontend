@@ -1,4 +1,5 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
+import type { ChangeEvent, InputHTMLAttributes, ReactNode } from "react"
+import { forwardRef, useId } from "react"
 import { cn } from "./utils.ts"
 
 type RadioProps = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "checked" | "type"> & {

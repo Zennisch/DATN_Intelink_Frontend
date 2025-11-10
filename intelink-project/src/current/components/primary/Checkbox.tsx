@@ -1,4 +1,5 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, RefObject, useEffect, useId } from "react"
+import type { ChangeEvent, InputHTMLAttributes, ReactNode, RefObject } from "react"
+import { forwardRef, useEffect, useId } from "react"
 import { cn } from "./utils.ts"
 
 interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "checked"> {

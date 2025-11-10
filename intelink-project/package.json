@@ -8,7 +8,10 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
+		"pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"",
+		"typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:app": "tsc --noEmit -p tsconfig.app.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:app"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^7.0.1",
@@ -26,7 +29,8 @@
 		"react-router-dom": "^7.7.1",
 		"react-simple-maps": "^3.0.0",
 		"recharts": "^3.1.2",
-		"tailwindcss": "^4.1.11"
+		"tailwindcss": "^4.1.11",
+		"typecheck": "^0.1.2"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.30.1",

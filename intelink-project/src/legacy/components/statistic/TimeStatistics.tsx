@@ -69,6 +69,7 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
     granularity: DimensionType,
     shortcode: string,
   ): string | null => {
+    console.log("Validating inputs:", { start, end, granularity, shortcode })
     if (!shortcode || shortcode.trim() === "") {
       return "Invalid or missing shortcode."
     }
