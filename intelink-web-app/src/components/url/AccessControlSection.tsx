@@ -59,17 +59,17 @@ export const AccessControlSection = ({
 			</div>
 			{/* Mode Selector - Compact Pills */}
 			<div className="space-x-2 space-y-2">
-				<span className="text-sm font-medium">
-					Access Mode
-				</span>
+				<span className="text-sm font-medium">Access Mode</span>
 				<div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
 					<Button
 						variant="ghost"
 						size="sm"
 						onClick={() => handleModeChange("allow")}
-						className={`gap-2 ${data.mode === "allow" 
-							? "bg-white text-green-700 shadow-sm ring-1 ring-green-600" 
-							: ""}`}
+						className={`gap-2 ${
+							data.mode === "allow"
+								? "bg-white text-green-700 shadow-sm ring-1 ring-green-600"
+								: ""
+						}`}
 					>
 						<i className="fas fa-check-circle"></i>
 						Allow Only
@@ -78,9 +78,11 @@ export const AccessControlSection = ({
 						variant="ghost"
 						size="sm"
 						onClick={() => handleModeChange("block")}
-						className={`gap-2 ${data.mode === "block" 
-							? "bg-white text-red-700 shadow-sm ring-1 ring-red-600" 
-							: ""}`}
+						className={`gap-2 ${
+							data.mode === "block"
+								? "bg-white text-red-700 shadow-sm ring-1 ring-red-600"
+								: ""
+						}`}
 					>
 						<i className="fas fa-ban"></i>
 						Block Specific
@@ -95,11 +97,12 @@ export const AccessControlSection = ({
 			{/* Enhanced Tabs with Prominent Badges */}
 			<div className="border-b border-gray-200">
 				<div className="flex gap-2">
-					<button
-						type="button"
+					<Button
+						variant="ghost"
+						size="md"
 						onClick={() => setActiveTab("geography")}
 						className={`
-						group relative px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200
+						group relative px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 rounded-none
 						${
 							activeTab === "geography"
 								? "border-blue-600 text-blue-700"
@@ -128,12 +131,13 @@ export const AccessControlSection = ({
 								</span>
 							)}
 						</span>
-					</button>
-					<button
-						type="button"
+					</Button>
+					<Button
+						variant="ghost"
+						size="md"
 						onClick={() => setActiveTab("network")}
 						className={`
-						group relative px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200
+						group relative px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 rounded-none
 						${
 							activeTab === "network"
 								? "border-blue-600 text-blue-700"
@@ -162,7 +166,7 @@ export const AccessControlSection = ({
 								</span>
 							)}
 						</span>
-					</button>
+					</Button>
 				</div>
 			</div>
 			{/* Tab Content - Consistent Height */}
@@ -190,36 +194,30 @@ export const AccessControlSection = ({
 					</div>
 					<div className="flex items-center gap-2">
 						{hasRestrictions && (
-							<button
-								type="button"
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() =>
 									onChange({ mode: data.mode, countries: [], ipRanges: [] })
 								}
-								className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-all duration-200"
+								className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
 							>
 								<i className="fas fa-times-circle text-sm"></i>
 								<span>Clear All</span>
-							</button>
+							</Button>
 						)}
 						{data.countries.length > 0 && (
-							<button
-								type="button"
+							<Button
+								variant="ghost"
+								size="sm"
 								onClick={() => setShowMap(!showMap)}
-								className={`
-							flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md
-							transition-all duration-200
-							${
-								showMap
-									? "bg-blue-50 text-blue-700 hover:bg-blue-100"
-									: "bg-gray-100 text-gray-700 hover:bg-gray-200"
-							}
-						`}
+								className={`gap-2 ${showMap ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
 							>
 								<i
 									className={`fas fa-${showMap ? "list" : "map-marked-alt"} text-sm`}
 								></i>
 								<span>{showMap ? "Hide Map" : "Show Map"}</span>
-							</button>
+							</Button>
 						)}
 					</div>
 				</div>
