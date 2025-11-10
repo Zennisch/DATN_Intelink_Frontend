@@ -27,6 +27,12 @@ export const DashboardSidebar = ({
 		},
 	};
 
+	const logoutButton: NavigationButton = {
+		text: "Log Out",
+		icon: "fas fa-sign-out-alt",
+		onClick: () => {},
+	};
+
 	const navigationButtons: Array<NavigationButton & { page: Page }> = [
 		{
 			text: "Overview",
@@ -70,23 +76,17 @@ export const DashboardSidebar = ({
 		},
 	];
 
-	const logoutButton: NavigationButton = {
-		text: "Log Out",
-		icon: "fas fa-sign-out-alt",
-		onClick: () => {},
-	};
-
 	return (
-		<div className="flex flex-col w-52 bg-[#2a2a2a] p-4 gap-4">
+		<div className="flex flex-col w-52 bg-white p-4 gap-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-10">
 			<Logo />
 
 			{/* Navigation Buttons */}
 			<div className="flex flex-1 flex-col justify-between">
 				<div className="flex flex-col gap-2">
 					<Button
-						variant="primary"
+						variant="ghost"
 						size="sm"
-						className="w-full text-gray-300! bg-blue-700! hover:bg-gray-700! justify-start mb-4"
+						className="w-full justify-start mb-4"
 						icon={<i className={createNewButton.icon}></i>}
 						onClick={createNewButton.onClick}
 					>
@@ -101,9 +101,7 @@ export const DashboardSidebar = ({
 								size="sm"
 								variant="ghost"
 								className={`w-full justify-start ${
-									isActive
-										? "text-white! bg-gray-700!"
-										: "text-gray-300! hover:bg-gray-700"
+									isActive ? "text-black bg-gray-200!" : ""
 								}`}
 								icon={<i className={button.icon}></i>}
 								onClick={button.onClick}
@@ -117,7 +115,7 @@ export const DashboardSidebar = ({
 					<Button
 						variant="ghost"
 						size="sm"
-						className="w-full text-gray-300! hover:bg-gray-700 justify-start"
+						className="w-full justify-start"
 						icon={<i className={logoutButton.icon}></i>}
 						onClick={logoutButton.onClick}
 					>
