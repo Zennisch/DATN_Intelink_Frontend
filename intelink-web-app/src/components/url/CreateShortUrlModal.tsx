@@ -74,8 +74,8 @@ export const CreateShortUrlModal = ({
 			open={open}
 			onClose={handleClose}
 			title="Create Short URL"
-			size="4xl"
-			className="transition-all duration-200 max-h-[90vh] overflow-y-auto"
+			size="xl"
+			className="transition-all duration-200 overflow-y-auto"
 		>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{/* Main Content - Always Visible */}

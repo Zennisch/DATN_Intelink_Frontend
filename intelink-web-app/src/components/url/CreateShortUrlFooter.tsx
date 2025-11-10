@@ -10,14 +10,14 @@ export const CreateShortUrlFooter = ({
 	onDebugLog,
 }: CreateShortUrlFooterProps) => {
 	return (
-		<div className="flex items-center justify-between pt-6 border-t border-gray-200">
-			<div className="text-sm text-gray-500">
+		<div className="flex items-center justify-end pt-6 border-t border-gray-200">
+			{/* <div className="text-sm text-gray-500">
 				<i className="fas fa-info-circle mr-1"></i>
 				All fields are optional except Original URL
-			</div>
+			</div> */}
 			<div className="flex gap-3">
 				{/* Debug button - easy to comment out when not needed */}
-				{onDebugLog && (
+				{/* {onDebugLog && (
 					<Button
 						type="button"
 						variant="secondary"
@@ -27,7 +27,7 @@ export const CreateShortUrlFooter = ({
 						<i className="fas fa-bug mr-2"></i>
 						Log Access Control Data
 					</Button>
-				)}
+				)} */}
 				<Button type="button" variant="ghost" size="sm" onClick={onCancel}>
 					Cancel
 				</Button>

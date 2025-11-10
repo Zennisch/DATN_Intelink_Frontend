@@ -2,9 +2,11 @@ interface StatisticsPageProps {}
 
 export const StatisticsPage = ({}: StatisticsPageProps) => {
 	return (
-		<div className="p-6">
-			<h1 className="text-2xl font-bold mb-4">Statistics</h1>
-			{/* Statistics content will go here */}
+		<div className="p-4">
+			<div className="bg-white rounded-md shadow-md">
+				{/* <h1 className="text-md font-semibold mb-4 text-center">Statistics</h1> */}
+				
+			</div>
 		</div>
 	);
 };
