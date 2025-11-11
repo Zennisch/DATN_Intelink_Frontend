@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import Button from "../../components/atoms/Button";
 import CustomShortUrlModal from "../../components/CustomShortUrlModal";
-import UnlockUrlModal from "../../components/UnlockUrlModal";
+//import UnlockUrlModal from "../../components/UnlockUrlModal";
 import { ShortUrlService } from "../../services/ShortUrlService";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
@@ -12,14 +13,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
 import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
-import type { SearchShortUrlRequest } from "../../services/ShortUrlService";
+import type { SearchShortUrlRequest, CreateShortUrlRequest } from "../../services/ShortUrlService";
 
 export default function ShortUrlsScreen() {
-	const [unlockModalVisible, setUnlockModalVisible] = useState(false);
-	const [unlockLoading, setUnlockLoading] = useState(false);
-	const [unlockError, setUnlockError] = useState<string | undefined>(undefined);
-	const [unlockShortCode, setUnlockShortCode] = useState<string | undefined>(undefined);
-	const [unlockShortUrl, setUnlockShortUrl] = useState<string | undefined>(undefined);
+	// const [unlockModalVisible, setUnlockModalVisible] = useState(false);
+	// const [unlockLoading, setUnlockLoading] = useState(false);
+	// const [unlockError, setUnlockError] = useState<string | undefined>(undefined);
+	// const [unlockShortCode, setUnlockShortCode] = useState<string | undefined>(undefined);
+	// const [unlockShortUrl, setUnlockShortUrl] = useState<string | undefined>(undefined);
+	const FRONTEND_URL = process.env.EXPO_PUBLIC_FRONTEND_URL;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalLoading, setModalLoading] = useState(false);
 	const router = useRouter();
@@ -65,7 +67,7 @@ export default function ShortUrlsScreen() {
 		fetchShortUrls(searchParams);
 	}, [currentPage, searchQuery, statusFilter, fetchShortUrls]);
 
-	const handleCreateShortUrl = async (urlData) => {
+	const handleCreateShortUrl = async (urlData: CreateShortUrlRequest) => {
 		setModalLoading(true);
 		try {
 			await createShortUrl(urlData);
@@ -211,49 +213,19 @@ export default function ShortUrlsScreen() {
 		return new Date(dateString).toLocaleDateString();
 	};
 
-			return (
-				<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
-					<CustomShortUrlModal
-						visible={modalVisible}
-						onClose={() => setModalVisible(false)}
-						onSubmit={handleCreateShortUrl}
-						loading={modalLoading}
-					/>
-					<UnlockUrlModal
-						visible={unlockModalVisible}
-						onClose={() => {
-							setUnlockModalVisible(false);
-							setUnlockError(undefined);
-						}}
-						onUnlock={async (password) => {
-							if (!unlockShortCode) return;
-							setUnlockLoading(true);
-							setUnlockError(undefined);
-							try {
-								const res = await ShortUrlService.unlockUrl(unlockShortCode, password);
-								if (res.success && res.redirectUrl) {
-									setUnlockModalVisible(false);
-									setUnlockError(undefined);
-									setUnlockLoading(false);
-									// Open unlocked URL
-									Linking.openURL(res.redirectUrl);
-								} else {
-									setUnlockError(res.message || "Unlock failed");
-								}
-							} catch (e: any) {
-								setUnlockError(e?.response?.data?.message || "Unlock failed");
-							} finally {
-								setUnlockLoading(false);
-							}
-						}}
-						loading={unlockLoading}
-						error={unlockError}
-						shortUrl={unlockShortUrl}
-					/>
-					<ScrollView 
-						className="flex-1 px-4" 
-						contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
-					>
+	return (
+		<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+			<CustomShortUrlModal
+				visible={modalVisible}
+				onClose={() => setModalVisible(false)}
+				onSubmit={handleCreateShortUrl}
+				loading={modalLoading}
+			/>
+
+			<ScrollView
+				className="flex-1 px-4"
+				contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+			>
 				{/* Error Display */}
 				{error && (
 					<View className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex-row items-center justify-between">
@@ -273,7 +245,7 @@ export default function ShortUrlsScreen() {
 							onChangeText={setSearchQuery}
 							fullWidth
 						/>
-						
+
 						<View className="flex-row space-x-2">
 							<View className="flex-1">
 								<View className="border border-gray-300 rounded-lg px-3 py-2">
@@ -319,26 +291,26 @@ export default function ShortUrlsScreen() {
 					</View>
 				</View>
 
-						{/* Create New URL (now opens modal) */}
-						<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
-							<Text className="text-lg font-semibold text-gray-900 mb-4">
-								Create New Short URL
-							</Text>
-							<Button
-								onPress={() => setModalVisible(true)}
-								variant="primary"
-								fullWidth
-							>
-								Create Short URL
-							</Button>
-						</View>
+				{/* Create New URL (now opens modal) */}
+				<View className="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-200">
+					<Text className="text-lg font-semibold text-gray-900 mb-4">
+						Create New Short URL
+					</Text>
+					<Button
+						onPress={() => setModalVisible(true)}
+						variant="primary"
+						fullWidth
+					>
+						Create Short URL
+					</Button>
+				</View>
 
 				{/* URL List */}
 				<View className="space-y-4">
 					<Text className="text-lg font-semibold text-gray-900">
 						Your Short URLs ({totalElements})
 					</Text>
-					
+
 					{loading && shortUrls.length === 0 ? (
 						<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
 							<Text className="text-center text-gray-500">Loading...</Text>
@@ -399,41 +371,43 @@ export default function ShortUrlsScreen() {
 										</TouchableOpacity>
 									</View>
 								</View>
-								
-												<View className="flex-row justify-between items-center mb-2">
-													<View className="flex-1">
-														<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
-														<TouchableOpacity
-															onPress={() => {
-																if (url.hasPassword) {
-																	setUnlockShortCode(url.shortCode);
-																	setUnlockShortUrl(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
-																	setUnlockModalVisible(true);
-																} else {
-																	router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } });
-																}
-															}}
-														>
-															<Text className="text-blue-600 text-sm underline" numberOfLines={1}>{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}</Text>
-														</TouchableOpacity>
-													</View>
-													<TouchableOpacity
-														className="ml-2 p-1"
-														onPress={() => {
-															if (url.hasPassword) {
-																setUnlockShortCode(url.shortCode);
-																setUnlockShortUrl(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
-																setUnlockModalVisible(true);
-															} else {
-																Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
-															}
-														}}
-														accessibilityLabel="Open short URL in browser"
-													>
-														<Ionicons name="open-outline" size={18} color="#2563EB" />
-													</TouchableOpacity>
-												</View>
-								
+
+								<View className="flex-row justify-between items-center mb-2">
+									<View className="flex-1">
+										<Text className="text-sm text-gray-500 mb-1">Short URL</Text>
+										<TouchableOpacity
+											onPress={() => {
+												if (url.hasPassword) {
+													// Mở trang web unlock trong browser
+													const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
+													Linking.openURL(unlockUrl);
+												} else {
+													router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } });
+												}
+											}}
+										>
+											<Text className="text-blue-600 text-sm underline" numberOfLines={1}>
+												{getAbsoluteShortUrl(url.shortUrl, url.shortCode)}
+											</Text>
+										</TouchableOpacity>
+									</View>
+									<TouchableOpacity
+										className="ml-2 p-1"
+										onPress={() => {
+											if (url.hasPassword) {
+												// Mở trang web unlock trong browser
+												const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
+												Linking.openURL(unlockUrl);
+											} else {
+												Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
+											}
+										}}
+										accessibilityLabel="Open short URL in browser"
+									>
+										<Ionicons name="open-outline" size={18} color="#2563EB" />
+									</TouchableOpacity>
+								</View>
+
 								<View className="flex-row justify-between items-center mb-3">
 									<View className="flex-row space-x-4">
 										<View>

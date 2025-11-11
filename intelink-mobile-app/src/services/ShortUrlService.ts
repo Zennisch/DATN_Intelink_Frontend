@@ -102,6 +102,7 @@ const buildParams = (search: Partial<SearchShortUrlRequest>) => {
 	return params.toString();
 };
 
+
 export class ShortUrlService {
 	static async createShortUrl(request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> {
 		const response = await api.post<CreateShortUrlResponse>('/api/v1/url', request);
@@ -154,18 +155,17 @@ export class ShortUrlService {
 		return response.data;
 	}
 
-	static async getUnlockInfo(shortCode: string): Promise<UnlockUrlResponse> {
-		const response = await api.get(`/${shortCode}/unlock`);
-		return response.data;
-	}
-
-	static async unlockUrl(shortCode: string, password: string): Promise<UnlockUrlResponse> {
-		const response = await api.post(`/${shortCode}/unlock`, { password });
-		return response.data;
-	}
-
-	// Statistics are fetched via StatisticsService below per dimension
+static async getUnlockInfo(shortCode: string): Promise<UnlockUrlResponse> {
+    const response = await api.get<UnlockUrlResponse>(`/${shortCode}/unlock`);
+    return response.data;
 }
+
+static async unlockUrl(shortCode: string, password: string): Promise<UnlockUrlResponse> {
+    const response = await api.post<UnlockUrlResponse>(`/${shortCode}/unlock`, { password });
+    return response.data;
+}
+}
+
 
 // Statistics
 export const DimensionType = {
