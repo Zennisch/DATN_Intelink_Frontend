@@ -5,7 +5,12 @@ env:
 on:
   push:
     branches:
-      - main
+      - master
+  pull_request:
+    branches:
+      - master
+    types:
+       - merged
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
