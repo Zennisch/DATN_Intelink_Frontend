@@ -3,7 +3,7 @@ import { UserRole, UserProvider, UserStatus } from '../types/enums.ts';
 interface SubscriptionInfo {
 	subscriptionId: string;
 	planType: string;
-	planDescription: string;
+	planDescription?: string;
 	status: string;
 	active: boolean;
 	startsAt: string;

@@ -14,10 +14,8 @@ interface ShortUrlListProps {
 export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 	shortUrls,
 	loading = false,
-	onEdit,
 	onDelete,
 	onToggleStatus,
-	onViewStats,
 }) => {
 	const [copiedId, setCopiedId] = useState<number | null>(null);
 
