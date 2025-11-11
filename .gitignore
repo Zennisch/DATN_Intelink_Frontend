@@ -1,3 +1,4 @@
 .idea
 **/.env
 **/package-lock.json
+intelink-mobile-app/nativewind-env.d.ts

@@ -1,9 +1,11 @@
 import { DashboardOverviewPage } from "./DashboardOverviewPage.tsx";
 import { ShortUrlPage } from "./ShortUrlPage.tsx";
 import { StatisticsContent } from "../../components/dashboard/StatisticsContent.tsx";
+import { OverviewStatisticsPage } from "./OverviewStatisticsPage.tsx";
 import { ApisPage } from "./ApisPage.tsx";
 import { DomainsPage } from "./DomainsPage.tsx";
 import { SettingsPage } from "./SettingsPage.tsx";
+import SubscriptionsPage from "../SubscriptionsPage.tsx";
 
 export const dashboardRoutes = [
 	{
@@ -17,6 +19,10 @@ export const dashboardRoutes = [
 	{
 		path: "short-urls",
 		component: <ShortUrlPage />
+	},
+	{
+		path: "overview-stats",
+		component: <OverviewStatisticsPage />
 	},
 	{
 		path: "statistics",
@@ -33,5 +39,9 @@ export const dashboardRoutes = [
 	{
 		path: "settings",
 		component: <SettingsPage />
+	},
+	{
+		path: "subscriptions",
+		component: <SubscriptionsPage />
 	}
 ];

@@ -1,5 +1,20 @@
 import { UserRole, UserProvider, UserStatus } from '../types/enums.ts';
 
+interface SubscriptionInfo {
+	subscriptionId: string;
+	planType: string;
+	planDescription: string;
+	status: string;
+	active: boolean;
+	startsAt: string;
+	expiresAt: string;
+	maxShortUrls: number;
+	shortCodeCustomizationEnabled: boolean;
+	statisticsEnabled: boolean;
+	customDomainEnabled: boolean;
+	apiAccessEnabled: boolean;
+}
+
 export interface User {
 	// Key group
 	id: number;
@@ -28,7 +43,7 @@ export interface User {
 	totalClicks: number;
 
 	// Subscription group
-	currentSubscription?: any;
+	currentSubscription?: SubscriptionInfo;
 
 	// Audit group
 	status: UserStatus;
