@@ -136,9 +136,11 @@ export default function ApiKeysScreen() {
 	};
 
 	return (
-		<SafeAreaView className="flex-1 bg-gray-50">
-
-			<ScrollView className="flex-1 px-4 py-6">
+		<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+			<ScrollView 
+				className="flex-1 px-4" 
+				contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+			>
 				{/* Actions */}
 				<View className="mb-4 items-end">
 					<Button

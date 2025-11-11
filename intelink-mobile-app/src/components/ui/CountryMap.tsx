@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Dimensions, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 import Svg, { Path, Rect, Text as SvgText } from 'react-native-svg';
+import geoData from '../../assets/data/countries.geojson.json';
 
 type StatisticsData = { name: string; clicks: number; percentage?: number };
 
@@ -12,8 +13,6 @@ type GeoFeature = {
 };
 
 type GeoJSON = { type: 'FeatureCollection'; features: GeoFeature[] };
-
-const GEO_URL = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
 
 const countryCodeMapping: Record<string, string> = {
   UK: 'GB',
@@ -61,16 +60,20 @@ export function CountryMap({ data, title = 'Visitors by Country', width, height 
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch(GEO_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const g = (await res.json()) as GeoJSON;
-        if (mounted) { setGeo(g); setLoading(false); }
-      } catch (e: any) {
-        if (mounted) { setError(e.message || 'Failed to load map'); setLoading(false); }
+    try {
+      // Load GeoJSON data from local file
+      const g = geoData as GeoJSON;
+      if (mounted) { 
+        setGeo(g); 
+        setLoading(false); 
       }
-    })();
+    } catch (e: any) {
+      if (mounted) { 
+        setError(e.message || 'Failed to load map'); 
+        setLoading(false); 
+      }
+    }
+    console.log('CountryMap mounted, loading geo data');
     return () => { mounted = false; };
   }, []);
 

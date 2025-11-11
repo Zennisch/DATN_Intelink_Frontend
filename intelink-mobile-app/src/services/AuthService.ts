@@ -20,7 +20,7 @@ export class AuthService {
 		credentials: RegisterRequest,
 	): Promise<RegisterResponse> {
 		const response = await api.post<RegisterResponse>(
-			"/auth/register",
+			"/api/v1/auth/register",
 			credentials,
 		);
 		return response.data;
@@ -28,7 +28,7 @@ export class AuthService {
 
 	static async login(credentials: LoginRequest): Promise<LoginResponse> {
 		const response = await api.post<LoginResponse>(
-			"/auth/login",
+			"/api/v1/auth/login",
 			credentials,
 		);
 		return response.data;
@@ -36,7 +36,7 @@ export class AuthService {
 
 	static async refresh(refreshToken: string): Promise<LoginResponse> {
 		const response = await api.post<LoginResponse>(
-			"/auth/refresh",
+			"/api/v1/auth/refresh",
 			{},
 			{
 				headers: {
@@ -48,13 +48,13 @@ export class AuthService {
 	}
 
 	static async getProfile(): Promise<UserProfileResponse> {
-		const response = await api.get<UserProfileResponse>("/auth/profile");
+		const response = await api.get<UserProfileResponse>("/api/v1/auth/profile");
 		console.log("User profile response:", response.data);
 		return response.data;
 	}
 
 	static async logout(): Promise<LogoutResponse> {
-		const response = await api.post<LogoutResponse>("/auth/logout");
+		const response = await api.post<LogoutResponse>("/api/v1/auth/logout");
 		return response.data;
 	}
 
@@ -63,7 +63,7 @@ export class AuthService {
 		request: ResetPasswordRequest,
 	): Promise<ResetPasswordResponse> {
 		const response = await api.post<ResetPasswordResponse>(
-			`/auth/reset-password?token=${token}`,
+			`/api/v1/auth/reset-password?token=${token}`,
 			request,
 		);
 		return response.data;
@@ -71,14 +71,14 @@ export class AuthService {
 
 	static async oAuthCallback(token: string): Promise<LoginResponse> {
 		const response = await api.get<LoginResponse>(
-			`/auth/oauth/callback?token=${token}`,
+			`/api/v1/auth/oauth/callback?token=${token}`,
 		);
 		return response.data;
 	}
 
 	static async verifyEmail(token: string): Promise<VerifyEmailResponse> {
 		const response = await api.post<VerifyEmailResponse>(
-			`/auth/verify-email?token=${token}`,
+			`/api/v1/auth/verify-email?token=${token}`,
 		);
 		return response.data;
 	}
@@ -87,7 +87,7 @@ export class AuthService {
 		request: ForgotPasswordRequest,
 	): Promise<ForgotPasswordResponse> {
 		const response = await api.post<ForgotPasswordResponse>(
-			"/auth/forgot-password",
+			"/api/v1/auth/forgot-password",
 			request,
 		);
 		return response.data;
