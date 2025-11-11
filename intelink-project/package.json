@@ -30,8 +30,7 @@
 		"react-simple-maps": "^3.0.0",
 		"recharts": "^3.1.2",
 		"tailwindcss": "^4.1.11",
-		"typecheck": "^0.1.2",
-		"vite": "^7.2.2"
+		"typecheck": "^0.1.2"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.30.1",
