@@ -20,14 +20,14 @@
         "buildType": "apk"
       }
     },
-    "env": {
-    "EXPO_PUBLIC_BACKEND_URL": "@env:EXPO_PUBLIC_BACKEND_URL",
-    "EXPO_PUBLIC_FRONTEND_URL": "@env:EXPO_PUBLIC_FRONTEND_URL"
-    },
     "my-profile": {
       "environment": "production"
     }
   },
+  "env": {
+    "EXPO_PUBLIC_BACKEND_URL": "@env:EXPO_PUBLIC_BACKEND_URL",
+    "EXPO_PUBLIC_FRONTEND_URL": "@env:EXPO_PUBLIC_FRONTEND_URL"
+    },
   "submit": {
     "production": {}
   }
