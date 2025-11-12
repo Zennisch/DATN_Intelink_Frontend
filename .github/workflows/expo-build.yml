@@ -60,9 +60,8 @@ jobs:
       - name: Download latest APK
         run: |
           echo "Downloading latest APK..."
-          # Tạo folder nếu chưa tồn tại
           mkdir -p ./intelink-mobile-app
-          eas build:download --platform android --latest --output ./intelink-mobile-app/app-release.apk --non-interactive
+          npx eas-cli build:download --platform android --latest --output ./intelink-mobile-app/app-release.apk --non-interactive
 
       # 8️⃣ Upload APK as GitHub Actions artifact
       - name: Upload APK to GitHub
