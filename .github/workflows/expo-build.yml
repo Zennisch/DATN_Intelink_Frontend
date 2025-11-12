@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: intelink-mobile-app  # ⚠️ Thư mục chứa project React Native
+        working-directory: intelink-mobile-app  # Thư mục chứa project React Native
 
     env:
       EXPO_PUBLIC_BACKEND_URL: ${{ secrets.EXPO_PUBLIC_BACKEND_URL }}
@@ -25,7 +25,7 @@ jobs:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
-      # 1️⃣ Checkout code
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -35,15 +35,18 @@ jobs:
         with:
           node-version: 18
 
-      # 3️⃣ Cài dependencies
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Cài EAS CLI
+      # 4️⃣ Install latest EAS CLI
       - name: Install EAS CLI
-        run: npm install -g eas-cli
+        run: |
+          npm uninstall -g eas-cli || true
+          npm install -g eas-cli@latest
+          eas --version
 
-      # 5️⃣ Xác thực với Expo
+      # 5️⃣ Login to Expo
       - name: Login to Expo
         run: eas whoami || eas login --token $EXPO_TOKEN
 
@@ -53,15 +56,15 @@ jobs:
           echo "Building Expo Android APK..."
           eas build --platform android --profile production --non-interactive
 
-      # 7️⃣ Tải file APK về
+      # 7️⃣ Download latest APK
       - name: Download latest APK
         run: |
           echo "Downloading latest APK..."
-          eas build:download --platform android --id 5d88ec8d-5592-4804-9e46-c659867f58e4 --output ./intelink-mobile-app/app-release.apk
+          # Tạo folder nếu chưa tồn tại
+          mkdir -p ./intelink-mobile-app
+          eas build:download --platform android --latest --output ./intelink-mobile-app/app-release.apk --non-interactive
 
-
-
-      # 8️⃣ Upload file APK vào artifact của GitHub Actions
+      # 8️⃣ Upload APK as GitHub Actions artifact
       - name: Upload APK to GitHub
         uses: actions/upload-artifact@v4
         with:
