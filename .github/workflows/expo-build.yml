@@ -61,7 +61,8 @@ jobs:
         run: |
           echo "Downloading latest APK..."
           mkdir -p ./intelink-mobile-app
-          npx eas-cli build:download --platform android --latest --output ./intelink-mobile-app/app-release.apk --non-interactive
+          eas build:download --platform android --non-interactive
+          mv *.apk app-release.apk
 
       # 8️⃣ Upload APK as GitHub Actions artifact
       - name: Upload APK to GitHub
