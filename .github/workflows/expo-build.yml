@@ -57,7 +57,8 @@ jobs:
       - name: Download latest APK
         run: |
           echo "Downloading latest APK..."
-          eas build:download --platform android --latest --output ./intelink-mobile-app/app-release.apk --non-interactive
+          eas build:download --platform android --id 5d88ec8d-5592-4804-9e46-c659867f58e4 --output ./intelink-mobile-app/app-release.apk
+
 
 
       # 8️⃣ Upload file APK vào artifact của GitHub Actions
