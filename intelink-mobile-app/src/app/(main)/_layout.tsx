@@ -70,7 +70,15 @@ export default function MainLayout() {
 						headerShown: false,
 					}}
 				/>
+				<Tabs.Screen
+					name="UnlockUrlScreen"
+					options={{
+						href: null,
+						headerShown: false,
+					}}
+				/>
 			</Tabs>
+			
 		</RouteGuard>
 	);
 }

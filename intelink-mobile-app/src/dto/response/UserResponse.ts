@@ -9,6 +9,8 @@ export interface LoginResponse {
 export interface RegisterResponse {
 	message: string;
 	success: boolean;
+	email: string;
+	emailVerified: boolean;
 }
 
 export interface ResetPasswordResponse {

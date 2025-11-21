@@ -28,10 +28,10 @@ export default function ForgotPasswordScreen() {
 	const [success, setSuccess] = useState(false);
 
 	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
-		useForm<ForgotPasswordRequest>(
-			{ email: "" },
-			validateForgotPassword,
-			async (values) => {
+		useForm<ForgotPasswordRequest>({
+			initialValues: { email: "" },
+			validate: validateForgotPassword,
+			onSubmit: async (values) => {
 				try {
 					setLoading(true);
 					setError(null);
@@ -43,8 +43,8 @@ export default function ForgotPasswordScreen() {
 					setLoading(false);
 				}
 			},
-			500,
-		);
+			debounceMs: 500,
+		});
 
 	const handleBackToLogin = () => {
 		router.push("/(auth)/login");

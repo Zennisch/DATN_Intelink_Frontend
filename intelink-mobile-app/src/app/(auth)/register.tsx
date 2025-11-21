@@ -1,42 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
-import { useForm } from "../../hooks/useForm";
+import { RegisterForm, SocialLoginSection } from "../../components/auth";
 import Button from "../../components/atoms/Button";
-import TextInput from "../../components/atoms/TextInput";
 import type { RegisterRequest } from "../../dto/request/UserRequest";
-
-const validateRegister = (values: RegisterRequest): Partial<RegisterRequest> => {
-	const errors: Partial<RegisterRequest> = {};
-	
-	if (!values.username.trim()) {
-		errors.username = "Username is required";
-	} else if (values.username.length < 3) {
-		errors.username = "Username must be at least 3 characters";
-	}
-	
-	if (!values.email.trim()) {
-		errors.email = "Email is required";
-	} else if (!/\S+@\S+\.\S+/.test(values.email)) {
-		errors.email = "Email is invalid";
-	}
-	
-	if (!values.password) {
-		errors.password = "Password is required";
-	} else if (values.password.length < 6) {
-		errors.password = "Password must be at least 6 characters";
-	}
-	
-	if (!values.confirmPassword) {
-		errors.confirmPassword = "Confirm password is required";
-	} else if (values.password !== values.confirmPassword) {
-		errors.confirmPassword = "Passwords do not match";
-	}
-	
-	return errors;
-};
 
 export default function RegisterScreen() {
 	const { register } = useAuth();
@@ -44,40 +13,91 @@ export default function RegisterScreen() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
-		useForm<RegisterRequest>(
-			{ username: "", email: "", password: "", confirmPassword: "" },
-			validateRegister,
-			async (values) => {
-				try {
-					setLoading(true);
-					setError(null);
-					await register(values);
-					router.push("/(auth)/login");
-				} catch (err: any) {
-					setError(err.response?.data?.message || "Registration failed");
-				} finally {
-					setLoading(false);
-				}
-			},
-			500,
-		);
+	const handleError = (error: any) => {
+		if (error.code === "NETWORK_ERROR") {
+			setError("Network error. Please check your connection.");
+		} else if (error.response?.status === 409) {
+			setError("Username or email already exists. Please try different credentials.");
+		} else if (error.response?.status === 400) {
+			setError("Invalid input. Please check your information and try again.");
+		} else {
+			setError(error.response?.data?.message || "An unexpected error occurred.");
+		}
+	};
 
-	const handleSignIn = () => {
+	const handleRegister = async (credentials: RegisterRequest) => {
+		try {
+			setLoading(true);
+			setError(null);
+
+			const response = await register(credentials);
+
+			if (response.success) {
+				// Show success message
+				Alert.alert(
+					"✅ Đăng ký thành công!",
+					`Chúng tôi đã gửi email xác thực đến ${response.email}.\n\nVui lòng kiểm tra hộp thư và xác thực tài khoản để tiếp tục.`,
+					[
+						{
+							text: "Đồng ý",
+							onPress: () => router.replace("/(auth)/login"),
+							style: "default"
+						}
+					],
+					{ cancelable: false }
+				);
+			} else {
+				setError(response.message || "Registration failed. Please try again.");
+			}
+		} catch (err: any) {
+			handleError(err);
+			console.error("Registration error:", err);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleOAuth2Login = (provider: "google" | "github") => {
+		setLoading(true);
+		Alert.alert(
+			"OAuth Login",
+			`Redirecting to ${provider} login...`,
+			[
+				{
+					text: "OK",
+					onPress: () => {
+						setLoading(false);
+					}
+				}
+			]
+		);
+	};
+
+	const handleGoogleLogin = () => {
+		setError(null);
+		handleOAuth2Login("google");
+	};
+
+	const handleGitHubLogin = () => {
+		setError(null);
+		handleOAuth2Login("github");
+	};
+
+	const handleBackToLogin = () => {
 		router.push("/(auth)/login");
 	};
 
 	return (
 		<SafeAreaView className="flex-1 bg-gray-50">
 			<ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-				<View className="flex-1 justify-center px-8">
+				<View className="flex-1 justify-center px-8 py-8">
 					<View className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-						<View className="text-center mb-8">
-							<Text className="text-2xl font-semibold text-gray-900 mb-2">
-								Create Account
+						<View className="mb-8">
+							<Text className="text-2xl font-semibold text-gray-900 mb-2 text-center">
+								Create your Intelink account
 							</Text>
-							<Text className="text-gray-600">
-								Join Intelink to start shortening URLs
+							<Text className="text-gray-600 text-center">
+								Join thousands of users who trust Intelink for URL shortening
 							</Text>
 						</View>
 
@@ -87,63 +107,36 @@ export default function RegisterScreen() {
 							</View>
 						)}
 
-						<View className="space-y-4">
-							<TextInput
-								label="Username"
-								placeholder="Choose a username"
-								value={formData.username}
-								onChangeText={handleInputChange("username")}
-								error={errors.username}
-								fullWidth
+						<View className="mb-6">
+							<SocialLoginSection
+								onGoogleLogin={handleGoogleLogin}
+								onGitHubLogin={handleGitHubLogin}
+								loading={loading}
 							/>
+						</View>
 
-							<TextInput
-								label="Email"
-								placeholder="Enter your email"
-								value={formData.email}
-								onChangeText={handleInputChange("email")}
-								error={errors.email}
-								keyboardType="email-address"
-								autoCapitalize="none"
-								fullWidth
-							/>
+						<View className="flex-row items-center justify-center mb-6">
+							<View className="flex-1 h-px bg-gray-300" />
+							<Text className="px-4 text-gray-500">OR</Text>
+							<View className="flex-1 h-px bg-gray-300" />
+						</View>
 
-							<TextInput
-								secureTextEntry
-								label="Password"
-								placeholder="Create a password"
-								value={formData.password}
-								onChangeText={handleInputChange("password")}
-								error={errors.password}
-								fullWidth
-							/>
+						<View className="mb-6">
+							<RegisterForm onSubmit={handleRegister} loading={loading} />
+						</View>
 
-							<TextInput
-								secureTextEntry
-								label="Confirm Password"
-								placeholder="Confirm your password"
-								value={formData.confirmPassword}
-								onChangeText={handleInputChange("confirmPassword")}
-								error={errors.confirmPassword}
-								fullWidth
-							/>
-
+						<View className="mt-6">
+							<Text className="text-sm text-gray-600 mb-4 text-center">
+								Already have an account?
+							</Text>
 							<Button
-								onPress={handleSubmit}
-								variant="primary"
+								variant="outline"
 								fullWidth
 								size="lg"
-								loading={loading || isSubmitting}
+								onPress={handleBackToLogin}
 							>
-								Create Account
+								Sign in
 							</Button>
-
-							<View className="flex-row justify-center items-center mt-4">
-								<Text className="text-gray-600">Already have an account? </Text>
-								<TouchableOpacity onPress={handleSignIn}>
-									<Text className="text-blue-600 font-medium">Sign in</Text>
-								</TouchableOpacity>
-							</View>
 						</View>
 					</View>
 				</View>

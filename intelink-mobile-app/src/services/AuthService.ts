@@ -19,6 +19,8 @@ export class AuthService {
 	static async register(
 		credentials: RegisterRequest,
 	): Promise<RegisterResponse> {
+		console.log("🚀 AuthService.register - Credentials received:", credentials);
+		console.log("🚀 AuthService.register - Stringified:", JSON.stringify(credentials, null, 2));
 		const response = await api.post<RegisterResponse>(
 			"/api/v1/auth/register",
 			credentials,

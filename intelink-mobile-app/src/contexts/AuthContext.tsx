@@ -190,6 +190,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		credentials: RegisterRequest,
 	): Promise<RegisterResponse> => {
 		try {
+			console.log("🔐 AuthContext - Registering with credentials:", credentials);
+			console.log("🔐 AuthContext - Credentials type check:", {
+				username: typeof credentials.username,
+				email: typeof credentials.email,
+				password: typeof credentials.password,
+				confirmPassword: (credentials as any).confirmPassword ? 'EXISTS - SHOULD NOT!' : 'undefined (correct)'
+			});
 			const response = await AuthService.register(credentials);
 			return response;
 		} catch (error) {
