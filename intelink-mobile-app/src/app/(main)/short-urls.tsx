@@ -19,7 +19,7 @@ export default function ShortUrlsScreen() {
 	// const [unlockError, setUnlockError] = useState<string | undefined>(undefined);
 	// const [unlockShortCode, setUnlockShortCode] = useState<string | undefined>(undefined);
 	// const [unlockShortUrl, setUnlockShortUrl] = useState<string | undefined>(undefined);
-	const FRONTEND_URL = process.env.VITE_FRONTEND_URL;
+	const FRONTEND_URL = process.env.EXPO_PUBLIC_FRONTEND_URL;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalLoading, setModalLoading] = useState(false);
 	const router = useRouter();
