@@ -11,6 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
 import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
+import { useAuth } from "../../hooks/useAuth";
+import { canCreateShortUrl, canCustomizeShortCode } from "../../utils/subscriptionUtils";
 import type { SearchShortUrlRequest, CreateShortUrlRequest } from "../../services/ShortUrlService";
 
 export default function ShortUrlsScreen() {
@@ -23,6 +25,7 @@ export default function ShortUrlsScreen() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalLoading, setModalLoading] = useState(false);
 	const router = useRouter();
+	const { user } = useAuth();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -216,6 +219,7 @@ export default function ShortUrlsScreen() {
 				onClose={() => setModalVisible(false)}
 				onSubmit={handleCreateShortUrl}
 				loading={modalLoading}
+				user={user}
 			/>
 
 			<ScrollView
@@ -293,7 +297,32 @@ export default function ShortUrlsScreen() {
 						Create New Short URL
 					</Text>
 					<Button
-						onPress={() => setModalVisible(true)}
+						onPress={() => {
+							console.log('[ShortUrls] User:', user);
+							console.log('[ShortUrls] currentSubscription:', user?.currentSubscription);
+							console.log('[ShortUrls] subscriptionPlan:', user?.currentSubscription?.subscriptionPlan);
+							console.log('[ShortUrls] totalShortUrls:', user?.totalShortUrls);
+							console.log('[ShortUrls] maxShortUrls:', user?.currentSubscription?.subscriptionPlan?.maxShortUrls);
+							
+							const checkResult = canCreateShortUrl(user);
+							console.log('[ShortUrls] Permission check result:', checkResult);
+							
+							if (!checkResult.allowed) {
+								Alert.alert(
+									'Feature Restricted',
+									checkResult.reason,
+									[
+										{ text: 'Cancel', style: 'cancel' },
+										{ 
+											text: 'Upgrade Plan', 
+											onPress: () => router.push('/subscription-plans')
+										}
+									]
+								);
+								return;
+							}
+							setModalVisible(true);
+						}}
 						variant="primary"
 						fullWidth
 					>

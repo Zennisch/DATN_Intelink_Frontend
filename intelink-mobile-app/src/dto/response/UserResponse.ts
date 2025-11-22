@@ -1,3 +1,5 @@
+import type { Subscription } from '../../models/Subscription';
+
 export interface LoginResponse {
 	token: string;
 	refreshToken: string;
@@ -40,7 +42,7 @@ export interface UserProfileResponse {
 	bio?: string;
 	profilePictureUrl?: string;
 	providerUserId?: string;
-	currentSubscription?: any;
+	currentSubscription?: Subscription;
 	creditBalance: number;
 	currency: string;
 }

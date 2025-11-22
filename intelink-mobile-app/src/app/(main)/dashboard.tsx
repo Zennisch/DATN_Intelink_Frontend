@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function DashboardScreen() {
 	const { user, isLoading } = useAuth();
+	const router = useRouter();
 
 	if (isLoading) {
 		return (
@@ -153,6 +156,61 @@ export default function DashboardScreen() {
 						</View>
 					</View>
 				</View>
+
+				{/* Upgrade Plan Card - Show if no subscription or free plan */}
+				{(!user.currentSubscription || user.currentSubscription.planType === 'FREE') && (
+					<TouchableOpacity
+						onPress={() => router.push('/subscription-plans')}
+						className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-md mb-4"
+						activeOpacity={0.8}
+					>
+						<View className="flex-row items-center justify-between">
+							<View className="flex-1">
+								<View className="flex-row items-center gap-2 mb-2">
+									<Ionicons name="rocket" size={24} color="white" />
+									<Text className="text-xl font-bold text-white">
+										Upgrade Your Plan
+									</Text>
+								</View>
+								<Text className="text-white text-sm mb-3">
+									Unlock premium features and boost your productivity
+								</Text>
+								<View className="space-y-1">
+									<View className="flex-row items-center gap-2">
+										<Ionicons name="checkmark-circle" size={16} color="white" />
+										<Text className="text-white text-xs">More short URLs</Text>
+									</View>
+									<View className="flex-row items-center gap-2">
+										<Ionicons name="checkmark-circle" size={16} color="white" />
+										<Text className="text-white text-xs">Custom domains</Text>
+									</View>
+									<View className="flex-row items-center gap-2">
+										<Ionicons name="checkmark-circle" size={16} color="white" />
+										<Text className="text-white text-xs">Advanced analytics</Text>
+									</View>
+								</View>
+							</View>
+							<Ionicons name="chevron-forward" size={24} color="white" />
+						</View>
+					</TouchableOpacity>
+				)}
+
+				{/* Manage Subscription Button - Show if has active subscription */}
+				{user.currentSubscription && user.currentSubscription.planType !== 'FREE' && (
+					<TouchableOpacity
+						onPress={() => router.push('/subscription-management')}
+						className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 flex-row items-center justify-between"
+						activeOpacity={0.7}
+					>
+						<View className="flex-row items-center gap-3">
+							<View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center">
+								<Ionicons name="settings" size={20} color="#3B82F6" />
+							</View>
+							<Text className="text-gray-900 font-medium">Manage Subscription</Text>
+						</View>
+						<Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+					</TouchableOpacity>
+				)}
 
 				{/* Current Subscription - if user has subscription */}
 				{user.currentSubscription && (

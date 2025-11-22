@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import { Ionicons } from '@expo/vector-icons';
+import Button from "../../components/atoms/Button";
+import { canAccessStatistics } from "../../utils/subscriptionUtils";
 import { OverviewStatisticsService, type Granularity, type CountryStatisticsResponse, type TimeSeriesResponse, type DimensionType, type DimensionStatisticsResponse } from "../../services/OverviewStatisticsService";
 import { CountryMap } from "../../components/ui/CountryMap";
 import { LineChart } from "../../components/ui/LineChart";
@@ -10,7 +15,34 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 type TabType = "country" | "timeseries" | "dimension";
 
 export default function OverviewScreen() {
+	const router = useRouter();
+	const { user } = useAuth();
 	const [activeTab, setActiveTab] = useState<TabType>("country");
+
+	// Permission check for statistics access
+	const statisticsPermission = canAccessStatistics(user);
+	if (!statisticsPermission.allowed) {
+		return (
+			<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+				<View className="flex-1 justify-center items-center px-4">
+					<Ionicons name="bar-chart" size={64} color="#9CA3AF" />
+					<Text className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+						Overview Statistics Locked
+					</Text>
+					<Text className="text-gray-600 text-center mb-6">
+						{statisticsPermission.reason}
+					</Text>
+					<Button
+						onPress={() => router.push('/subscription-plans')}
+						variant="primary"
+					>
+						Upgrade Plan
+					</Button>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
 	const [countryData, setCountryData] = useState<CountryStatisticsResponse | null>(null);
 	const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesResponse | null>(null);
 	const [dimensionData, setDimensionData] = useState<Map<DimensionType, DimensionStatisticsResponse>>(new Map());

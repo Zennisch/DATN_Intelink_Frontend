@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { Modal, View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import TextInput from "./atoms/TextInput";
 import Button from "./atoms/Button";
 import Checkbox from "./atoms/Checkbox";
+import type { User } from "../models/User";
+import { canCustomizeShortCode } from "../utils/subscriptionUtils";
 
 export interface CreateShortUrlRequest {
   originalUrl: string;
@@ -19,6 +21,7 @@ interface CustomShortUrlModalProps {
   onClose: () => void;
   onSubmit: (urlData: CreateShortUrlRequest) => Promise<void>;
   loading?: boolean;
+  user: User | null;
 }
 
 const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
@@ -26,6 +29,7 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
   onClose,
   onSubmit,
   loading = false,
+  user,
 }) => {
   const [formData, setFormData] = useState<CreateShortUrlRequest>({
     originalUrl: "",
@@ -152,14 +156,34 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
             <View className="mb-4">
               <TextInput
                 label="Custom Short Code"
-                placeholder="Custom alias (optional)"
+                placeholder={
+                  canCustomizeShortCode(user).allowed 
+                    ? "Custom alias (optional)" 
+                    : "Upgrade to customize"
+                }
                 value={formData.customCode || ""}
-                onChangeText={v => handleInputChange("customCode", v)}
+                onChangeText={v => {
+                  const checkResult = canCustomizeShortCode(user);
+                  if (!checkResult.allowed) {
+                    Alert.alert(
+                      'Feature Restricted',
+                      checkResult.reason,
+                      [{ text: 'OK' }]
+                    );
+                    return;
+                  }
+                  handleInputChange("customCode", v);
+                }}
                 error={errors.customCode}
                 fullWidth
                 autoCapitalize="none"
-                editable={!loading}
+                editable={!loading && canCustomizeShortCode(user).allowed}
               />
+              {!canCustomizeShortCode(user).allowed && (
+                <Text className="text-xs text-gray-500 mt-1">
+                  Custom short codes require a paid plan
+                </Text>
+              )}
             </View>
             <View className="mb-4">
               <TextInput

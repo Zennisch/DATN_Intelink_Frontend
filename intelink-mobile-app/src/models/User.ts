@@ -1,4 +1,5 @@
 import { UserRole, UserProvider, UserStatus } from '../types/enums';
+import type { Subscription } from './Subscription';
 
 export interface User {
 	// Key group
@@ -28,7 +29,7 @@ export interface User {
 	totalClicks: number;
 
 	// Subscription group
-	currentSubscription?: any;
+	currentSubscription?: Subscription;
 
 	// Audit group
 	status: UserStatus;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import { canAccessAPI } from "../../utils/subscriptionUtils";
 import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
@@ -10,8 +12,34 @@ import { copyToClipboard } from "../../utils/clipboard";
 import { ApiKeyService, type ApiKeyResponse, type CreateApiKeyRequest } from "../../services/ApiKeyService";
 
 export default function ApiKeysScreen() {
+	const router = useRouter();
+	const { user } = useAuth();
 	const [apiKeys, setApiKeys] = useState<ApiKeyResponse[]>([]);
 	const [loading, setLoading] = useState(false);
+
+	// Permission check for API access
+	const apiPermission = canAccessAPI(user);
+	if (!apiPermission.allowed) {
+		return (
+			<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+				<View className="flex-1 justify-center items-center px-4">
+					<Ionicons name="key-outline" size={64} color="#9CA3AF" />
+					<Text className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+						API Access Locked
+					</Text>
+					<Text className="text-gray-600 text-center mb-6">
+						{apiPermission.reason}
+					</Text>
+					<Button
+						onPress={() => router.push('/subscription-plans')}
+						variant="primary"
+					>
+						Upgrade Plan
+					</Button>
+				</View>
+			</SafeAreaView>
+		);
+	}
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [showKeyModal, setShowKeyModal] = useState(false);
 	const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);

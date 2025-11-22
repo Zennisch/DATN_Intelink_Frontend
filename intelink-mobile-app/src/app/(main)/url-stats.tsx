@@ -3,13 +3,41 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../hooks/useAuth';
+import Button from '../../components/atoms/Button';
+import { canAccessStatistics } from '../../utils/subscriptionUtils';
 import { useStatistics } from '../../hooks/useStatistics';
 import { DimensionType as DT } from '../../services/ShortUrlService';
 
 export default function UrlStatsScreen() {
   const router = useRouter();
+  const { user } = useAuth();
   const params = useLocalSearchParams<{ shortcode?: string }>();
   const shortcode = params?.shortcode || '';
+
+  // Permission check for statistics access
+  const statisticsPermission = canAccessStatistics(user);
+  if (!statisticsPermission.allowed) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+        <View className="flex-1 justify-center items-center px-4">
+          <Ionicons name="stats-chart" size={64} color="#9CA3AF" />
+          <Text className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+            Statistics Locked
+          </Text>
+          <Text className="text-gray-600 text-center mb-6">
+            {statisticsPermission.reason}
+          </Text>
+          <Button
+            onPress={() => router.push('/subscription-plans')}
+            variant="primary"
+          >
+            Upgrade Plan
+          </Button>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const dimensionTypes = [
     DT.REFERRER,

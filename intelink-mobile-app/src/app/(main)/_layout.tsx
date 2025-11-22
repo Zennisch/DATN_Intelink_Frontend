@@ -77,6 +77,20 @@ export default function MainLayout() {
 						headerShown: false,
 					}}
 				/>
+				<Tabs.Screen
+					name="subscription-plans"
+					options={{
+						href: null,
+						headerShown: false,
+					}}
+				/>
+				<Tabs.Screen
+					name="subscription-management"
+					options={{
+						href: null,
+						headerShown: false,
+					}}
+				/>
 			</Tabs>
 			
 		</RouteGuard>
