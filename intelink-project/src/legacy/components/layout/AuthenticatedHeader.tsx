@@ -10,6 +10,7 @@ interface AuthenticatedHeaderProps {
 }
 
 export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
+	onSidebarToggle,
 	onLanguageChange,
 }) => {	
 	const { user } = useAuth();
@@ -74,41 +75,42 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 
 	return (
 			<header className="fixed top-0 left-0 md:left-64 right-0 bg-white border-b border-gray-200 z-30 h-16">
-				<div className="flex items-center justify-between px-4 h-full">
-				{/* Left side - Menu button and greeting */}
-				<div className="flex items-center space-x-4">
-					{/*<Button*/}
-					{/*	onClick={onSidebarToggle}*/}
-					{/*	variant="secondary"*/}
-					{/*	size="sm"*/}
-					{/*	className="md:hidden"*/}
-					{/*	icon={<i className="fas fa-bars text-gray-600"></i>}*/}
-					{/*>*/}
-					{/*	<span className="sr-only">Toggle sidebar</span>*/}
-					{/*</Button>*/}
+				<div className="flex items-center justify-between px-3 md:px-4 lg:px-6 h-full">
+				{/* Left side - Sidebar toggle for mobile */}
+				<div className="flex items-center space-x-2 md:space-x-4">
+					<Button
+						onClick={onSidebarToggle}
+						variant="secondary"
+						size="sm"
+						className="md:hidden p-2"
+						icon={<i className="fas fa-bars text-gray-600"></i>}
+					>
+						<span className="sr-only">Toggle sidebar</span>
+					</Button>
 
-					{/*<div className="hidden md:block">*/}
-					{/*	<h1 className="text-lg text-gray-600">*/}
-					{/*		<span className="text-yellow-500">☀️</span> Good morning,{" "}*/}
-					{/*		{user?.username || "User"}*/}
-					{/*	</h1>*/}
-					{/*	<p className="text-sm text-gray-500">Mon, July 22</p>*/}
-					{/*</div>*/}
+					{/* Greeting - hidden on mobile */}
+					<div className="hidden lg:block">
+						<h1 className="text-base xl:text-lg text-gray-600">
+							<span className="text-yellow-500">☀️</span> Good morning,{" "}
+							{user?.username || "User"}
+						</h1>
+						<p className="text-xs xl:text-sm text-gray-500">Mon, July 22</p>
+					</div>
 				</div>
 
-				{/* Right side - Create button, search, language, notifications, user */}
-				<div className="flex items-center space-x-3">
+				{/* Right side - Actions */}
+				<div className="flex items-center space-x-1.5 md:space-x-2 lg:space-x-3">
 					{/* Create New Dropdown */}
 					<div className="relative" ref={createDropdownRef}>
 						<Button
 							onClick={() => setShowCreateDropdown(!showCreateDropdown)}
 							variant="primary"
 							size="sm"
-							className="bg-blue-600 hover:bg-blue-700"
+							className="bg-blue-600 hover:bg-blue-700 text-xs md:text-sm px-2 md:px-3 py-1.5 md:py-2"
 							icon={<i className="fas fa-plus"></i>}
 						>
-							Create new
-							<i className="fas fa-chevron-down ml-2"></i>
+							<span className="hidden sm:inline">Create</span>
+							<i className="fas fa-chevron-down ml-1 md:ml-2"></i>
 						</Button>
 
 						{showCreateDropdown && (
@@ -147,22 +149,23 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 						)}
 					</div>
 
-					{/* Search */}
+					{/* Search - hidden on mobile */}
 					<div className="relative hidden md:block">
 						<input
 							type="text"
 							placeholder="Search links"
-							className="pl-10 pr-4 py-2 w-64 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							className="pl-10 pr-4 py-2 w-48 lg:w-56 xl:w-64 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						/>
 						<ICONS.SEARCH className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
 					</div>
 
-					{/* Language Dropdown */}
-					<div className="relative hidden md:block">
+					{/* Language Dropdown - hidden on mobile */}
+					<div className="relative hidden lg:block">
 						<Button
 							onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
 							variant="outline"
 							size="sm"
+							className="text-xs xl:text-sm"
 						>
 							{currentLanguage}
 							<i className="fas fa-chevron-down ml-2"></i>
@@ -183,55 +186,32 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 						)}
 					</div>
 
-					{/* Notifications */}
-					{/*<div className="relative">*/}
-					{/*	<Button*/}
-					{/*		variant="secondary"*/}
-					{/*		size="sm"*/}
-					{/*		className="relative"*/}
-					{/*		icon={<i className="fas fa-bell text-gray-600"></i>}*/}
-					{/*	>*/}
-					{/*		<span className="sr-only">Notifications</span>*/}
-					{/*	</Button>*/}
-					{/*	/!* Notification badge *!/*/}
-					{/*	<span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full transform translate-x-1 -translate-y-1"></span>*/}
-					{/*</div>*/}
-
 					{/* User Avatar and Dropdown */}
 								<div className="relative flex items-center">
 									<Button
 										onClick={() => setShowUserDropdown(!showUserDropdown)}
 										variant="secondary"
 										size="sm"
-										className="flex items-center space-x-2"
+										className="flex items-center space-x-1 md:space-x-2 px-2 md:px-3"
 										icon={
-											<div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
+											<div className="w-6 h-6 md:w-7 md:h-7 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
 												{userInitials}
 											</div>
 										}
 									>
-										<span className="hidden md:block text-sm font-medium text-gray-700">
+										<span className="hidden md:block text-xs lg:text-sm font-medium text-gray-700 max-w-[80px] lg:max-w-none truncate">
 											{user?.username || "User"}
 										</span>
-										<i className="fas fa-chevron-down text-gray-400 ml-1"></i>
+										<i className="fas fa-chevron-down text-gray-400 text-xs md:text-sm"></i>
 									</Button>
-									{/* Subscription & Credit */}
-									{/*<div className="hidden md:flex flex-col items-end text-xs">*/}
-									{/*	<span className="text-gray-500">Plan & Credit</span>*/}
-									{/*	<div className="flex items-center space-x-2">*/}
-									{/*		<span className="font-semibold text-blue-600">{currentPlan}</span>*/}
-									{/*		<span className="text-gray-400">|</span>*/}
-									{/*		<span className="font-semibold text-green-600">{creditBalance} {currency}</span>*/}
-									{/*	</div>*/}
-									{/*</div>*/}
-									{/* End Subscription & Credit */}
+									
 									{showUserDropdown && (
 										<div className="absolute top-12 right-0 w-56 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
 											<div className="px-4 py-3 border-b border-gray-200">
-												<p className="text-sm font-medium text-gray-900">
+												<p className="text-sm font-medium text-gray-900 truncate">
 													{user?.username || "User"}
 												</p>
-												<p className="text-sm text-gray-500">{user?.email || ""}</p>
+												<p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
 												<p className="text-xs mt-1"><span className="font-semibold text-blue-600">{currentPlan}</span> | <span className="font-semibold text-green-600">{creditBalance} {currency}</span></p>
 											</div>
 											<div className="py-1">

@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth.ts";
 import { Spinner } from "../components/ui/Spinner.tsx";
 import { Button } from "../components/ui/Button.tsx";
 import type { SubscriptionPlanResponse } from "../dto/response/SubscriptionPlanResponse.ts";
-import { Sidebar } from "../components/layout/Sidebar.tsx";
+import { AuthenticatedLayout } from "../components/layout/AuthenticatedLayout.tsx";
 
 const SubscriptionPlansPage: React.FC = () => {
 	const navigate =
@@ -39,19 +39,17 @@ const SubscriptionPlansPage: React.FC = () => {
 	if (loading || authLoading) return <Spinner />;
 
 	return (
-		<div className="flex flex-row justify-start items-center">
-			<Sidebar isOpen={true} onClose={() => {}} />
-
-			<div className="max-w-7xl mx-auto pl-56 pt-28 flex flex-col items-center justify-center ">
-				<h2 className="text-3xl font-bold mb-6 text-center">
+		<AuthenticatedLayout>
+			<div className="w-full max-w-7xl mx-auto">
+				<h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center">
 					Subscription Plans
 				</h2>
 				{error && (
-					<div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+					<div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm md:text-base">
 						{error}
 					</div>
 				)}
-				<div className="flex flex-row flex-wrap justify-center items-stretch gap-8 w-full">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 w-full">
 					{plans.length === 0 ? (
 						<div className="text-center text-gray-500 w-full">
 							No subscription plans available.
@@ -63,9 +61,9 @@ const SubscriptionPlansPage: React.FC = () => {
 							return (
 								<div
 									key={plan.id}
-									className={`min-w-[320px] max-w-xs rounded-lg shadow-md p-6 flex flex-col bg-white border ${!isActive ? "border-gray-300 opacity-60" : "border-blue-500"}`}
+									className={`w-full rounded-lg shadow-md p-4 md:p-6 flex flex-col bg-white border ${!isActive ? "border-gray-300 opacity-60" : "border-blue-500"}`}
 								>
-									<h3 className="text-xl font-semibold mb-2 text-blue-700 uppercase">
+									<h3 className="text-lg md:text-xl font-semibold mb-2 text-blue-700 uppercase">
 										{plan.type}
 									</h3>
 									<p className="mb-2 text-gray-700">
@@ -157,7 +155,7 @@ const SubscriptionPlansPage: React.FC = () => {
 					)}
 				</div>
 			</div>
-		</div>
+		</AuthenticatedLayout>
 	);
 };
 export default SubscriptionPlansPage;

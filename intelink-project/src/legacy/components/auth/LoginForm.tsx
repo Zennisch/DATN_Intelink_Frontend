@@ -70,12 +70,14 @@ export const LoginForm = ({ onSubmit, loading = false }: LoginFormProps) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
 				<Checkbox
 					id="keep-signed-in"
 					checked={keepSignedIn}
 					onChange={setKeepSignedIn}
-					label="Keep me signed in until I sign out"
+					label={
+						<span className="text-sm">Keep me signed in</span>
+					}
 				/>
 
 				<a

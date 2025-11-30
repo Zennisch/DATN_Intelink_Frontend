@@ -91,15 +91,15 @@ export function VerifyEmailPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={handleLanguageChange} />
 
-			<div className="flex items-center justify-center min-h-screen pt-20">
-				<div className="w-full max-w-2xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+			<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+				<div className="w-full max-w-2xl py-6 md:p-8">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 text-center">
 						{isVerifying ? (
 							// Loading State
 							<>
-								<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-6">
+								<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-100 mb-4 md:mb-6">
 									<svg
-										className="w-8 h-8 text-blue-600 animate-spin"
+										className="w-7 h-7 md:w-8 md:h-8 text-blue-600 animate-spin"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -113,20 +113,20 @@ export function VerifyEmailPage() {
 									</svg>
 								</div>
 
-								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+								<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 									Verifying your email...
 								</h1>
 
-								<p className="text-gray-600">
+								<p className="text-sm md:text-base text-gray-600">
 									Please wait while we verify your email address.
 								</p>
 							</>
 						) : isSuccess ? (
 							// Success State
 							<>
-								<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+								<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-green-100 mb-4 md:mb-6">
 									<svg
-										className="w-8 h-8 text-green-600"
+										className="w-7 h-7 md:w-8 md:h-8 text-green-600"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -140,17 +140,17 @@ export function VerifyEmailPage() {
 									</svg>
 								</div>
 
-								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+								<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 									Email Verified Successfully!
 								</h1>
 
-								<p className="text-gray-600 mb-6">
+								<p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
 									Your email has been verified. You can now log in to your
 									account.
 								</p>
 
-								<div className="mb-6">
-									<p className="text-sm text-gray-500">
+								<div className="mb-4 md:mb-6">
+									<p className="text-xs md:text-sm text-gray-500">
 										Redirecting to login page in{" "}
 										<span className="font-semibold text-blue-600">
 											{countdown}
@@ -171,9 +171,9 @@ export function VerifyEmailPage() {
 						) : (
 							// Error State
 							<>
-								<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-6">
+								<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-red-100 mb-4 md:mb-6">
 									<svg
-										className="w-8 h-8 text-red-600"
+										className="w-7 h-7 md:w-8 md:h-8 text-red-600"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -187,11 +187,11 @@ export function VerifyEmailPage() {
 									</svg>
 								</div>
 
-								<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+								<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 									Email Verification Failed
 								</h1>
 
-								<p className="text-red-600 mb-6">{error}</p>
+								<p className="text-sm md:text-base text-red-600 mb-4 md:mb-6">{error}</p>
 
 								<div className="space-y-3">
 									<Button

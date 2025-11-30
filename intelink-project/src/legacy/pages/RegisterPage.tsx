@@ -83,14 +83,14 @@ export function RegisterPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={handleLanguageChange} />
 
-			<div className="flex items-center justify-center min-h-screen pt-20">
-				<div className="w-full max-w-2xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-						<div className="text-center mb-8">
-							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+			<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+				<div className="w-full max-w-md md:max-w-2xl">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+						<div className="text-center mb-6 md:mb-8">
+							<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 								Create your Intelink account
 							</h1>
-							<p className="text-gray-600">
+							<p className="text-sm md:text-base text-gray-600">
 								Join thousands of users who trust Intelink for URL shortening
 							</p>
 						</div>

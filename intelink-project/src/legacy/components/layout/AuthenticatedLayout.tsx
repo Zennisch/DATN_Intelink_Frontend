@@ -39,7 +39,7 @@ export const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({
 
 				{/* Page content */}
 				<main className="pt-16">
-					<div className="p-2">{children}</div>
+					<div className="p-3 md:p-4 lg:p-6">{children}</div>
 				</main>
 			</div>
 		</div>
