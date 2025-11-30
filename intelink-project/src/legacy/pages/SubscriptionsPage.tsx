@@ -79,21 +79,21 @@ const SubscriptionsPage: React.FC = () => {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-4xl mx-auto absolute-top-20 w-full">
-				<div className="mb-8">
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:py-8 px-3 md:px-4 sm:px-6 lg:px-8">
+			<div className="max-w-4xl mx-auto w-full pt-16 md:pt-20">
+				<div className="mb-6 md:mb-8">
+					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
 						Gói đăng ký của tôi
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-sm md:text-base text-gray-600">
 						Quản lý và theo dõi các gói đăng ký của bạn
 					</p>
 				</div>
 
 				{subscriptions.length === 0 ? (
-					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-12 text-center">
 						<svg
-							className="mx-auto h-16 w-16 text-gray-400 mb-4"
+							className="mx-auto h-12 w-12 md:h-16 md:w-16 text-gray-400 mb-3 md:mb-4"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -105,10 +105,10 @@ const SubscriptionsPage: React.FC = () => {
 								d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
 							/>
 						</svg>
-						<h3 className="text-lg font-medium text-gray-900 mb-2">
+						<h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
 							Chưa có gói đăng ký
 						</h3>
-						<p className="text-gray-600">
+						<p className="text-sm md:text-base text-gray-600">
 							Bạn chưa có gói đăng ký nào. Hãy chọn một gói phù hợp với nhu cầu
 							của bạn.
 						</p>

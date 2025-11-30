@@ -206,12 +206,12 @@ export const OverviewStatistics = () => {
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+		<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
 			{/* Tabs */}
-			<div className="flex gap-2 mb-6 border-b border-gray-200">
+			<div className="flex gap-1 md:gap-2 mb-4 md:mb-6 border-b border-gray-200 overflow-x-auto">
 				<button
 					onClick={() => setActiveTab("country")}
-					className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+					className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
 						activeTab === "country"
 							? "text-blue-600 border-blue-600"
 							: "text-gray-600 border-transparent hover:text-gray-900"
@@ -221,7 +221,7 @@ export const OverviewStatistics = () => {
 				</button>
 				<button
 					onClick={() => setActiveTab("timeseries")}
-					className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+					className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
 						activeTab === "timeseries"
 							? "text-blue-600 border-blue-600"
 							: "text-gray-600 border-transparent hover:text-gray-900"
@@ -231,7 +231,7 @@ export const OverviewStatistics = () => {
 				</button>
 				<button
 					onClick={() => setActiveTab("dimension")}
-					className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+					className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
 						activeTab === "dimension"
 							? "text-blue-600 border-blue-600"
 							: "text-gray-600 border-transparent hover:text-gray-900"
@@ -242,8 +242,8 @@ export const OverviewStatistics = () => {
 			</div>
 
 			{/* Date Range Controls */}
-			<div className="mb-6">
-				<div className="flex flex-wrap gap-3 items-end">
+			<div className="mb-4 md:mb-6">
+				<div className="flex flex-wrap gap-2 md:gap-3 items-end">
 					<div className="flex-1 min-w-[200px]">
 						<label className="block text-sm font-medium text-gray-700 mb-1">
 							Start Date
@@ -423,17 +423,17 @@ export const OverviewStatistics = () => {
 					</div>
 
 					{/* Map Visualization & Bar Chart Side by Side */}
-					<div className="grid grid-cols-10 gap-4 h-[600px]">
-						{/* Map - 7 columns */}
-						<div className="col-span-7 h-full">
+					<div className="grid grid-cols-1 lg:grid-cols-10 gap-4 h-auto lg:h-[600px]">
+						{/* Map - 7 columns on large screens, full width on mobile */}
+						<div className="lg:col-span-7 h-[400px] lg:h-full">
 							<CountryMapChart 
 								data={countryMapData} 
 								title="Geographic Distribution of Views"
 							/>
 						</div>
 
-						{/* Bar Chart - 3 columns */}
-						<div className="col-span-3 h-full">
+						{/* Bar Chart - 3 columns on large screens, full width on mobile */}
+						<div className="lg:col-span-3 h-[500px] lg:h-full">
 							<div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col">
 								<h3 className="text-base font-semibold text-gray-900 mb-3 text-center">Top Countries</h3>
 								<div className="space-y-2 overflow-y-auto flex-1">
@@ -620,7 +620,7 @@ export const OverviewStatistics = () => {
 					</div>
 
 					{/* Bar Charts in grid: 1 column for single dimension, 2 columns for multiple */}
-					<div className={`grid gap-6 ${dimensionData.size === 1 ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+					<div className={`grid gap-4 md:gap-6 ${dimensionData.size === 1 ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-2'}`}>
 						{Array.from(dimensionData.entries()).map(([dimension, data]) => (
 							<div key={dimension} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
 								{/* Dimension Header */}

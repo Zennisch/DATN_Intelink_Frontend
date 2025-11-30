@@ -160,8 +160,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 											<button
 												className="w-full bg-white text-blue-600 text-xs font-medium py-1.5 px-2 rounded-md hover:bg-gray-50 transition-colors"
 												onClick={() => {
-													navigate("/plans");
 													onClose();
+													navigate("/plans");
 												}}
 											>
 												{isFreeUser ? "Upgrade →" : "View Plans →"}
@@ -206,8 +206,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 												<button
 													className="flex-1 bg-white text-blue-600 text-xs font-semibold py-2 px-3 rounded-md hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
 													onClick={() => {
-														navigate("/plans");
 														onClose();
+														navigate("/plans");
 													}}
 												>
 													Manage
@@ -215,8 +215,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 												<button
 													className="flex-1 bg-white/90 text-purple-600 text-xs font-semibold py-2 px-3 rounded-md hover:bg-white transition-all duration-200 shadow-sm hover:shadow-md"
 													onClick={() => {
-														navigate("/dashboard/subscriptions");
 														onClose();
+														navigate("/dashboard/subscriptions");
 													}}
 												>
 													History

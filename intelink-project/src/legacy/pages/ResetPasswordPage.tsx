@@ -115,12 +115,12 @@ export function ResetPasswordPage() {
 			<div className="min-h-screen bg-gray-50 font-inter">
 				<Header onLanguageChange={handleLanguageChange} />
 
-				<div className="flex items-center justify-center min-h-screen pt-20">
-					<div className="w-full max-w-2xl p-8">
-						<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
-							<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-6">
+				<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+					<div className="w-full max-w-2xl py-6 md:p-8">
+						<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 text-center">
+							<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-red-100 mb-4 md:mb-6">
 								<svg
-									className="w-8 h-8 text-red-600"
+									className="w-7 h-7 md:w-8 md:h-8 text-red-600"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -134,11 +134,11 @@ export function ResetPasswordPage() {
 								</svg>
 							</div>
 
-							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+							<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 								Invalid Reset Link
 							</h1>
 
-							<p className="text-gray-600 mb-6">
+							<p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
 								This password reset link is invalid or has expired. Please
 								request a new password reset.
 							</p>
@@ -175,12 +175,12 @@ export function ResetPasswordPage() {
 			<div className="min-h-screen bg-gray-50 font-inter">
 				<Header onLanguageChange={handleLanguageChange} />
 
-				<div className="flex items-center justify-center min-h-screen pt-20">
-					<div className="w-full max-w-2xl p-8">
-						<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
-							<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+				<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+					<div className="w-full max-w-2xl py-6 md:p-8">
+						<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 text-center">
+							<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-green-100 mb-4 md:mb-6">
 								<svg
-									className="w-8 h-8 text-green-600"
+									className="w-7 h-7 md:w-8 md:h-8 text-green-600"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -194,11 +194,11 @@ export function ResetPasswordPage() {
 								</svg>
 							</div>
 
-							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+							<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 								Password Reset Successful!
 							</h1>
 
-							<p className="text-gray-600 mb-6">
+							<p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
 								Your password has been successfully reset. You can now log in
 								with your new password.
 							</p>
@@ -223,23 +223,23 @@ export function ResetPasswordPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={handleLanguageChange} />
 
-			<div className="flex items-center justify-center min-h-screen pt-20">
-				<div className="w-full max-w-2xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-						<div className="text-center mb-8">
-							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+			<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+				<div className="w-full max-w-2xl py-6 md:p-8">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+						<div className="text-center mb-6 md:mb-8">
+							<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 								Reset your password
 							</h1>
-							<p className="text-gray-600">Enter your new password below.</p>
+							<p className="text-sm md:text-base text-gray-600">Enter your new password below.</p>
 						</div>
 
 						{error && (
-							<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-								<p className="text-sm text-red-600">{error}</p>
+							<div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200 rounded-lg">
+								<p className="text-xs md:text-sm text-red-600">{error}</p>
 							</div>
 						)}
 
-						<form onSubmit={handleSubmit} className="space-y-6">
+						<form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
 							<div className="relative">
 								<Input
 									type={showPassword ? "text" : "password"}
@@ -254,7 +254,7 @@ export function ResetPasswordPage() {
 								<button
 									type="button"
 									onClick={() => setShowPassword(!showPassword)}
-									className="absolute right-3 top-10 text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
+									className="absolute right-3 top-9 md:top-10 text-xs md:text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
 								>
 									{showPassword ? "Hide" : "Show"}
 								</button>
@@ -274,7 +274,7 @@ export function ResetPasswordPage() {
 								<button
 									type="button"
 									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-									className="absolute right-3 top-10 text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
+									className="absolute right-3 top-9 md:top-10 text-xs md:text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
 								>
 									{showConfirmPassword ? "Hide" : "Show"}
 								</button>
@@ -291,7 +291,7 @@ export function ResetPasswordPage() {
 							</Button>
 						</form>
 
-						<div className="mt-6 text-center">
+						<div className="mt-4 md:mt-6 text-center">
 							<Button
 								variant="outline"
 								fullWidth

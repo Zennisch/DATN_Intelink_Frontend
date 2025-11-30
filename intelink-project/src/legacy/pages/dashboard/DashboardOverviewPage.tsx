@@ -24,32 +24,32 @@ export const DashboardOverviewPage = () => {
 	}
 
 	return (
-		<div className="p-2 space-y-6">
+		<div className="space-y-4 md:space-y-6">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
+					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">
 						Dashboard
 					</h1>
-					<p className="text-gray-600 text-center">
+					<p className="text-sm md:text-base text-gray-600 text-center">
 						Welcome back, {user.displayName || user.username}!
 					</p>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 					{/* Quick Stats */}
-					<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-						<h2 className="text-lg font-semibold text-gray-900 mb-2">
+					<div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+						<h2 className="text-base md:text-lg font-semibold text-gray-900 mb-2">
 							Quick Stats
 						</h2>
 						<div className="space-y-2">
-							<div className="flex justify-between">
+							<div className="flex justify-between text-sm md:text-base">
 								<span className="text-gray-600">Total Links:</span>
 								<span className="font-medium">{user.totalShortUrls}</span>
 							</div>
-							<div className="flex justify-between">
+							<div className="flex justify-between text-sm md:text-base">
 								<span className="text-gray-600">Total Clicks:</span>
 								<span className="font-medium">{user.totalClicks}</span>
 							</div>
-							<div className="flex justify-between">
+							<div className="flex justify-between text-sm md:text-base">
 								<span className="text-gray-600">Credit Balance:</span>
 								<span className="font-medium">{user.creditBalance} {user.currency}</span>
 							</div>
@@ -57,8 +57,8 @@ export const DashboardOverviewPage = () => {
 					</div>
 
 					{/* Recent Activity */}
-					<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-						<h2 className="text-lg font-semibold text-gray-900 mb-2">
+					<div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+						<h2 className="text-base md:text-lg font-semibold text-gray-900 mb-2">
 							Recent Activity
 						</h2>
 						<div className="text-sm text-gray-600">
@@ -76,8 +76,8 @@ export const DashboardOverviewPage = () => {
 					</div>
 
 					{/* Account Info */}
-					<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-						<h2 className="text-lg font-semibold text-gray-900 mb-2">
+					<div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
+						<h2 className="text-base md:text-lg font-semibold text-gray-900 mb-2">
 							Account Information
 						</h2>
 						<div className="space-y-2 text-sm">
@@ -127,11 +127,11 @@ export const DashboardOverviewPage = () => {
 
 					{/* Subscription Info - if user has subscription */}
 					{user.currentSubscription && (
-						<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 md:col-span-2 lg:col-span-3">
-							<h2 className="text-lg font-semibold text-gray-900 mb-4">
+						<div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 sm:col-span-2 lg:col-span-3">
+							<h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
 								🎯 Current Subscription
 							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
 								<div className="bg-blue-50 p-4 rounded-lg">
 									<div className="text-sm text-blue-600 font-medium">Plan Type</div>
 									<div className="text-lg font-semibold text-blue-900">
@@ -163,7 +163,7 @@ export const DashboardOverviewPage = () => {
 									</div>
 								</div>
 							</div>
-							<div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+							<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 text-xs md:text-sm">
 								<div className="flex items-center gap-2">
 									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
 									<span className={user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'}>
@@ -193,11 +193,11 @@ export const DashboardOverviewPage = () => {
 					)}
 
 					{/* Demo Section */}
-					<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 md:col-span-2 lg:col-span-3">
-						<h2 className="text-lg font-semibold text-gray-900 mb-4">
+					<div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 sm:col-span-2 lg:col-span-3">
+						<h2 className="text-base md:text-lg font-semibold text-gray-900 mb-4">
 							🔒 Password Protection Feature
 						</h2>
-						<p className="text-gray-600 text-sm mb-4">
+						<p className="text-gray-600 text-xs md:text-sm mb-4">
 							Create short URLs with password protection for enhanced security.
 						</p>
 						<div className="bg-blue-50 rounded-lg p-4 border border-blue-200">

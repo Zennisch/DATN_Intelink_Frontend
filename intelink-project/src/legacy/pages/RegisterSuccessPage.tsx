@@ -55,13 +55,13 @@ export function RegisterSuccessPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={handleLanguageChange} />
 
-			<div className="flex items-center justify-center min-h-screen pt-20">
-				<div className="w-full max-w-2xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+			<div className="flex items-center justify-center min-h-screen pt-16 md:pt-20 px-4">
+				<div className="w-full max-w-2xl py-6 md:p-8">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 text-center">
 						{/* Success Icon */}
-						<div className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+						<div className="mx-auto flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-green-100 mb-4 md:mb-6">
 							<svg
-								className="w-8 h-8 text-green-600"
+								className="w-7 h-7 md:w-8 md:h-8 text-green-600"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -77,23 +77,23 @@ export function RegisterSuccessPage() {
 						</div>
 
 						{/* Success Message */}
-						<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+						<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 							Account Created Successfully!
 						</h1>
 
-						<p className="text-gray-600 mb-6">
+						<p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
 							Welcome to Intelink! Your account has been created successfully.
 						</p>
 
 						{/* Email Verification Status */}
-						<div className="bg-gray-50 rounded-lg p-4 mb-6">
-							<p className="text-sm text-gray-700 mb-2">
+						<div className="bg-gray-50 rounded-lg p-3 md:p-4 mb-4 md:mb-6">
+							<p className="text-xs md:text-sm text-gray-700 mb-2">
 								<strong>Email:</strong> {email}
 							</p>
 							{emailVerified ? (
 								<div className="flex items-center justify-center text-green-600">
 									<svg
-										className="w-4 h-4 mr-2"
+										className="w-4 h-4 mr-2 flex-shrink-0"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -105,12 +105,12 @@ export function RegisterSuccessPage() {
 											d="M5 13l4 4L19 7"
 										/>
 									</svg>
-									<span className="text-sm font-medium">Email verified</span>
+									<span className="text-xs md:text-sm font-medium">Email verified</span>
 								</div>
 							) : (
 								<div className="flex items-center justify-center text-amber-600">
 									<svg
-										className="w-4 h-4 mr-2"
+										className="w-4 h-4 mr-2 flex-shrink-0"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ export function RegisterSuccessPage() {
 											d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 15.5c-.77.833.192 2.5 1.732 2.5z"
 										/>
 									</svg>
-									<span className="text-sm font-medium">
+									<span className="text-xs md:text-sm font-medium">
 										Please check your email to verify your account
 									</span>
 								</div>
@@ -130,8 +130,8 @@ export function RegisterSuccessPage() {
 						</div>
 
 						{/* Countdown */}
-						<div className="mb-6">
-							<p className="text-sm text-gray-500">
+						<div className="mb-4 md:mb-6">
+							<p className="text-xs md:text-sm text-gray-500">
 								Redirecting to login page in{" "}
 								<span className="font-semibold text-blue-600">{countdown}</span>{" "}
 								second{countdown !== 1 ? "s" : ""}...

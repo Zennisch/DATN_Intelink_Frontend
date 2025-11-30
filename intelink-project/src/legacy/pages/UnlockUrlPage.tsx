@@ -87,9 +87,9 @@ const UnlockUrlPage: React.FC = () => {
 		return (
 			<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
 				<div className="max-w-md w-full">
-					<div className="bg-white rounded-xl shadow-lg p-8 text-center">
+					<div className="bg-white rounded-xl shadow-lg p-6 md:p-8 text-center">
 						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-						<p className="text-gray-600">Loading...</p>
+						<p className="text-sm md:text-base text-gray-600">Loading...</p>
 					</div>
 				</div>
 			</div>
@@ -101,17 +101,17 @@ const UnlockUrlPage: React.FC = () => {
 		return (
 			<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
 				<div className="max-w-md w-full">
-					<div className="text-center mb-8">
-						<div className="flex justify-center mb-4">
-							<img src={icon} alt="Intelink Logo" className="w-16 h-16" />
+					<div className="text-center mb-6 md:mb-8">
+						<div className="flex justify-center mb-3 md:mb-4">
+							<img src={icon} alt="Intelink Logo" className="w-14 h-14 md:w-16 md:h-16" />
 						</div>
-						<h1 className="text-2xl font-bold text-gray-900">Intelink</h1>
+						<h1 className="text-xl md:text-2xl font-bold text-gray-900">Intelink</h1>
 					</div>
 
-					<div className="bg-white rounded-xl shadow-lg p-8 text-center">
-						<div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+					<div className="bg-white rounded-xl shadow-lg p-6 md:p-8 text-center">
+						<div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-red-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
 							<svg
-								className="w-8 h-8 text-red-600"
+								className="w-7 h-7 md:w-8 md:h-8 text-red-600"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -124,10 +124,10 @@ const UnlockUrlPage: React.FC = () => {
 								/>
 							</svg>
 						</div>
-						<h2 className="text-xl font-semibold text-gray-900 mb-2">
+						<h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
 							{error}
 						</h2>
-						<p className="text-gray-600 text-sm mb-6">
+						<p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
 							The link you're looking for might have been removed or is no longer available.
 						</p>
 						<Button onClick={handleGoHome} variant="outline">
@@ -143,20 +143,20 @@ const UnlockUrlPage: React.FC = () => {
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
 			<div className="max-w-md w-full">
 				{/* Logo */}
-				<div className="text-center mb-8">
-					<div className="flex justify-center mb-4">
-						<img src={icon} alt="Intelink Logo" className="w-16 h-16" />
+				<div className="text-center mb-6 md:mb-8">
+					<div className="flex justify-center mb-3 md:mb-4">
+						<img src={icon} alt="Intelink Logo" className="w-14 h-14 md:w-16 md:h-16" />
 					</div>
-					<h1 className="text-2xl font-bold text-gray-900">Intelink</h1>
+					<h1 className="text-xl md:text-2xl font-bold text-gray-900">Intelink</h1>
 				</div>
 
 				{/* Main Card */}
-				<div className="bg-white rounded-xl shadow-lg p-8">
+				<div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
 					{/* Lock Icon */}
-					<div className="text-center mb-6">
-						<div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+					<div className="text-center mb-4 md:mb-6">
+						<div className="mx-auto w-14 h-14 md:w-16 md:h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3 md:mb-4">
 							<svg
-								className="w-8 h-8 text-gray-600"
+								className="w-7 h-7 md:w-8 md:h-8 text-gray-600"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -169,18 +169,18 @@ const UnlockUrlPage: React.FC = () => {
 								/>
 							</svg>
 						</div>
-						<h2 className="text-xl font-semibold text-gray-900 mb-2">
+						<h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
 							Protected Link
 						</h2>
-						<p className="text-gray-600 text-sm">
+						<p className="text-xs md:text-sm text-gray-600">
 							This link is password protected. Please enter the password to continue.
 						</p>
 					</div>
 
 					{/* URL Info */}
-					<div className="bg-gray-50 rounded-lg p-4 mb-6">
+					<div className="bg-gray-50 rounded-lg p-3 md:p-4 mb-4 md:mb-6">
 						<div className="flex items-center gap-3">
-							<div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+							<div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
 								<svg
 									className="w-4 h-4 text-blue-600"
 									fill="none"
@@ -195,11 +195,11 @@ const UnlockUrlPage: React.FC = () => {
 									/>
 								</svg>
 							</div>
-							<div className="flex-1">
-								<div className="font-medium text-gray-900">
+							<div className="flex-1 min-w-0">
+								<div className="font-medium text-gray-900 text-sm md:text-base truncate">
 									{`${window.location.origin}/${shortCode}`}
 								</div>
-								<div className="text-sm text-gray-500">
+								<div className="text-xs md:text-sm text-gray-500">
 									{unlockInfo?.message || "This link is password protected"}
 								</div>
 							</div>
@@ -209,7 +209,7 @@ const UnlockUrlPage: React.FC = () => {
 					{/* Password Form */}
 					<form onSubmit={handleUnlock} className="space-y-4">
 						<div>
-							<label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+							<label htmlFor="password" className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
 								Password
 							</label>
 							<Input
@@ -227,7 +227,7 @@ const UnlockUrlPage: React.FC = () => {
 							<div className="bg-red-50 border border-red-200 rounded-lg p-3">
 								<div className="flex items-center gap-2">
 									<svg
-										className="w-4 h-4 text-red-500"
+										className="w-4 h-4 text-red-500 flex-shrink-0"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -239,7 +239,7 @@ const UnlockUrlPage: React.FC = () => {
 											d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 										/>
 									</svg>
-									<span className="text-sm text-red-700">{error}</span>
+									<span className="text-xs md:text-sm text-red-700">{error}</span>
 								</div>
 							</div>
 						)}
@@ -264,7 +264,7 @@ const UnlockUrlPage: React.FC = () => {
 											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 										/>
 									</svg>
-									Unlocking...
+									<span className="text-sm md:text-base">Unlocking...</span>
 								</div>
 							) : (
 								<div className="flex items-center justify-center gap-2">
@@ -281,17 +281,17 @@ const UnlockUrlPage: React.FC = () => {
 											d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
 										/>
 									</svg>
-									Unlock Link
+									<span className="text-sm md:text-base">Unlock Link</span>
 								</div>
 							)}
 						</Button>
 					</form>
 
 					{/* Footer */}
-					<div className="mt-6 pt-6 border-t border-gray-200 text-center">
+					<div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200 text-center">
 						<button
 							onClick={handleGoHome}
-							className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+							className="text-blue-600 hover:text-blue-700 text-xs md:text-sm font-medium"
 						>
 							← Back to Intelink
 						</button>
@@ -299,7 +299,7 @@ const UnlockUrlPage: React.FC = () => {
 				</div>
 
 				{/* Security Note */}
-				<div className="mt-6 text-center">
+				<div className="mt-4 md:mt-6 text-center">
 					<p className="text-xs text-gray-500">
 						🔒 This link is secured by Intelink. Your privacy is protected.
 					</p>

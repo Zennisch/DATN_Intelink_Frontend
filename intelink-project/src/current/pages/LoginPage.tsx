@@ -72,25 +72,25 @@ export function LoginPage() {
 		<div className="min-h-screen bg-gray-50 font-inter">
 			<Header onLanguageChange={() => {}} />
 
-			<div className="flex justify-center items-center">
-				<div className="w-full max-w-6xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-						<div className="text-center mb-8">
-							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
+			<div className="flex justify-center items-center pt-16 md:pt-20 px-4">
+				<div className="w-full max-w-6xl py-6 md:p-8">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6 lg:p-8">
+						<div className="text-center mb-6 md:mb-8">
+							<h1 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
 								Log in to Intelink
 							</h1>
 						</div>
 
 						{error && (
-							<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-								<p className="text-sm text-red-600">{error}</p>
+							<div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200 rounded-lg">
+								<p className="text-xs md:text-sm text-red-600">{error}</p>
 							</div>
 						)}
 
-						<div className="flex flex-col lg:flex-row w-full items-center justify-center ">
-							<div className="w-1/2">
+						<div className="flex flex-col lg:flex-row w-full items-stretch lg:items-center justify-center gap-4 lg:gap-6">
+							<div className="w-full lg:w-1/2">
 								<LoginForm onSubmit={handleLogin} loading={loading} />
-								<p className="text-sm text-gray-600 my-4 text-center">
+								<p className="text-xs md:text-sm text-gray-600 my-3 md:my-4 text-center">
 									Don't have an account?
 								</p>
 								<Button
@@ -102,10 +102,15 @@ export function LoginPage() {
 									Sign up
 								</Button>
 							</div>
-							<div className="flex flex-col justify-center items-center p-4">
+							<div className="hidden lg:flex flex-col justify-center items-center px-4 text-gray-400 font-medium">
 								OR
 							</div>
-							<div className="w-1/2 h-full flex flex-col justify-center items-center">
+							<div className="lg:hidden flex items-center justify-center my-2">
+								<div className="flex-1 border-t border-gray-300"></div>
+								<span className="px-4 text-sm text-gray-500">OR</span>
+								<div className="flex-1 border-t border-gray-300"></div>
+							</div>
+							<div className="w-full lg:w-1/2 h-full flex flex-col justify-center items-center">
 								<SocialLoginSection
 									onGoogleLogin={() => handleGoogleLogin()}
 									onGitHubLogin={() => handleGitHubLogin()}
