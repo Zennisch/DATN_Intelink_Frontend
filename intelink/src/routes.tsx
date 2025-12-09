@@ -1,9 +1,11 @@
 import {lazy, type ReactNode} from 'react';
+import { RouteGuard } from './components/etc/RouteGuard';
 
 const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({default: m.default})));
 const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({default: m.default})));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({default: m.default})));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({default: m.default})));
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -28,4 +30,21 @@ export const routes: RouteConfig[] = [
 		path: '/reset-password',
 		element: <ResetPasswordPage />,
 	},
+	{
+		path: '/dashboard',
+		element: (
+			<RouteGuard>
+				<DashboardPage />
+			</RouteGuard>
+		),
+		requireAuth: true,
+	},
+  // {
+	// 	path: "/",
+	// 	element: (
+	// 		<RouteGuard>
+	// 			<LoginPage />
+	// 		</RouteGuard>
+	// 	)
+	// }
 ];

@@ -1,3 +1,4 @@
+import DashboardPage from './pages/DashboardPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -8,7 +9,8 @@ function App() {
     // <LoginPage />
     // <RegisterPage />
     // <ForgotPasswordPage />
-    <ResetPasswordPage />
+    // <ResetPasswordPage />
+    <DashboardPage />
   )
 }
 
