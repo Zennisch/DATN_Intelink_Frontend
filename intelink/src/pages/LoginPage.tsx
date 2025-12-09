@@ -1,10 +1,36 @@
-import { useState, type FormEvent } from "react";
-import { Button, Checkbox, Input } from "../components/primary";
+import {useState, type FormEvent} from 'react';
+import {Button, Checkbox, Input} from '../components/primary';
 
-// Icons (Sử dụng SVG trực tiếp để không phụ thuộc thư viện ngoài)
-const Icons = {
-	Google: () => (
-		<svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+export default function LoginPage() {
+	const [showPassword, setShowPassword] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
+	// --- Placeholder Handlers ---
+	const handleLogin = (e: FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+		// Giả lập gọi API
+		setTimeout(() => {
+			alert('Đăng nhập thành công!');
+			setIsLoading(false);
+		}, 1500);
+	};
+
+	const handleGoogleLogin = () => {
+		console.log('Redirecting to Google OAuth...');
+	};
+
+	const handleSignUp = () => {
+		console.log('Navigate to Sign Up page...');
+	};
+
+	const handleForgotPassword = () => {
+		console.log('Navigate to Forgot Password page...');
+	};
+
+	// --- Icons (Inline SVGs) ---
+	const GoogleIcon = (
+		<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
 			<path
 				d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
 				fill="#4285F4"
@@ -14,7 +40,7 @@ const Icons = {
 				fill="#34A853"
 			/>
 			<path
-				d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z"
+				d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
 				fill="#FBBC05"
 			/>
 			<path
@@ -22,36 +48,11 @@ const Icons = {
 				fill="#EA4335"
 			/>
 		</svg>
-	),
-	Logo: () => (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			className="w-8 h-8 text-indigo-500"
-		>
-			<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-			<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-		</svg>
-	),
-	Eye: () => (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="w-5 h-5 text-gray-500"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke="currentColor"
-		>
-			<path
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				strokeWidth={2}
-				d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-			/>
+	);
+
+	const EyeIcon = (
+		<svg className="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
@@ -59,15 +60,10 @@ const Icons = {
 				d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
 			/>
 		</svg>
-	),
-	EyeOff: () => (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="w-5 h-5 text-gray-500"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke="currentColor"
-		>
+	);
+
+	const EyeOffIcon = (
+		<svg className="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
@@ -75,200 +71,184 @@ const Icons = {
 				d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
 			/>
 		</svg>
-	),
-};
+	);
 
-export default function LoginPage() {
-	const [isLoading, setIsLoading] = useState(false);
-	const [showPassword, setShowPassword] = useState(false);
-	const [formData, setFormData] = useState({
-		email: "",
-		password: "",
-		rememberMe: false,
-	});
-
-	const handleLogin = async (e: FormEvent) => {
-		e.preventDefault();
-		setIsLoading(true);
-		
-		// Simulate API call
-		console.log("Logging in with:", formData);
-		await new Promise((resolve) => setTimeout(resolve, 1500));
-		
-		setIsLoading(false);
-	};
-
-	const handleGoogleLogin = () => {
-		console.log("Redirecting to Google OAuth...");
-	};
-
-	const handleSignUpRedirect = () => {
-		console.log("Navigating to Sign Up page...");
-	};
-
-	const handleForgotPassword = () => {
-		console.log("Navigating to Forgot Password page...");
-	};
+	const LinkIcon = (
+		<svg className="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth={2}
+				d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+			/>
+		</svg>
+	);
 
 	return (
 		<div className="min-h-screen flex bg-white">
-			{/* Left Side - Branding & Visuals (Hidden on Mobile) */}
-			<div className="hidden lg:flex lg:w-1/2 relative bg-gray-900 overflow-hidden flex-col justify-between p-12 text-white">
+			{/* --- Left Column: Branding / Marketing (Hidden on Mobile) --- */}
+			<div className="hidden lg:flex lg:w-1/2 relative bg-gray-900 overflow-hidden">
 				{/* Abstract Background Pattern */}
-				<div className="absolute inset-0 opacity-10 pointer-events-none">
+				<div className="absolute inset-0 opacity-20">
 					<svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-						<path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" />
-						<circle cx="20" cy="30" r="1" fill="currentColor" />
-						<circle cx="80" cy="70" r="2" fill="currentColor" />
-						<path d="M0 0 L 100 100" stroke="currentColor" strokeWidth="0.5" />
+						<defs>
+							<pattern id="grid-pattern" width="8" height="8" patternUnits="userSpaceOnUse">
+								<path d="M 8 0 L 0 0 0 8" fill="none" stroke="white" strokeWidth="0.5" />
+							</pattern>
+						</defs>
+						<rect width="100%" height="100%" fill="url(#grid-pattern)" />
 					</svg>
-					<div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/20 via-gray-900/40 to-gray-900"></div>
 				</div>
 
-				{/* Logo Area */}
-				<div className="relative z-10 flex items-center gap-3">
-					<div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/10">
-						<Icons.Logo />
-					</div>
-					<span className="text-2xl font-bold tracking-tight">Intelink</span>
-				</div>
+				{/* Gradient Overlay */}
+				<div className="absolute inset-0 bg-linear-to-br from-indigo-900/90 to-gray-900/90" />
 
-				{/* Hero Text */}
-				<div className="relative z-10 max-w-md">
-					<h1 className="text-4xl font-bold mb-6 leading-tight">
-						Shorten URLs, <br />
-						<span className="text-indigo-400">Expand Reach.</span>
-					</h1>
-					<p className="text-gray-400 text-lg leading-relaxed">
-						Join thousands of marketers and developers who use Intelink to track, optimize, and manage their links intelligently.
-					</p>
-				</div>
-
-				{/* Footer/Copyright */}
-				<div className="relative z-10 text-sm text-gray-500">
-					© {new Date().getFullYear()} Intelink Inc. All rights reserved.
-				</div>
-			</div>
-
-			{/* Right Side - Login Form */}
-			<div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24">
-				<div className="w-full max-w-md space-y-8">
-					{/* Header (Mobile Logo visible only here) */}
-					<div className="text-center lg:text-left">
-						<div className="lg:hidden flex justify-center mb-6">
-							<div className="bg-gray-900 p-2 rounded-xl">
-								<Icons.Logo />
-							</div>
+				<div className="relative z-10 w-full flex flex-col justify-center px-12 xl:px-24">
+					<div className="mb-8">
+						<div className="inline-flex items-center justify-center p-3 bg-indigo-500 rounded-xl shadow-lg mb-6">
+							<span className="text-white">
+								{/* Using a simplified version of LinkIcon for logo */}
+								<svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+									/>
+								</svg>
+							</span>
 						</div>
-						<h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back</h2>
-						<p className="mt-2 text-gray-500">
-							Please enter your details to sign in.
+						<h1 className="text-4xl font-bold text-white tracking-tight mb-4">Intelink</h1>
+						<p className="text-lg text-indigo-200 max-w-md">
+							Shorten URLs, expand your reach. Analytics-driven link management for modern businesses.
 						</p>
 					</div>
 
-					<form onSubmit={handleLogin} className="space-y-6 mt-8">
-						{/* Email Field */}
-						<Input
-							id="email"
-							type="email"
-							label="Email or Username"
-							placeholder="name@company.com"
-							required
-							fullWidth
-							value={formData.email}
-							onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-							autoComplete="username"
-						/>
+					{/* Testimonial or Stat */}
+					<div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700 max-w-md">
+						<p className="text-gray-300 italic mb-4">
+							"Intelink transformed how we track our marketing campaigns. Simple, fast, and reliable."
+						</p>
+						<div className="flex items-center gap-3">
+							<div className="h-8 w-8 rounded-full bg-indigo-400 flex items-center justify-center text-xs font-bold text-indigo-900">
+								JS
+							</div>
+							<div>
+								<div className="text-sm font-semibold text-white">Jane Smith</div>
+								<div className="text-xs text-gray-400">Marketing Director</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-						{/* Password Field with Custom Toggle Layout */}
-						<div className="relative">
-							<Input
-								id="password"
-								type={showPassword ? "text" : "password"}
-								label="Password"
-								placeholder="••••••••"
-								required
+			{/* --- Right Column: Login Form --- */}
+			<div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24 bg-gray-50 lg:bg-white">
+				<div className="mx-auto w-full max-w-sm lg:w-96">
+					{/* Mobile Logo (Visible only on small screens) */}
+					<div className="lg:hidden flex items-center gap-2 mb-8">
+						{LinkIcon}
+						<span className="text-2xl font-bold text-gray-900">Intelink</span>
+					</div>
+
+					<div>
+						<h2 className="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h2>
+						<p className="mt-2 text-sm text-gray-600">Please enter your details to sign in.</p>
+					</div>
+
+					<div className="mt-8">
+						{/* Social Login */}
+						<div className="grid grid-cols-1 gap-3">
+							<Button
+								variant="outline"
 								fullWidth
-								value={formData.password}
-								onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-								autoComplete="current-password"
-								inputClassName="pr-10" // Make space for the eye icon
-							/>
-							<button
-								type="button"
-								className="absolute right-3 top-[38px] text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors"
-								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? "Hide password" : "Show password"}
+								icon={GoogleIcon}
+								onClick={handleGoogleLogin}
+								className="justify-center"
 							>
-								{showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
-							</button>
+								Login with Google
+							</Button>
 						</div>
 
-						{/* Remember Me & Forgot Password */}
-						<div className="flex items-center justify-between">
-							<Checkbox
-								id="remember-me"
-								label="Remember me"
-								checked={formData.rememberMe}
-								onChange={(checked) => setFormData({ ...formData, rememberMe: checked })}
-							/>
-							
-							<button
-								type="button"
-								onClick={handleForgotPassword}
-								className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors focus:outline-none focus:underline"
-							>
-								Forgot password?
-							</button>
-						</div>
-
-						{/* Submit Button */}
-						<Button
-							type="submit"
-							variant="primary"
-							fullWidth
-							size="lg"
-							loading={isLoading}
-						>
-							Sign in
-						</Button>
-
-						{/* Divider */}
-						<div className="relative">
-							<div className="absolute inset-0 flex items-center">
+						<div className="relative mt-6">
+							<div className="absolute inset-0 flex items-center" aria-hidden="true">
 								<div className="w-full border-t border-gray-200" />
 							</div>
 							<div className="relative flex justify-center text-sm">
-								<span className="bg-white px-2 text-gray-500">Or continue with</span>
+								<span className="bg-gray-50 lg:bg-white px-2 text-gray-500">Or continue with email</span>
 							</div>
 						</div>
 
-						{/* Google Login Button */}
-						<Button
-							type="button"
-							variant="outline"
-							fullWidth
-							size="lg"
-							onClick={handleGoogleLogin}
-							icon={<Icons.Google />}
-							iconPosition="left"
-							className="font-normal text-gray-600"
-						>
-							Google
-						</Button>
-					</form>
+						{/* Email/Password Form */}
+						<div className="mt-6">
+							<form onSubmit={handleLogin} className="space-y-6">
+								<Input
+									label="Email or Username"
+									type="text"
+									placeholder="name@company.com"
+									fullWidth
+									required
+								/>
 
-					{/* Footer Sign Up Link */}
-					<p className="text-center text-sm text-gray-500 mt-8">
-						Don't have an account?{" "}
-						<button
-							type="button"
-							onClick={handleSignUpRedirect}
-							className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors focus:outline-none focus:underline"
-						>
-							Sign up for free
-						</button>
-					</p>
+								<Input
+									label="Password"
+									type={showPassword ? 'text' : 'password'}
+									placeholder="••••••••"
+									fullWidth
+									required
+									endAdornment={
+										<button
+											type="button"
+											className="focus:outline-none focus:text-indigo-600 transition-colors"
+											onClick={() => setShowPassword(!showPassword)}
+											tabIndex={-1}
+										>
+											{showPassword ? EyeOffIcon : EyeIcon}
+										</button>
+									}
+								/>
+
+								<div className="flex items-center justify-between">
+									<Checkbox id="remember-me" label="Remember me" defaultChecked />
+
+									<div className="text-sm">
+										<button
+											type="button"
+											onClick={handleForgotPassword}
+											className="font-medium text-indigo-600 hover:text-indigo-500"
+										>
+											Forgot password?
+										</button>
+									</div>
+								</div>
+
+								<div>
+									<Button
+										type="submit"
+										variant="primary"
+										fullWidth
+										loading={isLoading}
+										className="bg-indigo-600 hover:bg-indigo-700 focus-visible:ring-indigo-500"
+									>
+										Sign in
+									</Button>
+								</div>
+							</form>
+						</div>
+
+						{/* Footer / Sign Up Link */}
+						<div className="mt-8 text-center">
+							<p className="text-sm text-gray-600">
+								Don't have an account?{' '}
+								<button
+									onClick={handleSignUp}
+									className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+								>
+									Sign up for free
+								</button>
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
