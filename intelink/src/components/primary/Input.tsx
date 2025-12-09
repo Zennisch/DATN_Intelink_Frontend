@@ -17,6 +17,8 @@ import {
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	// Content props
 	label?: ReactNode;
+	startAdornment?: ReactNode;
+	endAdornment?: ReactNode;
 
 	// Layout props
 	fullWidth?: boolean;
@@ -29,6 +31,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	// Styling override props
 	wrapperClassName?: string;
 	inputClassName?: string;
+	inputContainerClassName?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(function Input(
@@ -36,10 +39,13 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
 		label,
 		error,
 		helpText,
+		startAdornment,
+		endAdornment,
 		fullWidth = false,
 		labelSrOnly = false,
 		wrapperClassName = "",
 		inputClassName = "",
+		inputContainerClassName = "",
 		className,
 		...props
 	},
@@ -62,6 +68,8 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
 		TRANSITION,
 		FOCUS_STYLES,
 		"focus:border-transparent",
+		startAdornment ? "pl-10" : "",
+		endAdornment ? "pr-10" : "",
 	);
 	const errorClasses = error
 		? `${COLORS.border.error} ${COLORS.border.errorFocus}`
@@ -91,16 +99,30 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
 				</label>
 			)}
 
-			<input
-				id={id}
-				ref={ref}
-				className={classes}
-				aria-invalid={error ? "true" : undefined}
-				aria-describedby={
-					describedByIds.length ? describedByIds.join(" ") : undefined
-				}
-				{...props}
-			/>
+			<div className={cn("relative", fullWidth ? "w-full" : "", inputContainerClassName)}>
+				{startAdornment && (
+					<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+						{startAdornment}
+					</div>
+				)}
+
+				<input
+					id={id}
+					ref={ref}
+					className={classes}
+					aria-invalid={error ? "true" : undefined}
+					aria-describedby={
+						describedByIds.length ? describedByIds.join(" ") : undefined
+					}
+					{...props}
+				/>
+
+				{endAdornment && (
+					<div className="absolute inset-y-0 right-0 flex items-center pr-3">
+						{endAdornment}
+					</div>
+				)}
+			</div>
 
 			{helpText && (
 				<p
