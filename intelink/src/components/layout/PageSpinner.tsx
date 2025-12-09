@@ -2,7 +2,7 @@ import {useEffect, useRef} from 'react';
 
 const PageSpinner = () => {
 	const loadingTextRef = useRef<HTMLSpanElement>(null);
-	const intervalRef = useRef<number>();
+	const intervalRef = useRef<number>(0);
 
 	useEffect(() => {
 		const text = 'Loading';
