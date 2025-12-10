@@ -69,4 +69,7 @@ config.server.enhanceMiddleware = (middleware, server) => {
 	return enhanced;
 };
 
-module.exports = withNativeWind(config, { input: './global.css' });
+module.exports = withNativeWind(config, { 
+	input: './global.css',
+	inlineRem: false,
+});

@@ -1,9 +1,20 @@
 import { Stack } from "expo-router";
-import { View } from "react-native";
+import { View, LogBox } from "react-native";
 import '@/global.css'
 import { AuthProvider } from '../contexts/AuthContext';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { setupNativeWindModalFix } from '../utils/nativewind-modal-fix';
 // import { NetworkStatus } from '../components/NetworkStatus';
+
+// Setup NativeWind Modal fix to suppress navigation context errors
+setupNativeWindModalFix();
+
+// Suppress NativeWind navigation context warnings in Modals
+LogBox.ignoreLogs([
+  'Couldn\'t find a navigation context',
+  'Have you wrapped your app with \'NavigationContainer\'',
+]);
+
 if (__DEV__) {
   // load dev-only logger to reduce Reanimated strict-mode noise
   import('../utils/reanimated-logger');

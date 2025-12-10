@@ -1,11 +1,13 @@
 
-import React, { useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import React, { useState, useRef } from "react";
+import { Modal, View, Text, TouchableOpacity, ScrollView, Alert, PanResponder, Animated, StyleSheet } from "react-native";
 import TextInput from "./atoms/TextInput";
 import Button from "./atoms/Button";
 import Checkbox from "./atoms/Checkbox";
 import type { User } from "../models/User";
 import { canCustomizeShortCode } from "../utils/subscriptionUtils";
+import { AccessControlSection, type AccessControlData } from "./AccessControlSection";
+import { ErrorSuppressor } from "./ErrorSuppressor";
 
 export interface CreateShortUrlRequest {
   originalUrl: string;
@@ -43,6 +45,50 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
   const [hasPassword, setHasPassword] = useState(false);
   const [hasMaxUsage, setHasMaxUsage] = useState(false);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+
+  // Access Control state
+  const [accessControl, setAccessControl] = useState<AccessControlData>({
+    mode: "allow",
+    countries: [],
+    ipRanges: [],
+  });
+
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return gestureState.dy > 5;
+      },
+      onMoveShouldSetPanResponderCapture: (_, gestureState) => {
+        return gestureState.dy > 5;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 150) {
+          Animated.timing(translateY, {
+            toValue: 1000,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => {
+            handleClose();
+            translateY.setValue(0);
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   const validateForm = (): Partial<Record<keyof CreateShortUrlRequest, string>> => {
     const newErrors: Partial<Record<keyof CreateShortUrlRequest, string>> = {};
@@ -82,6 +128,11 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
         password: hasPassword ? formData.password?.trim() : undefined,
         maxUsage: hasMaxUsage ? formData.maxUsage : undefined,
       };
+      
+      // Log access control data for debugging (will be integrated with backend later)
+      console.log("Form Data:", requestData);
+      console.log("Access Control:", accessControl);
+      
       await onSubmit(requestData);
       handleClose();
     } catch (e: any) {
@@ -108,6 +159,12 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
     setErrors({});
     setHasPassword(false);
     setHasMaxUsage(false);
+    setShowAdvancedOptions(false);
+    setAccessControl({
+      mode: "allow",
+      countries: [],
+      ipRanges: [],
+    });
     onClose();
   };
 
@@ -129,18 +186,42 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
   
   return (
     <Modal
+      key={`modal-${visible}`}
       visible={visible}
       animationType="slide"
-      transparent
-      onRequestClose={handleClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black/40">
-        <View className="bg-white rounded-lg p-6 w-11/12 max-w-md shadow-lg">
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text className="text-lg font-semibold mb-6 text-gray-900">
-              Create Short URL
-            </Text>
-            <View className="mb-4">
+      transparent={false}
+			onRequestClose={handleClose}
+		>
+			<Animated.View
+					style={[styles.container, { transform: [{ translateY }] }]}
+				>
+					{/* Drag Handle */}
+					<View style={styles.dragHandleContainer}>
+						<View {...panResponder.panHandlers} style={styles.dragHandleWrapper}>
+							<View style={styles.dragHandle} />
+						</View>
+					</View>
+					
+					{/* Header */}
+					<View style={styles.header}>
+						<Text style={styles.headerText}>
+							Create Short URL
+						</Text>
+					</View>
+					
+					{/* Scrollable Content */}
+					<ScrollView 
+					showsVerticalScrollIndicator={true}
+					persistentScrollbar={true}
+					indicatorStyle="black"
+					bounces={true}
+					scrollEnabled={true}
+					nestedScrollEnabled={true}
+					contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 100 }}
+					keyboardShouldPersistTaps="handled"
+					scrollIndicatorInsets={{ right: 1 }}
+				>
+            <View className="mb-3">
               <TextInput
                 label="Original URL*"
                 placeholder="https://example.com/very-long-url..."
@@ -270,9 +351,29 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
               </TouchableOpacity>
             </View>
 
-            <View className="flex-row justify-end mt-3 space-x-2">
-              <TouchableOpacity onPress={handleClose} disabled={loading}>
-                <Text className="text-gray-500 px-4 py-2">Cancel</Text>
+            {/* Advanced Options Section - Collapsible */}
+            {showAdvancedOptions && (
+              <View className="mb-4 pt-2 border-t border-gray-200">
+                <ErrorSuppressor>
+                  <AccessControlSection
+                    data={accessControl}
+                    onChange={setAccessControl}
+                  />
+                </ErrorSuppressor>
+              </View>
+            )}
+
+          </ScrollView>
+          
+          {/* Fixed Footer */}
+          <View className="px-6 py-4 border-t border-gray-200 bg-white">
+            <View className="flex-row justify-between items-center">
+              <TouchableOpacity 
+                onPress={handleClose} 
+                disabled={loading}
+                className="px-6 py-3"
+              >
+                <Text className="text-gray-600 font-medium">Cancel</Text>
               </TouchableOpacity>
               <Button
                 onPress={handleCreate}
@@ -283,11 +384,46 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
                 Create Short URL
               </Button>
             </View>
-          </ScrollView>
-        </View>
-      </View>
+          </View>
+        </Animated.View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: '#FFFFFF',
+	},
+	dragHandleContainer: {
+		alignItems: 'center',
+		paddingVertical: 12,
+		backgroundColor: '#FFFFFF',
+		borderBottomWidth: 1,
+		borderBottomColor: '#F3F4F6',
+	},
+	dragHandleWrapper: {
+		paddingVertical: 8,
+		paddingHorizontal: 40,
+	},
+	dragHandle: {
+		width: 48,
+		height: 4,
+		backgroundColor: '#D1D5DB',
+		borderRadius: 9999,
+	},
+	header: {
+		paddingHorizontal: 24,
+		paddingTop: 16,
+		paddingBottom: 12,
+		borderBottomWidth: 1,
+		borderBottomColor: '#E5E7EB',
+	},
+	headerText: {
+		fontSize: 20,
+		fontWeight: '600',
+		color: '#111827',
+	},
+});
 
 export default CustomShortUrlModal;
