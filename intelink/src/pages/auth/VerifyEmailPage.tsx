@@ -6,12 +6,12 @@ import {useAuth} from '../../hooks/useAuth';
 export default function VerifyEmailPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const {verifyEmail, isLoading: authLoading} = useAuth();
+	const {verifyEmail} = useAuth();
 
 	const [isVerifying, setIsVerifying] = useState(true);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [token, setToken] = useState<string | null>(null);
+	const [_, setToken] = useState<string | null>(null);
 
 	useEffect(() => {
 		const verifyToken = async () => {
