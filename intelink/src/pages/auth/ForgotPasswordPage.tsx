@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Button, Input } from "../components/primary";
+import { Button, Input } from "../../components/primary";
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,5 +1,5 @@
 import {useState, type FormEvent} from 'react';
-import {Button, Checkbox, Input} from '../components/primary';
+import {Button, Checkbox, Input} from '../../components/primary';
 
 export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);

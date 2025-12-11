@@ -1,7 +1,7 @@
 import APIsPage from "../../pages/dashboard/APIsPage";
 import type { Page } from "../../pages/DashboardPage";
 import LinksPage from "../../pages/dashboard/LinksPage";
-import OverviewPage from "../../pages/OverviewPage";
+import OverviewPage from "../../pages/dashboard/OverviewPage";
 import StatisticsPage from "../../pages/dashboard/StatisticsPage";
 
 interface DashboardContentProps {

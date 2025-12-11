@@ -1,10 +1,10 @@
 import {lazy, type ReactNode} from 'react';
 import { RouteGuard } from './components/etc/RouteGuard';
 
-const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({default: m.default})));
-const RegisterPage = lazy(() => import('./pages/RegisterPage').then((m) => ({default: m.default})));
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((m) => ({default: m.default})));
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({default: m.default})));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage').then((m) => ({default: m.default})));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage').then((m) => ({default: m.default})));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage').then((m) => ({default: m.default})));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage').then((m) => ({default: m.default})));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
