@@ -31,7 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 			icon: "📉",
 			label: "Overview",
 			path: "/dashboard/overview-stats",
-			disabled: [],
+			disabled: ["FREE",],
 		},
 		{
 			icon: "📈",
