@@ -6,7 +6,6 @@ import { AuthProvider } from "./contexts/AuthContext.tsx";
 import "./index.css";
 import { ShortUrlProvider } from "./contexts/ShortUrlContext.tsx";
 import { setupAxios } from "./services/AxiosConfig.ts";
-import { LoadingPage } from "./components/ui";
 
 setupAxios().then();
 
@@ -17,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
 		<BrowserRouter>
 			<AuthProvider>
 				<ShortUrlProvider>
-					<Suspense fallback={<LoadingPage />}>
+					<Suspense>
 						<App />
 					</Suspense>
 				</ShortUrlProvider>
