@@ -69,12 +69,12 @@ export function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 font-inter">
+		<div className="min-h-screen bg-gray-50 font-inter flex flex-col">
 			<Header onLanguageChange={() => {}} />
 
-			<div className="flex justify-center items-center">
-				<div className="w-full max-w-6xl p-8">
-					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+			<div className="flex-1 flex justify-center items-center p-4">
+				<div className="w-full max-w-5xl">
+					<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-12">
 						<div className="text-center mb-8">
 							<h1 className="text-2xl font-semibold text-gray-900 mb-2">
 								Log in to Intelink
