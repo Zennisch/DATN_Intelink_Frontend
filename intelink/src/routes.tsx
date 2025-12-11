@@ -5,6 +5,7 @@ const LoginPage = lazy(() => import('./pages/auth/LoginPage').then((m) => ({defa
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage').then((m) => ({default: m.default})));
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage').then((m) => ({default: m.default})));
 const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage').then((m) => ({default: m.default})));
+const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage').then((m) => ({default: m.default})));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
@@ -29,6 +30,10 @@ export const routes: RouteConfig[] = [
 	{
 		path: '/reset-password',
 		element: <ResetPasswordPage />,
+	},
+	{
+		path: '/verify-email',
+		element: <VerifyEmailPage />,
 	},
 	{
 		path: '/dashboard',

@@ -10,6 +10,9 @@ import {StatisticsProvider} from './hooks/useStatistics.tsx';
 import {SubscriptionProvider} from './hooks/useSubscription.tsx';
 import {PaymentProvider} from './hooks/usePayment.tsx';
 import PageSpinner from './components/layout/PageSpinner.tsx';
+import { setupAxios } from "./services/AxiosConfig.ts";
+
+setupAxios();
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>

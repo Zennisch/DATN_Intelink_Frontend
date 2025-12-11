@@ -12,7 +12,7 @@ const getApi = () => {
 };
 
 const API_URL = getApi();
-const TIMEOUT = 10000;
+const TIMEOUT = 30000;
 
 export const setupAxios = async () => {
 	axios.defaults.baseURL = API_URL;
