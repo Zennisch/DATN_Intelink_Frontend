@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useShortUrl } from "../../hooks/useShortUrl";
-import { CreateShortUrlModal } from "../../components/shorturl/CreateShortUrlModal.tsx";
+import { CreateShortUrlModal } from "../../components/url/CreateShortUrlModal.tsx";
 import { ShortUrlList } from "../../components/shorturl/ShortUrlList.tsx";
 import { Input } from "../../components/ui/Input.tsx";
 import { Button } from "../../components/ui/Button.tsx";
 import type {
 	SearchShortUrlRequest,
-	CreateShortUrlRequest,
 } from "../../dto/request/ShortUrlRequest.ts";
 import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse.ts";
 
@@ -23,7 +22,6 @@ export const ShortUrlPage = () => {
 		loading,
 		error,
 		fetchShortUrls,
-		createShortUrl,
 		deleteShortUrl,
 		enableShortUrl,
 		disableShortUrl,
@@ -65,25 +63,18 @@ export const ShortUrlPage = () => {
 		fetchShortUrls(searchParams);
 	};
 
-	const handleCreateShortUrl = async (data: CreateShortUrlRequest) => {
-		try {
-			const result = await createShortUrl(data);
-			if (result) {
-				setShowCreateModal(false);
-				// Refresh the list
-				const searchParams: SearchShortUrlRequest = {
-					page: currentPage,
-					size: 10,
-					query: searchQuery || undefined,
-					status: statusFilter || undefined,
-					sortBy: "createdAt",
-					sortDirection: "desc",
-				};
-				fetchShortUrls(searchParams);
-			}
-		} catch (error) {
-			console.error("Error creating short URL:", error);
-		}
+	const handleCreateSuccess = () => {
+		setShowCreateModal(false);
+		// Refresh the list
+		const searchParams: SearchShortUrlRequest = {
+			page: currentPage,
+			size: 10,
+			query: searchQuery || undefined,
+			status: statusFilter || undefined,
+			sortBy: "createdAt",
+			sortDirection: "desc",
+		};
+		fetchShortUrls(searchParams);
 	};
 
 	const handleEditShortUrl = (shortUrl: ShortUrlListResponse) => {
@@ -288,10 +279,9 @@ export const ShortUrlPage = () => {
 					</div>
 				)}
 				<CreateShortUrlModal
-					isOpen={showCreateModal}
+					open={showCreateModal}
 					onClose={() => setShowCreateModal(false)}
-					onCreateShortUrl={handleCreateShortUrl}
-					loading={loading}
+					onSuccess={handleCreateSuccess}
 				/>
 			</div>
 		</div>
