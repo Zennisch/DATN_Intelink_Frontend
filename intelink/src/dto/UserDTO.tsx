@@ -43,6 +43,31 @@ export interface RegisterResponse {
 	emailVerified: boolean;
 }
 
+// Subscription nested types
+export interface PlanDetails {
+  planId: number;
+  price: number;
+  durationDays: number;
+  billingInterval: string;
+  maxShortUrls: number;
+  maxUsagePerUrl: number;
+  shortCodeCustomizationEnabled: boolean;
+  statisticsEnabled: boolean;
+  apiAccessEnabled: boolean;
+}
+
+export interface CurrentSubscription {
+  id: string;
+  planType: string;
+  status: string;
+  active: boolean;
+  activatedAt?: string;
+  expiresAt?: string;
+  creditUsed: number;
+  proratedValue: number;
+  planDetails: PlanDetails;
+}
+
 export interface UserProfileResponse {
   id: number;
   username: string;
@@ -59,4 +84,5 @@ export interface UserProfileResponse {
   currency: string;
   createdAt: string;
   updatedAt: string;
+  currentSubscription?: CurrentSubscription;
 }

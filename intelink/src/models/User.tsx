@@ -1,3 +1,5 @@
+import type { CurrentSubscription } from "../dto/UserDTO";
+
 export type UserRole = 'ADMIN' | 'USER' | 'GUEST';
 export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED' | 'BANNED';
 
@@ -17,4 +19,5 @@ export interface User {
   currency: string;
   createdAt: string;
   updatedAt: string;
+  currentSubscription?: CurrentSubscription;
 }

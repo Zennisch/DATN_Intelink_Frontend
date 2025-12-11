@@ -87,6 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 					currency: profileResponse.currency,
 					createdAt: profileResponse.createdAt,
 					updatedAt: profileResponse.updatedAt,
+					currentSubscription: profileResponse.currentSubscription,
 				},
 			}));
 		} catch (error) {
