@@ -15,7 +15,7 @@ const SubscriptionPlansPage: React.FC = () => {
 	const { user, isLoading: authLoading } = useAuth();
 	const [plans, setPlans] = useState<SubscriptionPlanResponse[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [registeringId, setRegisteringId] = useState<string | null>(null);
+	const [registeringId, _] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -40,7 +40,7 @@ const SubscriptionPlansPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-row justify-start items-center">
-			<Sidebar />
+			<Sidebar isOpen={true} onClose={() => {}} />
 
 			<div className="max-w-7xl mx-auto pl-56 pt-28 flex flex-col items-center justify-center ">
 				<h2 className="text-3xl font-bold mb-6 text-center">

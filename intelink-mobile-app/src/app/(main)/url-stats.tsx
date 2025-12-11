@@ -44,8 +44,11 @@ export default function UrlStatsScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1 px-4 py-6">
+    <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+      <ScrollView 
+        className="flex-1 px-4" 
+        contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
+      >
         <View className="flex-row items-center justify-between mb-4">
           <TouchableOpacity onPress={() => router.back()} className="flex-row items-center">
             <Ionicons name="chevron-back" size={20} color="#374151" />

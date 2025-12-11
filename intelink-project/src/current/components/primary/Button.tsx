@@ -1,4 +1,5 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
+import type { ButtonHTMLAttributes, ReactNode } from "react"
+import { forwardRef } from "react"
 import { cn } from "./utils.ts"
 
 type Variant = "primary" | "secondary" | "outline" | "social"

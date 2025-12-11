@@ -50,7 +50,7 @@ const PaymentCostPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-row justify-start items-center">
-			<Sidebar />
+			<Sidebar isOpen={true} onClose={() => {}} />
 
 			<div className="max-w-lg mx-auto py-8 pl-16 flex flex-col items-center justify-center min-h-[80vh]">
 				<div className="w-full flex justify-start mb-4">

@@ -1,4 +1,5 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useState } from "react"
+import type { ChangeEvent, InputHTMLAttributes, ReactNode } from "react"
+import { forwardRef, useEffect, useId, useState } from "react"
 import { cn } from "./utils.ts"
 
 type SliderProps = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type" | "value"> & {

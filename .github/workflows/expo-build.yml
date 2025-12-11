@@ -1,0 +1,123 @@
+name: Expo Android Build (APK)
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+    types:
+      - merged
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    defaults:
+      run:
+        working-directory: intelink-mobile-app
+
+    env:
+      EXPO_PUBLIC_BACKEND_URL: ${{ secrets.EXPO_PUBLIC_BACKEND_URL }}
+      EXPO_PUBLIC_FRONTEND_URL: ${{ secrets.EXPO_PUBLIC_FRONTEND_URL }}
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Install latest EAS CLI
+      - name: Install EAS CLI
+        run: |
+          npm uninstall -g eas-cli || true
+          npm install -g eas-cli@latest
+          eas --version
+
+      # 5️⃣ Login to Expo
+      - name: Login to Expo
+        run: eas whoami || eas login --token $EXPO_TOKEN
+
+      # 6️⃣ Build APK
+      - name: Build APK (EAS Build)
+        id: build
+        run: |
+          echo "🔨 Building Expo Android APK..."
+          set -e
+          
+          BUILD_OUTPUT=$(eas build --platform android --profile production --non-interactive 2>&1)
+          BUILD_STATUS=$?
+          
+          echo "$BUILD_OUTPUT"
+          
+          if [ $BUILD_STATUS -ne 0 ]; then
+            echo "❌ Build failed with status $BUILD_STATUS"
+            exit 1
+          fi
+          
+          BUILD_URL=$(echo "$BUILD_OUTPUT" | grep -oP 'https://expo\.dev/artifacts/eas/[^\s]+\.apk' | tail -1)
+          
+          if [ -z "$BUILD_URL" ]; then
+            echo "❌ Error: Could not extract build URL from output"
+            echo "Full output:"
+            echo "$BUILD_OUTPUT"
+            exit 1
+          fi
+          
+          echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
+          echo "✅ Build URL: $BUILD_URL"
+
+      # 7️⃣ Download latest APK
+      - name: Download latest APK
+        run: |
+          echo "📥 Downloading APK from: ${{ steps.build.outputs.build_url }}"
+          
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if curl -L -f -o app-release.apk "${{ steps.build.outputs.build_url }}"; then
+              if [ -s app-release.apk ]; then
+                FILE_SIZE=$(stat -f%z app-release.apk 2>/dev/null || stat -c%s app-release.apk 2>/dev/null)
+                echo "✅ Download successful - Size: $(($FILE_SIZE / 1024 / 1024)) MB"
+                break
+              else
+                echo "❌ Downloaded file is empty"
+                rm -f app-release.apk
+                exit 1
+              fi
+            else
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "⚠️ Download failed. Retry $RETRY_COUNT/$MAX_RETRIES..."
+                sleep 5
+              fi
+            fi
+          done
+          
+          if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+            echo "❌ Failed to download after $MAX_RETRIES attempts"
+            exit 1
+          fi
+
+      # 8️⃣ Upload APK as GitHub Actions artifact
+      - name: Upload APK to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: Intelink-Mobile-APK-${{ github.run_number }}
+          path: intelink-mobile-app/app-release.apk
+          if-no-files-found: error
+          retention-days: 30

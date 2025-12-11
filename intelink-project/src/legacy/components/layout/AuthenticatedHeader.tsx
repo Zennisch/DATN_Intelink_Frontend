@@ -10,7 +10,6 @@ interface AuthenticatedHeaderProps {
 }
 
 export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
-	onSidebarToggle,
 	onLanguageChange,
 }) => {	
 	const { user } = useAuth();

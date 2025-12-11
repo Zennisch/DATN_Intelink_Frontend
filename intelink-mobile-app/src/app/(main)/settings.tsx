@@ -78,10 +78,11 @@ export default function SettingsScreen() {
 	);
 
 	return (
-		<SafeAreaView className="flex-1 bg-gray-50">
-
-
-			<ScrollView className="flex-1">
+		<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+			<ScrollView 
+				className="flex-1" 
+				contentContainerStyle={{ paddingBottom: 100 }}
+			>
 				{/* Profile Section */}
 				<View className="bg-white mt-4">
 					<View className="p-4 border-b border-gray-100">

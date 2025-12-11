@@ -1,4 +1,5 @@
-import { ChangeEvent, forwardRef, ReactNode, SelectHTMLAttributes, useId } from "react"
+import type { ChangeEvent, ReactNode, SelectHTMLAttributes } from "react"
+import { forwardRef, useId } from "react"
 import { cn } from "./utils.ts"
 
 type OptionItem = {

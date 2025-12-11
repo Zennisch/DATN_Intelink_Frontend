@@ -161,7 +161,7 @@ export const CreateShortUrlModal: React.FC<CreateShortUrlModalProps> = ({
 					onChange={handleInputChange("customCode")}
 					error={errors.customCode}
 					fullWidth
-					disabled={loading || user?.currentSubscription.planType === 'FREE'}
+					disabled={loading || user?.currentSubscription?.planType === 'FREE'}
 					className="disabled:cursor-not-allowed disabled:opacity-50"
 				/>
 

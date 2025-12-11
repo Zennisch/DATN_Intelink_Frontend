@@ -21,22 +21,22 @@ export type ApiKeyResponse = ApiKey;
 
 export class ApiKeyService {
 	static async list(): Promise<ApiKeyResponse[]> {
-		const response = await api.get<ApiKeyResponse[]>('/api-keys');
+		const response = await api.get<ApiKeyResponse[]>('/api/v1/api-keys');
 		return response.data;
 	}
 
 	static async create(request: CreateApiKeyRequest): Promise<ApiKeyResponse> {
-		const response = await api.post<ApiKeyResponse>('/api-keys', request);
+		const response = await api.post<ApiKeyResponse>('/api/v1/api-keys', request);
 		return response.data;
 	}
 
 	static async delete(id: string): Promise<{ success: boolean; message: string }> {
-		const response = await api.delete<{ success: boolean; message: string }>(`/api-keys/${id}`);
+		const response = await api.delete<{ success: boolean; message: string }>(`/api/v1/api-keys/${id}`);
 		return response.data;
 	}
 
 	static async update(id: string, request: Partial<CreateApiKeyRequest>): Promise<ApiKeyResponse> {
-		const response = await api.put<ApiKeyResponse>(`/api-keys/${id}`, request);
+		const response = await api.put<ApiKeyResponse>(`/api/v1/api-keys/${id}`, request);
 		return response.data;
 	}
 }
