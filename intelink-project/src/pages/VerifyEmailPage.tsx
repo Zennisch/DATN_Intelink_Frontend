@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "../components/layout/Header.tsx";
 import { Button } from "../components/ui";
-import { useAuth } from "../hooks/useAuth.ts";
+import { useAuth } from "../hooks/useAuth";
 
 export function VerifyEmailPage() {
 	const navigate = useNavigate();

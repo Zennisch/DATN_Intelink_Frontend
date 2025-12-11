@@ -1,4 +1,4 @@
-import { useAuth } from "../hooks/useAuth.ts";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { LoginRequest } from "../dto/request/UserRequest.ts";

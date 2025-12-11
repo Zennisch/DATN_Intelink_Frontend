@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth.ts";
+import { useAuth } from "../../hooks/useAuth";
 import icon from "../../assets/icon.png";
 
 interface SidebarProps {
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 					{user && (
 						<div className="px-4 py-3 border-t border-gray-200 flex-shrink-0">
 							{(() => {
-								const maxLinks = user.currentSubscription?.maxShortUrls || 10;
+								const maxLinks = user.currentSubscription?.planDetails?.maxShortUrls || 10;
 								const isUnlimited = maxLinks === -1;
 								const isNearLimit = !isUnlimited && user.totalShortUrls >= maxLinks * 0.8;
 								const isFreeUser = !user.currentSubscription || user.currentSubscription.planType === 'FREE';
@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 													<span className="font-medium">Valid until:</span>
 													<span className="font-semibold">
 														{user.currentSubscription?.active
-															? new Date(user.currentSubscription.expiresAt).toLocaleDateString('en-US', {
+															? new Date(user.currentSubscription.expiresAt || '').toLocaleDateString('en-US', {
 																month: 'short',
 																day: 'numeric',
 																year: 'numeric'

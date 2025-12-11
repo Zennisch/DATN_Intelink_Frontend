@@ -4,7 +4,7 @@ import { Modal } from "../ui/Modal.tsx";
 import { Input } from "../ui/Input.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Checkbox } from "../ui/Checkbox.tsx";
-import { useAuth } from "../../hooks/useAuth.ts";
+import { useAuth } from "../../hooks/useAuth";
 
 interface CreateShortUrlModalProps {
 	isOpen: boolean;

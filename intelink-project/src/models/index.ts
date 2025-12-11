@@ -1,4 +1,4 @@
-export type { User, AuthState } from './User.ts';
+export type { User } from './User.ts';
 export type { ShortUrl } from './ShortUrl.ts';
 export type { ClickLog } from './ClickLog.ts';
 export type { ClickStat } from './ClickStat.ts';

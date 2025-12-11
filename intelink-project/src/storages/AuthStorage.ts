@@ -36,4 +36,8 @@ export const AuthStorage = {
 	isAuthenticated: () => {
 		return !!tokenCache.accessToken;
 	},
+	setToken: (token: string) => {
+		tokenCache.accessToken = token;
+		localStorage.setItem(ACCESS_TOKEN_KEY, token);
+	},
 };

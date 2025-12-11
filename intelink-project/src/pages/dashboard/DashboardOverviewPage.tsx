@@ -30,7 +30,7 @@ export const DashboardOverviewPage = () => {
 						Dashboard
 					</h1>
 					<p className="text-gray-600 text-center">
-						Welcome back, {user.displayName || user.username}!
+						Welcome back, {user.profileName || user.username}!
 					</p>
 				</div>
 
@@ -51,7 +51,7 @@ export const DashboardOverviewPage = () => {
 							</div>
 							<div className="flex justify-between">
 								<span className="text-gray-600">Credit Balance:</span>
-								<span className="font-medium">{user.creditBalance} {user.currency}</span>
+								<span className="font-medium">{user.balance} {user.currency}</span>
 							</div>
 						</div>
 					</div>
@@ -91,7 +91,7 @@ export const DashboardOverviewPage = () => {
 								)}
 								<div>
 									<div className="font-medium text-gray-900">
-										{user.displayName || user.username}
+										{user.profileName || user.username}
 									</div>
 									<div className="text-gray-600">{user.email}</div>
 								</div>
@@ -102,7 +102,7 @@ export const DashboardOverviewPage = () => {
 								</div>
 								<div className="text-gray-600">
 									Links available: {(() => {
-										const maxLinks = user.currentSubscription?.maxShortUrls || 10;
+										const maxLinks = user.currentSubscription?.planDetails?.maxShortUrls || 10;
 										const isUnlimited = maxLinks === -1;
 										return isUnlimited 
 											? `${user.totalShortUrls} (Unlimited)` 
@@ -137,9 +137,9 @@ export const DashboardOverviewPage = () => {
 									<div className="text-lg font-semibold text-blue-900">
 										{user.currentSubscription.planType}
 									</div>
-									<div className="text-xs text-blue-700">
+									{/* <div className="text-xs text-blue-700">
 										{user.currentSubscription.planDescription}
-									</div>
+									</div> */}
 								</div>
 								<div className="bg-green-50 p-4 rounded-lg">
 									<div className="text-sm text-green-600 font-medium">Status</div>
@@ -153,38 +153,32 @@ export const DashboardOverviewPage = () => {
 								<div className="bg-purple-50 p-4 rounded-lg">
 									<div className="text-sm text-purple-600 font-medium">Start Date</div>
 									<div className="text-lg font-semibold text-purple-900">
-										{new Date(user.currentSubscription.startsAt).toLocaleDateString()}
+										{new Date(user.currentSubscription.activatedAt || '').toLocaleDateString()}
 									</div>
 								</div>
 								<div className="bg-orange-50 p-4 rounded-lg">
 									<div className="text-sm text-orange-600 font-medium">Expires</div>
 									<div className="text-lg font-semibold text-orange-900">
-										{new Date(user.currentSubscription.expiresAt).toLocaleDateString()}
+										{new Date(user.currentSubscription.expiresAt || '').toLocaleDateString()}
 									</div>
 								</div>
 							</div>
 							<div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
 								<div className="flex items-center gap-2">
-									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-									<span className={user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'}>
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.planDetails.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.planDetails.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'}>
 										Custom Short Codes
 									</span>
 								</div>
 								<div className="flex items-center gap-2">
-									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-									<span className={user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'}>
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.planDetails.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.planDetails.statisticsEnabled ? 'text-green-700' : 'text-gray-500'}>
 										Statistics
 									</span>
 								</div>
 								<div className="flex items-center gap-2">
-									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-									<span className={user.currentSubscription.customDomainEnabled ? 'text-green-700' : 'text-gray-500'}>
-										Custom Domain
-									</span>
-								</div>
-								<div className="flex items-center gap-2">
-									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-									<span className={user.currentSubscription.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'}>
+									<span className={`w-2 h-2 rounded-full ${user.currentSubscription.planDetails.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+									<span className={user.currentSubscription.planDetails.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'}>
 										API Access
 									</span>
 								</div>

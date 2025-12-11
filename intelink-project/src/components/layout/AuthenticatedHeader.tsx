@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth.ts";
+import { useAuth } from "../../hooks/useAuth";
 import { ICONS, LANGUAGES } from "../../types/constants.ts";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button.tsx";
@@ -69,7 +69,7 @@ export const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 
 		const userInitials = user?.username ? getInitials(user.username) : "U";
 		const currentPlan = user?.currentSubscription?.planType || "No plan";
-		const creditBalance = typeof user?.creditBalance === "number" ? user.creditBalance : 0;
+		const creditBalance = typeof user?.balance === "number" ? user.balance : 0;
 		const currency = user?.currency || "VND";
 
 	return (

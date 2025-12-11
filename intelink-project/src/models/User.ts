@@ -1,58 +1,23 @@
-import { UserRole, UserProvider, UserStatus } from '../types/enums.ts';
+import type { CurrentSubscription } from "../dto/UserDTO";
 
-interface SubscriptionInfo {
-	subscriptionId: string;
-	planType: string;
-	planDescription?: string;
-	status: string;
-	active: boolean;
-	startsAt: string;
-	expiresAt: string;
-	maxShortUrls: number;
-	shortCodeCustomizationEnabled: boolean;
-	statisticsEnabled: boolean;
-	customDomainEnabled: boolean;
-	apiAccessEnabled: boolean;
-}
+export type UserRole = 'ADMIN' | 'USER' | 'GUEST';
+export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED' | 'BANNED';
 
 export interface User {
-	// Key group
-	id: number;
-
-	// Auth group
-	username: string;
-	email: string;
-	passwordHash?: string;
-	emailVerified: boolean;
-	lastLoginAt?: string;
-	role: UserRole;
-	provider: UserProvider;
-	providerUserId?: string;
-
-	// Information group
-	displayName?: string;
-	bio?: string;
-	profilePictureUrl?: string;
-
-	// Payment group
-	creditBalance: number;
-	currency: string;
-
-	// Statistics group
-	totalShortUrls: number;
-	totalClicks: number;
-
-	// Subscription group
-	currentSubscription?: SubscriptionInfo;
-
-	// Audit group
-	status: UserStatus;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface AuthState {
-	user: User | null;
-	isAuthenticated: boolean;
-	isLoading: boolean;
+  id: number;
+  username: string;
+  email: string;
+  verified: boolean;
+  role: UserRole;
+  status: UserStatus;
+  lastLoginAt?: string;
+  profileName?: string;
+  profilePictureUrl?: string;
+  totalShortUrls: number;
+  totalClicks: number;
+  balance: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+  currentSubscription?: CurrentSubscription;
 }

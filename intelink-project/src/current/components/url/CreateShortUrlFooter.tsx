@@ -7,7 +7,6 @@ interface CreateShortUrlFooterProps {
 
 export const CreateShortUrlFooter = ({
 	onCancel,
-	onDebugLog,
 }: CreateShortUrlFooterProps) => {
 	return (
 		<div className="flex items-center justify-end pt-6 border-t border-gray-200">

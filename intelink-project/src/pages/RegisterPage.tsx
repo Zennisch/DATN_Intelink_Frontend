@@ -4,7 +4,7 @@ import { RegisterForm, SocialLoginSection } from "../components/auth";
 import { Header } from "../components/layout/Header.tsx";
 import { Button, Divider } from "../components/ui";
 import type { RegisterRequest } from "../dto/request/UserRequest.ts";
-import { useAuth } from "../hooks/useAuth.ts";
+import { useAuth } from "../hooks/useAuth";
 import { BACKEND_URL } from "../types/environment.ts";
 
 export function RegisterPage() {

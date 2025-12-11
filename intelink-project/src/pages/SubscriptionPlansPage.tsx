@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SubscriptionPlanService } from "../services/SubscriptionPlanService.ts";
-import { useAuth } from "../hooks/useAuth.ts";
+import { useAuth } from "../hooks/useAuth";
 import { Spinner } from "../components/ui/Spinner.tsx";
 import { Button } from "../components/ui/Button.tsx";
 import type { SubscriptionPlanResponse } from "../dto/response/SubscriptionPlanResponse.ts";

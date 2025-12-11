@@ -5,13 +5,13 @@ import type {ShortUrlResponse, ShortUrlAnalysisStatus} from '../../dto/ShortUrlD
 import {Tooltip} from 'react-tooltip';
 
 export default function LinksPage() {
-	const {getShortUrls, searchShortUrls, enableShortUrl, disableShortUrl, deleteShortUrl, isLoading} = useShortUrl();
+	const {searchShortUrls, enableShortUrl, disableShortUrl, deleteShortUrl, isLoading} = useShortUrl();
 
 	const [urls, setUrls] = useState<ShortUrlResponse[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [sortBy, setSortBy] = useState('createdAt');
-	const [direction, setDirection] = useState<'asc' | 'desc'>('desc');
+	const [direction] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
 	const [totalElements, setTotalElements] = useState(0);

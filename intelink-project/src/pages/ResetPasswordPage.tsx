@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "../components/layout/Header.tsx";
 import { Button, Input } from "../components/ui";
-import { useAuth } from "../hooks/useAuth.ts";
+import { useAuth } from "../hooks/useAuth";
 import { useForm } from "../hooks/useForm.ts";
 import type { ResetPasswordRequest } from "../dto/request/UserRequest.ts";
 
