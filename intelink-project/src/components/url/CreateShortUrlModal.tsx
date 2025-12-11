@@ -6,7 +6,6 @@ import {
 } from "./AccessControlSection";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import type { CreateShortUrlRequest } from "../../dto/ShortUrlDTO";
-import type { AccessControlMode } from "../../models/ShortUrl";
 
 interface CreateShortUrlModalProps {
 	open: boolean;
@@ -89,12 +88,14 @@ export const CreateShortUrlModal = ({
 
 		// Access control mapping
 		if (accessControl.countries.length > 0 || accessControl.ipRanges.length > 0) {
-			request.accessControlMode = accessControl.mode.toUpperCase() as AccessControlMode;
+			request.accessControlMode = accessControl.mode === 'allow' ? 'WHITELIST' : 'BLACKLIST';
 			if (accessControl.countries.length > 0) {
-				request.accessControlGeographies = accessControl.countries;
+				// @ts-ignore - Backend expects wrapped array for polymorphic deserialization
+				request.accessControlGeographies = ["java.util.ArrayList", accessControl.countries];
 			}
 			if (accessControl.ipRanges.length > 0) {
-				request.accessControlCIDRs = accessControl.ipRanges;
+				// @ts-ignore - Backend expects wrapped array for polymorphic deserialization
+				request.accessControlCIDRs = ["java.util.ArrayList", accessControl.ipRanges];
 			}
 		}
 
