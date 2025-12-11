@@ -6,6 +6,7 @@ import App from './App.tsx';
 import {BrowserRouter} from 'react-router-dom';
 import {AuthProvider} from './hooks/useAuth.tsx';
 import {ShortUrlProvider} from './hooks/useShortUrl.tsx';
+import {StatisticsProvider} from './hooks/useStatistics.tsx';
 import PageSpinner from './components/layout/PageSpinner.tsx';
 
 createRoot(document.getElementById('root')!).render(
@@ -13,9 +14,11 @@ createRoot(document.getElementById('root')!).render(
 		<BrowserRouter>
 			<AuthProvider>
 				<ShortUrlProvider>
-					<Suspense fallback={<PageSpinner />}>
-						<App />
-					</Suspense>
+					<StatisticsProvider>
+						<Suspense fallback={<PageSpinner />}>
+							<App />
+						</Suspense>
+					</StatisticsProvider>
 				</ShortUrlProvider>
 			</AuthProvider>
 		</BrowserRouter>
