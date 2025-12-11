@@ -6,11 +6,11 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 
 function App() {
   return (
-    // <LoginPage />
+    <LoginPage />
     // <RegisterPage />
     // <ForgotPasswordPage />
     // <ResetPasswordPage />
-    <DashboardPage />
+    // <DashboardPage />
   )
 }
 
