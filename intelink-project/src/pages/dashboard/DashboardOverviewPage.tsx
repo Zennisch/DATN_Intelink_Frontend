@@ -159,7 +159,9 @@ export const DashboardOverviewPage = () => {
 								<div className="bg-orange-50 p-4 rounded-lg">
 									<div className="text-sm text-orange-600 font-medium">Expires</div>
 									<div className="text-lg font-semibold text-orange-900">
-										{new Date(user.currentSubscription.expiresAt || '').toLocaleDateString()}
+										{user.currentSubscription.expiresAt 
+											? new Date(user.currentSubscription.expiresAt).toLocaleDateString() 
+											: 'Never'}
 									</div>
 								</div>
 							</div>
