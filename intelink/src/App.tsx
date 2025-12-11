@@ -8,8 +8,8 @@ function App() {
   return (
     // <LoginPage />
     // <RegisterPage />
-    <ForgotPasswordPage />
-    // <ResetPasswordPage />
+    // <ForgotPasswordPage />
+    <ResetPasswordPage />
     // <DashboardPage />
   )
 }
