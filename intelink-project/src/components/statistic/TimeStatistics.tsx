@@ -1,8 +1,13 @@
 "use client"
 
-import axios from "axios"
 import type React from "react"
 import { useState, useEffect } from "react"
+import { 
+  StatisticsService, 
+  type StatisticsData, 
+  type TimeSeriesResponse, 
+  type TopPeakTimesResponse 
+} from "../../services/StatisticsService"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,25 +26,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export type DimensionType = "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY"
 
-export interface StatisticsData {
-  name: string
-  clicks: number
-  percentage: number
-}
-
-export interface StatisticsResponse {
-  granularity: DimensionType
-  from: string
-  to: string
-  totalClicks: number
-  buckets: { time: string; clicks: number }[]
-}
-
-export interface TopPeakTimesResponse {
-  granularity: string
-  total: number
-  topPeakTimes: { time: string; clicks: number }[]
-}
 
 interface TimeStatisticsProps {
   shortcode: string
@@ -92,39 +78,20 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
     }
 
     try {
-      const params = new URLSearchParams()
-      if (startDate) params.append("customFrom", formatDate(startDate)!)
-      if (endDate) params.append("customTo", formatDate(endDate)!)
-      params.append("granularity", granularity)
+      const result = await StatisticsService.getTimeSeriesStatistics(
+        shortcode,
+        granularity.toLowerCase(),
+        startDate.toISOString(),
+        endDate.toISOString()
+      )
 
-      const url = `/statistics/${shortcode}/time?${params.toString()}`
-      console.log("Fetching URL:", url)
-
-      const response = await axios.get(url)
-      console.log("Response:", { status: response.status, headers: response.headers, data: response.data })
-
-      if (response.status !== 200) {
-        if (response.status === 404) {
-          setData([])
-          setError(null)
-          setLoading(false)
-          return
-        }
-        throw new Error(`HTTP error! status: ${response.status}`)
+      if (!result.buckets) {
+         result.buckets = []
       }
 
-      if (!response.headers["content-type"]?.includes("application/json")) {
-        throw new Error(`Expected JSON, received ${response.headers["content-type"]}`)
-      }
-
-      const result: StatisticsResponse = response.data
-      if (!result.buckets || !Array.isArray(result.buckets)) {
-        throw new Error("Invalid response: 'buckets' field is missing or not an array")
-      }
-
-      const totalClicks = result.totalClicks || result.buckets.reduce((sum, b) => sum + b.clicks, 0)
-      const transformedData: StatisticsData[] = result.buckets.map((bucket) => {
-        const date = new Date(bucket.time)
+      const totalClicks = result.totalClicks || result.buckets.reduce((sum, item) => sum + item.clicks, 0)
+      const transformedData: StatisticsData[] = result.buckets.map((item) => {
+        const date = new Date(item.time)
         let formattedName = ""
 
         switch (granularity) {
@@ -141,13 +108,13 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
             formattedName = `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()} ${date.getHours().toString().padStart(2, "0")}:00`
             break
           default:
-            formattedName = bucket.time
+            formattedName = item.time
         }
 
         return {
           name: formattedName,
-          clicks: bucket.clicks,
-          percentage: totalClicks ? (bucket.clicks / totalClicks) * 100 : 0,
+          clicks: item.clicks,
+          percentage: totalClicks ? (item.clicks / totalClicks) * 100 : 0,
         }
       })
 
@@ -173,27 +140,10 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
     }
 
     try {
-      // Convert granularity to lowercase for the API
-      const apiGranularity = granularity.toLowerCase()
-      const url = `http://localhost:8080/api/v1/statistics/${shortcode}/top-peak-times?granularity=${apiGranularity}`
-      console.log("Fetching Top Peak Times URL:", url)
+      const result = await StatisticsService.getTopPeakTimes(shortcode, granularity.toLowerCase())
 
-      const response = await axios.get(url)
-      console.log("Top Peak Times Response:", { status: response.status, data: response.data })
-
-      if (response.status !== 200) {
-        if (response.status === 404) {
-          setData([])
-          setError(null)
-          setLoading(false)
-          return
-        }
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const result: TopPeakTimesResponse = response.data
-      if (!result.topPeakTimes || !Array.isArray(result.topPeakTimes)) {
-        throw new Error("Invalid response: 'topPeakTimes' field is missing or not an array")
+      if (!result.topPeakTimes) {
+         result.topPeakTimes = []
       }
 
       const totalClicks = result.total || result.topPeakTimes.reduce((sum, item) => sum + item.clicks, 0)

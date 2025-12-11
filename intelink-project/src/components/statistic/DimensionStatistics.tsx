@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DimensionType, DIMENSION_CATEGORIES } from "../../types/statistics.ts";
-import { useStatistics } from "../../hooks/useStatistics.ts";
+import { useStatistics } from "../../hooks/useStatistics";
 import { StatisticsChart } from "./StatisticsChart.tsx";
 import { DimensionSelector } from "./DimensionSelector.tsx";
 import { StatisticsTable } from "./StatisticsTable.tsx";

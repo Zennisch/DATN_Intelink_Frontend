@@ -1,6 +1,6 @@
 import React from "react";
 import { CountryMapChart } from "./CountryMapChart.tsx";
-import { useStatistics } from "../../hooks/useStatistics.ts";
+import { useStatistics } from "../../hooks/useStatistics";
 import { DimensionType } from "../../types/statistics.ts";
 
 interface LocationStatisticsProps {
@@ -123,7 +123,7 @@ export const LocationStatistics: React.FC<LocationStatisticsProps> = ({
 						</div>
 						<div className="text-center">
 							<div className="text-2xl font-bold text-orange-600">
-								{countryData[0]?.percentage.toFixed(1) || "0"}%
+								{(countryData[0]?.percentage ?? 0).toFixed(1)}%
 							</div>
 							<div className="text-sm text-gray-500">Top Share</div>
 						</div>
