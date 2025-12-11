@@ -1,0 +1,150 @@
+import { getCountryByCode } from "../../utils/countries";
+import { WorldMapPreview } from "./WorldMapPreview";
+
+interface AccessControlPreviewProps {
+	mode: "allow" | "block";
+	countries: string[];
+	ipRanges: string[];
+	showMap?: boolean;
+	onCountryToggle?: (countryCode: string) => void;
+}
+
+export const AccessControlPreview = ({
+	mode,
+	countries,
+	ipRanges,
+	showMap = false,
+	onCountryToggle,
+}: AccessControlPreviewProps) => {
+	const hasCountries = countries.length > 0;
+	const hasIPs = ipRanges.length > 0;
+	const hasRestrictions = hasCountries || hasIPs;
+
+	if (!hasRestrictions) {
+		return (
+			<div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+				<div className="flex items-start gap-3">
+					<i className="fas fa-globe text-gray-400 text-lg mt-0.5"></i>
+					<div>
+						<p className="text-sm font-medium text-gray-700">No Restrictions</p>
+						<p className="text-xs text-gray-500 mt-1">
+							This link can be accessed from anywhere in the world
+						</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	const isAllow = mode === "allow";
+
+	return (
+		<div
+			className={`rounded-lg border p-4 ${
+				isAllow ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+			}`}
+		>
+			<div className="flex items-start gap-3">
+				<div className="flex-1 min-w-0">
+					<div className="flex items-center gap-2">
+						<i
+							className={`fas ${isAllow ? "fa-check-circle text-green-600" : "fa-ban text-red-600"} text-base`}
+						></i>
+						<p
+							className={`text-sm font-semibold ${isAllow ? "text-green-900" : "text-red-900"}`}
+						>
+							{isAllow
+								? "Whitelist Mode (Allow Only)"
+								: "Blacklist Mode (Block)"}
+						</p>
+					</div>
+					<p
+						className={`text-xs mt-2 ${isAllow ? "text-green-700" : "text-red-700"}`}
+					>
+						{isAllow
+							? "Only selected locations can access this link"
+							: "Everyone can access except selected locations"}
+					</p>
+
+					<div className="mt-3 space-y-2">
+						{/* Countries Summary */}
+						{hasCountries && (
+							<div className="flex items-start gap-2">
+								<i className="fas fa-map-marker-alt text-xs text-gray-500"></i>
+								<div className="flex-1 min-w-0">
+									<p className="text-xs font-medium text-gray-700">
+										{countries.length}{" "}
+										{countries.length === 1 ? "Country" : "Countries"}:
+									</p>
+									<div className="flex flex-wrap gap-1.5 mt-1.5">
+										{countries.slice(0, 5).map((code) => {
+											const country = getCountryByCode(code);
+											return (
+												<span
+													key={code}
+													className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-white border border-gray-200 font-medium hover:border-gray-300 hover:shadow-sm transition-all duration-150"
+													title={country?.name}
+												>
+													<span className="text-base leading-none">
+														{country?.flag}
+													</span>
+													<span>{country?.name}</span>
+												</span>
+											);
+										})}
+										{countries.length > 5 && (
+											<span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 border border-gray-200 text-gray-700 font-semibold">
+												+{countries.length - 5} more
+											</span>
+										)}
+									</div>
+								</div>
+							</div>
+						)}
+
+						{/* IP Ranges Summary */}
+						{hasIPs && (
+							<div className="flex items-start gap-2">
+								<i className="fas fa-network-wired text-xs text-gray-500 mt-1"></i>
+								<div className="flex-1 min-w-0">
+									<p className="text-xs font-medium text-gray-700">
+										{ipRanges.length} IP{" "}
+										{ipRanges.length === 1 ? "Range" : "Ranges"}:
+									</p>
+									<div className="flex flex-wrap gap-1.5 mt-1.5">
+										{ipRanges.slice(0, 3).map((range, idx) => (
+											<code
+												key={idx}
+												className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-white border border-gray-200 font-mono hover:border-gray-300 hover:shadow-sm transition-all duration-150"
+											>
+												{range}
+											</code>
+										))}
+										{ipRanges.length > 3 && (
+											<span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 border border-gray-200 text-gray-700 font-semibold">
+												+{ipRanges.length - 3} more
+											</span>
+										)}
+									</div>
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+
+			{/* World Map Preview with Smooth Animation */}
+			{showMap && hasCountries && (
+				<div className="mt-4 overflow-hidden transition-all duration-300 ease-in-out">
+					<div className="border-t border-gray-200 pt-4">
+						<WorldMapPreview
+							selectedCountries={countries}
+							mode={mode}
+							onCountryToggle={onCountryToggle}
+						/>
+					</div>
+				</div>
+			)}
+		</div>
+	);
+};

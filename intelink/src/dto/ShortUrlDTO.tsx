@@ -1,5 +1,29 @@
 import type { AccessControlMode } from "../models/ShortUrl";
 
+// Analysis Types
+export type ShortUrlAnalysisEngine = "GOOGLE_SAFE_BROWSING" | "VIRUSTOTAL" | "PHISHING_DETECTOR";
+
+export type ShortUrlAnalysisStatus = 
+  | "PENDING"
+  | "SAFE"
+  | "MALICIOUS"
+  | "SUSPICIOUS"
+  | "MALWARE"
+  | "SOCIAL_ENGINEERING"
+  | "UNKNOWN";
+
+// Analysis Result
+export interface ShortUrlAnalysisResultResponse {
+  id: string;
+  status: ShortUrlAnalysisStatus;
+  engine: ShortUrlAnalysisEngine;
+  threatType: string;
+  platformType: string;
+  cacheDuration?: string;
+  details?: string;
+  createdAt: string;
+}
+
 // Requests
 export interface CreateShortUrlRequest {
   originalUrl: string;
@@ -47,6 +71,7 @@ export interface CreateShortUrlResponse {
   hasPassword: boolean;
   accessControlCIDRs?: string[];
   accessControlGeographies?: string[];
+  analysisResults?: ShortUrlAnalysisResultResponse[];
 }
 
 export interface ShortUrlResponse {
@@ -69,6 +94,7 @@ export interface ShortUrlResponse {
   hasPassword: boolean;
   accessControlCIDRs?: string[];
   accessControlGeographies?: string[];
+  analysisResults?: ShortUrlAnalysisResultResponse[];
 }
 
 export interface UpdateShortUrlResponse {
@@ -91,4 +117,5 @@ export interface UpdateShortUrlResponse {
   hasPassword: boolean;
   accessControlCIDRs?: string[];
   accessControlGeographies?: string[];
+  analysisResults?: ShortUrlAnalysisResultResponse[];
 }
