@@ -1,6 +1,8 @@
 import { ShortUrlStatus } from '../types/enums.ts';
 import type { User, CustomDomain } from './index.ts';
 
+export type AccessControlMode = 'NONE' | 'WHITELIST' | 'BLACKLIST';
+
 export interface ShortUrl {
 	// Key group
 	id: number;

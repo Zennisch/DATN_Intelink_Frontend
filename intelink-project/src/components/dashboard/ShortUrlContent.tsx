@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useShortUrl } from "../../hooks/useShortUrl.ts";
+import { useShortUrl } from "../../hooks/useShortUrl";
 import { CreateShortUrlModal } from "../shorturl/CreateShortUrlModal.tsx";
 import { ShortUrlList } from "../shorturl/ShortUrlList.tsx";
 import { Input } from "../ui/Input.tsx";

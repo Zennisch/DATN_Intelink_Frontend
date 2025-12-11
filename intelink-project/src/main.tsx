@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import "./index.css";
-import { ShortUrlProvider } from "./contexts/ShortUrlContext.tsx";
+import { ShortUrlProvider } from "./hooks/useShortUrl";
 import { setupAxios } from "./services/AxiosConfig.ts";
 
 setupAxios().then();

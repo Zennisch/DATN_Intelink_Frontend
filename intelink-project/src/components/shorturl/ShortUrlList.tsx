@@ -163,7 +163,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 								{shortUrl.maxUsage && <span>Max: {shortUrl.maxUsage}</span>}
 
 								<span>Created: {formatDate(shortUrl.createdAt)}</span>
-								<span>Expires: {formatDate(shortUrl.expiresAt)}</span>
+								{shortUrl.expiresAt && <span>Expires: {formatDate(shortUrl.expiresAt)}</span>}
 							</div>
 						</div>
 

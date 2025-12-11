@@ -1,12 +1,14 @@
+import { ShortUrlStatus } from "../../types/enums";
+
 export interface CreateShortUrlResponse {
 	id: number;
 	shortCode: string;
 	originalUrl: string;
 	hasPassword: boolean;
 	description?: string;
-	status: string;
+	status: ShortUrlStatus;
 	maxUsage?: number;
-	expiresAt: string;
+	expiresAt?: string;
 	createdAt: string;
 	updatedAt: string;
 	shortUrl: string;
@@ -18,10 +20,10 @@ export interface ShortUrlListResponse {
 	originalUrl: string;
 	hasPassword: boolean;
 	description?: string;
-	status: string;
+	status: ShortUrlStatus;
 	maxUsage?: number;
 	totalClicks: number;
-	expiresAt: string;
+	expiresAt?: string;
 	createdAt: string;
 	shortUrl: string;
 }
@@ -32,10 +34,10 @@ export interface ShortUrlDetailResponse {
 	originalUrl: string;
 	hasPassword: boolean;
 	description?: string;
-	status: string;
+	status: ShortUrlStatus;
 	maxUsage?: number;
 	totalClicks: number;
-	expiresAt: string;
+	expiresAt?: string;
 	createdAt: string;
 	updatedAt: string;
 	shortUrl: string;

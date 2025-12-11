@@ -7,6 +7,7 @@
  * Converts "http://localhost:8080/{shortCode}/uc3Tl39rSh" to "http://localhost:8080/uc3Tl39rSh"
  */
 export const fixShortUrlFormat = (shortUrl: string): string => {
+	if (!shortUrl) return "";
 	// Remove {shortCode}/ pattern from the URL
 	return shortUrl.replace(/{shortCode}\//, "");
 };

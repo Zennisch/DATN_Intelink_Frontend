@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { useShortUrl } from "../../hooks/useShortUrl.ts";
-import { fixShortUrlFormat } from "../../utils/UrlUtil.ts";
-import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse.ts";
+import { useShortUrl } from "../../hooks/useShortUrl";
+import { fixShortUrlFormat } from "../../utils/UrlUtil";
+import type { ShortUrlListResponse } from "../../dto/response/ShortUrlResponse";
+import { ShortUrlStatus } from "../../types/enums";
 
 interface UrlListSidebarProps {
 	selectedUrl: string | null;
@@ -113,7 +114,7 @@ export const UrlListSidebar: React.FC<UrlListSidebarProps> = ({
 								</a>
 								<span className={`
 									text-xs px-2 py-1 rounded-full
-									${shortUrl.status === "ACTIVE" 
+									${shortUrl.status === ShortUrlStatus.ENABLED 
 										? "bg-green-100 text-green-800" 
 										: "bg-red-100 text-red-800"
 									}
