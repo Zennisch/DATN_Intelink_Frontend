@@ -4,10 +4,262 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>intelink</title>
+    <title>Intelink - URL Shortener</title>
+    <style>
+      /* Scoped styles for preloader only - won't affect Tailwind */
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+
+      #preloader {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        position: fixed;
+        inset: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        transition: opacity 0.5s ease;
+        overflow: hidden;
+        z-index: 9999;
+        box-sizing: border-box;
+      }
+
+      #preloader * {
+        box-sizing: border-box;
+      }
+
+      #preloader.fade-out {
+        animation: fadeOut 0.5s ease forwards;
+      }
+
+      #preloader .preload-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: #fff;
+      }
+
+      #preloader .header-link {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        padding: 0.25rem;
+      }
+
+      #preloader .header-logo {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+      }
+
+      #preloader .header-text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+        background: linear-gradient(90deg, #000000, #5599dd);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      #preloader .preload-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #eeffff, #ffffff);
+        padding: 1rem;
+      }
+
+      #preloader .preload-container-icon {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: 50%;
+      }
+
+      #preloader .loading-icon {
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+      }
+
+      #preloader .preload-container-text {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 50%;
+      }
+
+      #preloader .loading-text {
+        font-size: 1.75rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-shadow: 0 0 4px #77bbee;
+        color: #5599dd;
+      }
+
+      /* Responsive Styles */
+      @media screen and (max-width: 768px) {
+        #preloader .preload-header {
+          padding: 0.4rem 0.75rem;
+          gap: 0.4rem;
+        }
+        #preloader .header-link {
+          gap: 0.5rem;
+        }
+        #preloader .header-logo {
+          width: 32px;
+          height: 32px;
+        }
+        #preloader .header-text {
+          font-size: 1.1rem;
+        }
+        #preloader .preload-container {
+          gap: 1rem;
+          padding: 0.75rem;
+        }
+        #preloader .loading-icon {
+          width: 40px;
+          height: 40px;
+        }
+        #preloader .loading-text {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        #preloader .preload-header {
+          padding: 0.3rem 0.5rem;
+          gap: 0.3rem;
+        }
+        #preloader .header-link {
+          gap: 0.4rem;
+        }
+        #preloader .header-logo {
+          width: 28px;
+          height: 28px;
+        }
+        #preloader .header-text {
+          font-size: 1rem;
+        }
+        #preloader .preload-container {
+          flex-direction: column;
+          gap: 0.75rem;
+          padding: 0.5rem;
+        }
+        #preloader .preload-container-icon,
+        #preloader .preload-container-text {
+          width: 100%;
+          justify-content: center;
+        }
+        #preloader .loading-icon {
+          width: 36px;
+          height: 36px;
+        }
+        #preloader .loading-text {
+          font-size: 1.25rem;
+        }
+      }
+
+      @media screen and (max-width: 360px) {
+        #preloader .header-logo {
+          width: 24px;
+          height: 24px;
+        }
+        #preloader .header-text {
+          font-size: 0.9rem;
+        }
+        #preloader .loading-icon {
+          width: 32px;
+          height: 32px;
+        }
+        #preloader .loading-text {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="preloader">
+      <header class="preload-header">
+        <a href="https://intelink.click" target="_blank" rel="noopener noreferrer" class="header-link">
+          <img src="./assets/logo.png" alt="Intelink Logo" class="header-logo" />
+          <span class="header-text">Intelink</span>
+        </a>
+      </header>
+
+      <div class="preload-container">
+        <div class="preload-container-icon">
+          <img src="./assets/icon-loading-cyan.svg" alt="Loading Icon" class="loading-icon" />
+        </div>
+        <div class="preload-container-text">
+          <span id="loading-text" class="loading-text">Loading</span>
+        </div>
+      </div>
+    </div>
+
     <div id="root"></div>
+
+    <script>
+      // Animate loading text with dots
+      (function() {
+        const loadingText = document.getElementById('loading-text');
+        const text = 'Loading';
+        let index = 0;
+
+        const interval = setInterval(function() {
+          if (loadingText) {
+            if (index % 4 !== 0) {
+              loadingText.textContent = text + '.'.repeat(index % 4);
+            } else {
+              loadingText.textContent = text;
+            }
+          }
+          index++;
+        }, 500);
+
+        // Remove preloader when app is ready
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+              preloader.classList.add('fade-out');
+              setTimeout(function() {
+                if (preloader.parentNode) {
+                  preloader.parentNode.removeChild(preloader);
+                }
+                clearInterval(interval);
+              }, 500);
+            }
+          }, 300);
+        });
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
