@@ -4,9 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { 
   StatisticsService, 
-  type StatisticsData, 
-  type TimeSeriesResponse, 
-  type TopPeakTimesResponse 
+  type StatisticsData
 } from "../../services/StatisticsService"
 import {
   Chart as ChartJS,
@@ -81,8 +79,8 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
       const result = await StatisticsService.getTimeSeriesStatistics(
         shortcode,
         granularity.toLowerCase(),
-        startDate.toISOString(),
-        endDate.toISOString()
+        startDate?.toISOString(),
+        endDate?.toISOString()
       )
 
       if (!result.buckets) {
