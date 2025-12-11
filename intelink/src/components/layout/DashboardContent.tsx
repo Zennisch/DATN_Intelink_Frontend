@@ -1,8 +1,8 @@
-import APIsPage from "../../pages/APIsPage";
+import APIsPage from "../../pages/dashboard/APIsPage";
 import type { Page } from "../../pages/DashboardPage";
-import LinksPage from "../../pages/LinksPage";
+import LinksPage from "../../pages/dashboard/LinksPage";
 import OverviewPage from "../../pages/OverviewPage";
-import StatisticsPage from "../../pages/StatisticsPage";
+import StatisticsPage from "../../pages/dashboard/StatisticsPage";
 
 interface DashboardContentProps {
 	currentPage: Page;
