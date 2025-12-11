@@ -7,6 +7,7 @@ import type {
 	UpdateShortUrlResponse,
 } from '../dto/ShortUrlDTO';
 import type { PagedResponse } from '../dto/PagedResponse';
+import type { RedirectResult } from '../../models/Redirect';
 
 export interface GetShortUrlsParams {
 	page?: number;
@@ -97,6 +98,21 @@ export class ShortUrlService {
 	 */
 	static async disableShortUrl(shortCode: string): Promise<ShortUrlResponse> {
 		const response = await axios.put<ShortUrlResponse>(`/url/${shortCode}/disable`);
+		return response.data;
+	}
+
+	/**
+	 * Access a short URL (public endpoint)
+	 */
+	static async accessShortUrl(shortCode: string, password?: string): Promise<RedirectResult> {
+		const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+		const url = `${backendUrl}/${shortCode}${password ? `?password=${encodeURIComponent(password)}` : ''}`;
+		
+		// We use a new axios instance or fetch to avoid the default interceptors/baseURL if it points to /api/v1
+		// Using fetch here to be safe from global axios config interference for this specific public endpoint
+		const response = await axios.get<RedirectResult>(url, {
+			baseURL: undefined // Override default baseURL
+		});
 		return response.data;
 	}
 }

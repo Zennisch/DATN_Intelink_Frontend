@@ -1,19 +1,234 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ShortUrlService } from "../current/services/ShortUrlService";
+import { RedirectResultType, type RedirectResult } from "../models/Redirect";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import icon from "../assets/icon.png";
 
 const RedirectPage: React.FC = () => {
 	const { shortCode } = useParams<{ shortCode: string }>();
+	const navigate = useNavigate();
+	
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [redirectResult, setRedirectResult] = useState<RedirectResult | null>(null);
+	const [countdown, setCountdown] = useState(5);
+	const [password, setPassword] = useState("");
+	const [unlocking, setUnlocking] = useState(false);
 
-	// This component handles direct redirects to short URLs
-	// In a real app, this would be handled by the backend redirect
-	React.useEffect(() => {
+	useEffect(() => {
 		if (shortCode) {
-			// Redirect to backend endpoint which will handle the actual redirect
-			const backendUrl = import.meta.env.VITE_BACKEND_URL;
-			window.location.href = `${backendUrl}/${shortCode}`;
+			fetchRedirectInfo();
 		}
 	}, [shortCode]);
+
+	useEffect(() => {
+		let timer: NodeJS.Timeout;
+		if (redirectResult?.type === RedirectResultType.SUCCESS && countdown > 0) {
+			timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+		} else if (redirectResult?.type === RedirectResultType.SUCCESS && countdown === 0) {
+			if (redirectResult.redirectUrl) {
+				window.location.href = redirectResult.redirectUrl;
+			}
+		}
+		return () => clearTimeout(timer);
+	}, [redirectResult, countdown]);
+
+	const fetchRedirectInfo = async () => {
+		try {
+			setLoading(true);
+			const result = await ShortUrlService.accessShortUrl(shortCode!);
+			setRedirectResult(result);
+			
+			// If immediate redirect is preferred without countdown, uncomment below:
+			// if (result.type === RedirectResultType.SUCCESS && result.redirectUrl) {
+			//     window.location.href = result.redirectUrl;
+			// }
+		} catch (err: any) {
+			console.error("Error fetching redirect info:", err);
+			setError("Failed to load link information. Please try again.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleUnlock = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!password.trim()) return;
+
+		try {
+			setUnlocking(true);
+			setError(null);
+			const result = await ShortUrlService.accessShortUrl(shortCode!, password);
+			
+			if (result.type === RedirectResultType.SUCCESS) {
+				setRedirectResult(result);
+				// Reset countdown or redirect immediately
+				if (result.redirectUrl) {
+					window.location.href = result.redirectUrl;
+				}
+			} else if (result.type === RedirectResultType.INCORRECT_PASSWORD) {
+				setError(result.message || "Incorrect password");
+			} else {
+				setRedirectResult(result);
+			}
+		} catch (err: any) {
+			console.error("Error unlocking:", err);
+			setError("An error occurred while unlocking");
+		} finally {
+			setUnlocking(false);
+		}
+	};
+
+	const renderContent = () => {
+		if (loading) {
+			return (
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+					<p className="text-gray-600">Checking link...</p>
+				</div>
+			);
+		}
+
+		if (error && !redirectResult) {
+			return (
+				<div className="text-center">
+					<div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+						<i className="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+					</div>
+					<h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
+					<p className="text-gray-600 text-sm mb-6">{error}</p>
+					<Button onClick={() => navigate("/")} variant="outline">
+						Go to Homepage
+					</Button>
+				</div>
+			);
+		}
+
+		if (!redirectResult) return null;
+
+		switch (redirectResult.type) {
+			case RedirectResultType.SUCCESS:
+				return (
+					<div className="text-center">
+						<div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+							<i className="fas fa-check text-green-600 text-2xl"></i>
+						</div>
+						<h2 className="text-xl font-semibold text-gray-900 mb-2">Link Ready!</h2>
+						<p className="text-gray-600 text-sm mb-6">
+							Redirecting to destination in <span className="font-bold text-blue-600">{countdown}</span> seconds...
+						</p>
+						<div className="flex justify-center gap-3">
+							<Button 
+								onClick={() => window.location.href = redirectResult.redirectUrl!} 
+								variant="primary"
+							>
+								Go Now
+							</Button>
+						</div>
+						<p className="text-xs text-gray-400 mt-4 break-all">
+							Destination: {redirectResult.redirectUrl}
+						</p>
+					</div>
+				);
+
+			case RedirectResultType.PASSWORD_PROTECTED:
+			case RedirectResultType.INCORRECT_PASSWORD:
+				return (
+					<div className="text-center">
+						<div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+							<i className="fas fa-lock text-gray-600 text-2xl"></i>
+						</div>
+						<h2 className="text-xl font-semibold text-gray-900 mb-2">Protected Link</h2>
+						<p className="text-gray-600 text-sm mb-6">
+							This link is password protected. Please enter the password to continue.
+						</p>
+						
+						<form onSubmit={handleUnlock} className="space-y-4 text-left">
+							<div>
+								<Input
+									type="password"
+									placeholder="Enter password"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									disabled={unlocking}
+									className="w-full"
+								/>
+							</div>
+							{error && (
+								<p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>
+							)}
+							<Button
+								type="submit"
+								disabled={unlocking || !password.trim()}
+								className="w-full"
+							>
+								{unlocking ? "Unlocking..." : "Unlock Link"}
+							</Button>
+						</form>
+					</div>
+				);
+
+			case RedirectResultType.NOT_FOUND:
+				return (
+					<div className="text-center">
+						<div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+							<i className="fas fa-search text-gray-400 text-2xl"></i>
+						</div>
+						<h2 className="text-xl font-semibold text-gray-900 mb-2">Link Not Found</h2>
+						<p className="text-gray-600 text-sm mb-6">
+							{redirectResult.message || "The link you are looking for does not exist."}
+						</p>
+						<Button onClick={() => navigate("/")} variant="outline">
+							Go to Homepage
+						</Button>
+					</div>
+				);
+
+			case RedirectResultType.UNAVAILABLE:
+				return (
+					<div className="text-center">
+						<div className="mx-auto w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+							<i className="fas fa-clock text-yellow-600 text-2xl"></i>
+						</div>
+						<h2 className="text-xl font-semibold text-gray-900 mb-2">Link Unavailable</h2>
+						<p className="text-gray-600 text-sm mb-6">
+							{redirectResult.message || "This link has expired or reached its usage limit."}
+						</p>
+						<Button onClick={() => navigate("/")} variant="outline">
+							Go to Homepage
+						</Button>
+					</div>
+				);
+
+			case RedirectResultType.ACCESS_DENIED:
+				return (
+					<div className="text-center">
+						<div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+							<i className="fas fa-ban text-red-600 text-2xl"></i>
+						</div>
+						<h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+						<p className="text-gray-600 text-sm mb-6">
+							{redirectResult.message || "You do not have permission to access this link."}
+						</p>
+						<Button onClick={() => navigate("/")} variant="outline">
+							Go to Homepage
+						</Button>
+					</div>
+				);
+
+			default:
+				return (
+					<div className="text-center">
+						<p className="text-gray-600">Unknown status</p>
+						<Button onClick={() => navigate("/")} variant="outline" className="mt-4">
+							Go to Homepage
+						</Button>
+					</div>
+				);
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -25,20 +240,14 @@ const RedirectPage: React.FC = () => {
 					<h1 className="text-2xl font-bold text-gray-900">Intelink</h1>
 				</div>
 
-				<div className="bg-white rounded-xl shadow-lg p-8 text-center">
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-					<h2 className="text-xl font-semibold text-gray-900 mb-2">
-						Redirecting...
-					</h2>
-					<p className="text-gray-600 text-sm mb-6">
-						You will be redirected to the destination in a moment.
+				<div className="bg-white rounded-xl shadow-lg p-8">
+					{renderContent()}
+				</div>
+
+				<div className="mt-6 text-center">
+					<p className="text-xs text-gray-500">
+						Powered by Intelink
 					</p>
-					<Link 
-						to="/" 
-						className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-					>
-						← Back to Intelink
-					</Link>
 				</div>
 			</div>
 		</div>
