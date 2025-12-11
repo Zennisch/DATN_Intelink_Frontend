@@ -1,17 +1,14 @@
-import DashboardPage from './pages/DashboardPage'
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
-import LoginPage from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
-import ResetPasswordPage from './pages/auth/ResetPasswordPage'
+import { Routes, Route } from 'react-router-dom'
+import { routes } from './routes'
 
 function App() {
-  return (
-    // <LoginPage />
-    // <RegisterPage />
-    // <ForgotPasswordPage />
-    <ResetPasswordPage />
-    // <DashboardPage />
-  )
+	return (
+		<Routes>
+			{routes.map((route, index) => (
+				<Route key={index} path={route.path} element={route.element} />
+			))}
+		</Routes>
+	)
 }
 
 export default App
