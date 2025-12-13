@@ -86,6 +86,14 @@ export const DashboardSidebar = ({
 			},
 		},
 		{
+			text: "Dashboard",
+			icon: "🏠",
+			page: "dashboard",
+			onClick: () => {
+				setCurrentPage("dashboard");
+			}
+		},
+		{
 			text: "Statistics",
 			icon: "📈",
 			page: "statistics",

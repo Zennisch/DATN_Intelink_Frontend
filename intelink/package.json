@@ -13,10 +13,12 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@tailwindcss/vite": "^4.1.17",
+    "@types/d3-scale": "^4.0.9",
     "axios": "^1.13.2",
     "cidr-regex": "^5.0.1",
     "country-flag-emoji": "^1.0.3",
     "d3-geo": "^3.1.1",
+    "d3-scale": "^4.0.2",
     "ip-range-check": "^0.2.0",
     "react": "^18.0.0",
     "react-datepicker": "^9.0.0",

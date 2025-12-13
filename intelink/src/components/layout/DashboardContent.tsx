@@ -4,6 +4,7 @@ import StatisticsPage from "../../pages/dashboard/StatisticsPage";
 import OverviewPage from "../../pages/dashboard/OverviewPage";
 import LinksPage from "../../pages/dashboard/LinksPage";
 import SubscriptionHistoryPage from "../../pages/dashboard/SubscriptionHistoryPage";
+import DashboardStatisticsPage from "../../pages/dashboard/DashboardStatisticsPage";
 
 interface DashboardContentProps {
 	currentPage: Page;
@@ -16,6 +17,8 @@ export const DashboardMain = ({ currentPage }: DashboardContentProps) => {
 				return <OverviewPage />;
 			case "links":
 				return <LinksPage />;
+			case "dashboard":
+				return <DashboardStatisticsPage />;
 			case "statistics":
 				return <StatisticsPage />;
 			case "apis":

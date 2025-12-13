@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, type ReactNode} from 'react';
+import {createContext, useContext, useState, type ReactNode, useCallback} from 'react';
 import type {
 	DimensionStatResponse,
 	GeographyStatResponse,
@@ -42,11 +42,11 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		currentShortCode: null,
 	});
 
-	const setLoading = (isLoading: boolean) => {
+	const setLoading = useCallback((isLoading: boolean) => {
 		setStatisticsState((prev) => ({...prev, isLoading}));
-	};
+	}, []);
 
-	const getBrowserStats = async (shortCode: string): Promise<DimensionStatResponse> => {
+	const getBrowserStats = useCallback(async (shortCode: string): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -58,9 +58,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getOsStats = async (shortCode: string): Promise<DimensionStatResponse> => {
+	const getOsStats = useCallback(async (shortCode: string): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -72,9 +72,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getDeviceStats = async (shortCode: string): Promise<DimensionStatResponse> => {
+	const getDeviceStats = useCallback(async (shortCode: string): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -86,9 +86,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getCountryStats = async (shortCode: string): Promise<GeographyStatResponse> => {
+	const getCountryStats = useCallback(async (shortCode: string): Promise<GeographyStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -100,9 +100,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getCityStats = async (shortCode: string): Promise<GeographyStatResponse> => {
+	const getCityStats = useCallback(async (shortCode: string): Promise<GeographyStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -114,9 +114,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getTimeSeriesStats = async (
+	const getTimeSeriesStats = useCallback(async (
 		shortCode: string,
 		params?: TimeSeriesParams
 	): Promise<TimeSeriesStatResponse> => {
@@ -131,9 +131,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getPeakTimeStats = async (shortCode: string, params?: PeakTimeParams): Promise<PeakTimeStatResponse> => {
+	const getPeakTimeStats = useCallback(async (shortCode: string, params?: PeakTimeParams): Promise<PeakTimeStatResponse> => {
 		try {
 			setLoading(true);
 			setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
@@ -145,9 +145,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllBrowserStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+	const getAllBrowserStats = useCallback(async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllBrowserStats(params);
@@ -158,9 +158,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllOsStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+	const getAllOsStats = useCallback(async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllOsStats(params);
@@ -171,9 +171,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllDeviceStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+	const getAllDeviceStats = useCallback(async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllDeviceStats(params);
@@ -184,9 +184,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllCountryStats = async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
+	const getAllCountryStats = useCallback(async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllCountryStats(params);
@@ -197,9 +197,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllCityStats = async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
+	const getAllCityStats = useCallback(async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllCityStats(params);
@@ -210,9 +210,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllTimeSeriesStats = async (params?: TimeSeriesParams): Promise<TimeSeriesStatResponse> => {
+	const getAllTimeSeriesStats = useCallback(async (params?: TimeSeriesParams): Promise<TimeSeriesStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllTimeSeriesStats(params);
@@ -223,9 +223,9 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getAllPeakTimeStats = async (params?: PeakTimeParams): Promise<PeakTimeStatResponse> => {
+	const getAllPeakTimeStats = useCallback(async (params?: PeakTimeParams): Promise<PeakTimeStatResponse> => {
 		try {
 			setLoading(true);
 			const response = await StatisticsService.getAllPeakTimeStats(params);
@@ -236,11 +236,11 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const setCurrentShortCode = (shortCode: string | null) => {
+	const setCurrentShortCode = useCallback((shortCode: string | null) => {
 		setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
-	};
+	}, []);
 
 	const value: StatisticsContextType = {
 		...statisticsState,
