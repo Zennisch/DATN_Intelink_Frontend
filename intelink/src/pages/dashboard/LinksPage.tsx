@@ -217,7 +217,7 @@ export default function LinksPage() {
 							)}
 						</div>
 					) : (
-						<div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
 							{urls.map((url) => {
 								const safety = getSafetyStatus(url);
 								const hasThreat = url.analysisResults && url.analysisResults.length > 0 && safety.status !== 'SAFE';
@@ -228,8 +228,8 @@ export default function LinksPage() {
 										key={url.id} 
 										className={`group bg-white rounded-xl border border-slate-200 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_16px_-4px_rgba(0,0,0,0.1)] transition-all duration-300 flex flex-col ${!url.enabled ? 'opacity-75 bg-slate-50' : ''}`}
 									>
-										<div className="p-5 flex-1">
-											<div className="flex items-start justify-between mb-4">
+										<div className="p-4 flex-1">
+											<div className="flex items-start justify-between mb-3">
 												{/* Header: Icon + Title */}
 												<div className="flex items-start gap-3 min-w-0 flex-1">
 													<div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center text-lg ${url.enabled ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
@@ -312,7 +312,7 @@ export default function LinksPage() {
 											</div>
 
 											{/* Main Link Area */}
-											<div className="mb-4 bg-slate-50/50 rounded-lg p-3 border border-slate-100">
+											<div className="bg-slate-50/50 rounded-lg p-3 border border-slate-100">
 												<div className="flex items-center justify-between gap-3 mb-1">
 													<a
 														href={url.shortUrl}
@@ -348,7 +348,7 @@ export default function LinksPage() {
 										</div>
 
 										{/* Stats Footer */}
-										<div className="bg-slate-50/80 border-t border-slate-100 p-4 rounded-b-xl">
+										<div className="bg-slate-50/80 border-t border-slate-100 p-1 rounded-b-xl">
 											<div className="grid grid-cols-3 gap-2 text-sm">
 												<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all">
 													<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Clicks</span>
