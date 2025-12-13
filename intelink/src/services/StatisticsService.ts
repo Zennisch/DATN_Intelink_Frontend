@@ -107,4 +107,105 @@ export class StatisticsService {
 		});
 		return response.data;
 	}
+
+	/**
+	 * Get browser statistics for all URLs
+	 */
+	static async getAllBrowserStats(params?: TimeSeriesParams): Promise<DimensionStatResponse> {
+		const response = await axios.get<DimensionStatResponse>(`/statistics/browser`, {
+			params: {
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get operating system statistics for all URLs
+	 */
+	static async getAllOsStats(params?: TimeSeriesParams): Promise<DimensionStatResponse> {
+		const response = await axios.get<DimensionStatResponse>(`/statistics/os`, {
+			params: {
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get device type statistics for all URLs
+	 */
+	static async getAllDeviceStats(params?: TimeSeriesParams): Promise<DimensionStatResponse> {
+		const response = await axios.get<DimensionStatResponse>(`/statistics/device`, {
+			params: {
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get country statistics for all URLs
+	 */
+	static async getAllCountryStats(params?: TimeSeriesParams): Promise<GeographyStatResponse> {
+		const response = await axios.get<GeographyStatResponse>(`/statistics/country`, {
+			params: {
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get city statistics for all URLs
+	 */
+	static async getAllCityStats(params?: TimeSeriesParams): Promise<GeographyStatResponse> {
+		const response = await axios.get<GeographyStatResponse>(`/statistics/city`, {
+			params: {
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get time series statistics for all URLs
+	 */
+	static async getAllTimeSeriesStats(params?: TimeSeriesParams): Promise<TimeSeriesStatResponse> {
+		const response = await axios.get<TimeSeriesStatResponse>(`/statistics/timeseries`, {
+			params: {
+				granularity: params?.granularity,
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+			},
+		});
+		return response.data;
+	}
+
+	/**
+	 * Get peak time statistics for all URLs
+	 */
+	static async getAllPeakTimeStats(params?: PeakTimeParams): Promise<PeakTimeStatResponse> {
+		const response = await axios.get<PeakTimeStatResponse>(`/statistics/peak-times`, {
+			params: {
+				granularity: params?.granularity,
+				from: params?.from,
+				to: params?.to,
+				timezone: params?.timezone,
+				limit: params?.limit ?? 10,
+			},
+		});
+		return response.data;
+	}
 }

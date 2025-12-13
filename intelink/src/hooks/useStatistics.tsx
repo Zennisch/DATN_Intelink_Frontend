@@ -20,6 +20,13 @@ export interface StatisticsContextType extends StatisticsState {
 	getCityStats: (shortCode: string) => Promise<GeographyStatResponse>;
 	getTimeSeriesStats: (shortCode: string, params?: TimeSeriesParams) => Promise<TimeSeriesStatResponse>;
 	getPeakTimeStats: (shortCode: string, params?: PeakTimeParams) => Promise<PeakTimeStatResponse>;
+	getAllBrowserStats: (params?: TimeSeriesParams) => Promise<DimensionStatResponse>;
+	getAllOsStats: (params?: TimeSeriesParams) => Promise<DimensionStatResponse>;
+	getAllDeviceStats: (params?: TimeSeriesParams) => Promise<DimensionStatResponse>;
+	getAllCountryStats: (params?: TimeSeriesParams) => Promise<GeographyStatResponse>;
+	getAllCityStats: (params?: TimeSeriesParams) => Promise<GeographyStatResponse>;
+	getAllTimeSeriesStats: (params?: TimeSeriesParams) => Promise<TimeSeriesStatResponse>;
+	getAllPeakTimeStats: (params?: PeakTimeParams) => Promise<PeakTimeStatResponse>;
 	setCurrentShortCode: (shortCode: string | null) => void;
 }
 
@@ -140,6 +147,97 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		}
 	};
 
+	const getAllBrowserStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllBrowserStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all browser stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllOsStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllOsStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all OS stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllDeviceStats = async (params?: TimeSeriesParams): Promise<DimensionStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllDeviceStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all device stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllCountryStats = async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllCountryStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all country stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllCityStats = async (params?: TimeSeriesParams): Promise<GeographyStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllCityStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all city stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllTimeSeriesStats = async (params?: TimeSeriesParams): Promise<TimeSeriesStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllTimeSeriesStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all time series stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getAllPeakTimeStats = async (params?: PeakTimeParams): Promise<PeakTimeStatResponse> => {
+		try {
+			setLoading(true);
+			const response = await StatisticsService.getAllPeakTimeStats(params);
+			return response;
+		} catch (error) {
+			console.error('Failed to get all peak time stats:', error);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const setCurrentShortCode = (shortCode: string | null) => {
 		setStatisticsState((prev) => ({...prev, currentShortCode: shortCode}));
 	};
@@ -153,6 +251,13 @@ export const StatisticsProvider: React.FC<StatisticsProviderProps> = ({children}
 		getCityStats,
 		getTimeSeriesStats,
 		getPeakTimeStats,
+		getAllBrowserStats,
+		getAllOsStats,
+		getAllDeviceStats,
+		getAllCountryStats,
+		getAllCityStats,
+		getAllTimeSeriesStats,
+		getAllPeakTimeStats,
 		setCurrentShortCode,
 	};
 
