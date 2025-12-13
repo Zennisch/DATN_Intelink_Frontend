@@ -256,9 +256,9 @@ export const DashboardSidebar = ({
 									<button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
 										<i className="fas fa-user-cog w-4 text-center"></i> Account Settings
 									</button>
-									<button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
+									{/* <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
 										<i className="fas fa-credit-card w-4 text-center"></i> Billing & Plans
-									</button>
+									</button> */}
 									<div className="h-px bg-slate-100 my-1 mx-2"></div>
 									<button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
 										<i className="fas fa-question-circle w-4 text-center"></i> Help & Support

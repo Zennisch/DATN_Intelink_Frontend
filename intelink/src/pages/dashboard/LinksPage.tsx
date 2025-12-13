@@ -110,7 +110,7 @@ export default function LinksPage() {
 	const clearError = () => setError(null);
 
 	return (
-		<div className="space-y-2">
+		<div className="h-full flex flex-col space-y-2 p-2">
 			{error && (
 				<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center justify-between">
 					<span>{error}</span>
@@ -155,25 +155,27 @@ export default function LinksPage() {
 			</div>
 
 			{/* Content */}
-			<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-				{loading && !shortUrls.length ? (
-					<div className="flex justify-center items-center py-8">
-						<div className="text-gray-500">Loading...</div>
-					</div>
-				) : (
-					<ShortUrlList
-						shortUrls={shortUrls}
-						loading={loading}
-						onEdit={handleEditShortUrl}
-						onDelete={handleDeleteShortUrl}
-						onToggleStatus={handleToggleStatus}
-						onViewStats={handleViewStats}
-					/>
-				)}
+			<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-1 flex flex-col min-h-0">
+				<div className="flex-1 overflow-auto">
+					{loading && !shortUrls.length ? (
+						<div className="flex justify-center items-center py-8">
+							<div className="text-gray-500">Loading...</div>
+						</div>
+					) : (
+						<ShortUrlList
+							shortUrls={shortUrls}
+							loading={loading}
+							onEdit={handleEditShortUrl}
+							onDelete={handleDeleteShortUrl}
+							onToggleStatus={handleToggleStatus}
+							onViewStats={handleViewStats}
+						/>
+					)}
+				</div>
 
 				{/* Pagination */}
 				{totalPages > 1 && (
-					<div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+					<div className="pt-4 flex items-center justify-between border-t border-gray-200 flex-shrink-0">
 						<div className="text-sm text-gray-500">
 							Showing {currentPage * 10 + 1} - {Math.min((currentPage + 1) * 10, totalElements)} of{' '}
 							{totalElements} results
