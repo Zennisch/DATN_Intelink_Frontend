@@ -78,7 +78,7 @@ export default function OverviewScreen() {
 			try {
 				const from = `${startDate.toISOString().split("T")[0]}T00:00:00Z`;
 				const to = `${endDate.toISOString().split("T")[0]}T23:59:59Z`;
-				const data = await OverviewStatisticsService.getCountryStatistics(from, to, 10);
+				const data = await OverviewStatisticsService.getCountryStatistics(from, to);
 				setCountryData(data);
 			} catch (err) {
 				const error = err as { response?: { data?: { message?: string } } };
@@ -112,7 +112,7 @@ export default function OverviewScreen() {
 				const to = `${endDate.toISOString().split("T")[0]}T23:59:59Z`;
 				
 				const promises = selectedDimensions.map(dim =>
-					OverviewStatisticsService.getDimensionStatistics(dim, from, to, limit)
+					OverviewStatisticsService.getDimensionStatistics(dim, from, to)
 				);
 				const results = await Promise.all(promises);
 				
@@ -422,7 +422,7 @@ export default function OverviewScreen() {
 							/>
 							<StatCard
 								title="Total Views"
-								value={countryData.data.reduce((sum, d) => sum + d.views, 0).toLocaleString()}
+								value={countryData.data.reduce((sum, d) => sum + d.clicks, 0).toLocaleString()}
 								color="#10B981"
 							/>
 						</View>
@@ -619,7 +619,7 @@ export default function OverviewScreen() {
 													
 													{/* Bar chart items */}
 													<View className="space-y-3">
-														{data.data.map((stat, index) => {
+														{data.data.slice(0, limit).map((stat, index) => {
 															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
 															const displayValue = dimension === "COUNTRY" 
 																? (COUNTRY_NAMES[stat.name] || stat.name)
@@ -713,7 +713,7 @@ export default function OverviewScreen() {
 														showsVerticalScrollIndicator={true}
 														nestedScrollEnabled={true}
 													>
-														{data.data.map((stat, index) => {
+														{data.data.slice(0, limit).map((stat, index) => {
 															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
 															const displayValue = dimension === "COUNTRY" 
 																? (COUNTRY_NAMES[stat.name] || stat.name)

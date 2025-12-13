@@ -18,14 +18,12 @@ export class OverviewStatisticsService {
 	static async getCountryStatistics(
 		from?: string,
 		to?: string,
-		limit: number = 10,
-		shortCodes?: string
+		timezone?: string
 	): Promise<GeographyStatResponse> {
 		const params = new URLSearchParams();
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
-		if (limit) params.append("limit", limit.toString());
-		if (shortCodes) params.append("shortCodes", shortCodes);
+		if (timezone) params.append("timezone", timezone);
 
 		const response = await axios.get(`/statistics/country?${params.toString()}`);
 		return response.data;
@@ -35,13 +33,13 @@ export class OverviewStatisticsService {
 		granularity: Granularity = "DAILY",
 		from?: string,
 		to?: string,
-		shortCodes?: string
+		timezone?: string
 	): Promise<TimeSeriesStatResponse> {
 		const params = new URLSearchParams();
 		params.append("granularity", granularity);
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
-		if (shortCodes) params.append("shortCodes", shortCodes);
+		if (timezone) params.append("timezone", timezone);
 
 		const response = await axios.get(`/statistics/timeseries?${params.toString()}`);
 		return response.data;
@@ -51,15 +49,12 @@ export class OverviewStatisticsService {
 		dimension: DimensionType = "COUNTRY",
 		from?: string,
 		to?: string,
-		limit: number = 20,
-		shortCodes?: string
+		timezone?: string
 	): Promise<DimensionStatResponse | GeographyStatResponse> {
 		const params = new URLSearchParams();
-		// params.append("dimension", dimension); // Dimension is now in the URL
-		params.append("limit", limit.toString());
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
-		if (shortCodes) params.append("shortCodes", shortCodes);
+		if (timezone) params.append("timezone", timezone);
 
 		let endpoint = "";
 		switch (dimension) {
