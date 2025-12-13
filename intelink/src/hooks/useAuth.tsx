@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useState, type ReactNode} from 'react';
+import {createContext, useContext, useEffect, useState, useCallback, type ReactNode} from 'react';
 import type {
 	AuthInfoResponse,
 	ForgotPasswordRequest,
@@ -25,7 +25,7 @@ export interface AuthContextType extends AuthState {
 	login: (credentials: LoginRequest) => Promise<void>;
 	refreshUser: () => Promise<void>;
 	logout: (onLogoutComplete?: () => void) => Promise<void>;
-	oAuthCallback: (authToken: string) => Promise<void>;
+	oAuthCallback: (authToken: string, refreshToken?: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 		};
 	}, []);
 
-	const getProfile = async (): Promise<void> => {
+	const getProfile = useCallback(async (): Promise<void> => {
 		try {
 			const profileResponse = await AuthService.getProfile();
 			setAuthState((prev) => ({
@@ -94,9 +94,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			console.error('Failed to fetch user profile:', error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const register = async (credentials: RegisterRequest): Promise<RegisterResponse> => {
+	const register = useCallback(async (credentials: RegisterRequest): Promise<RegisterResponse> => {
 		try {
 			const response = await AuthService.register(credentials);
 			return response;
@@ -104,9 +104,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			console.error('Failed to register:', error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const verifyEmail = async (token: string): Promise<AuthInfoResponse> => {
+	const verifyEmail = useCallback(async (token: string): Promise<AuthInfoResponse> => {
 		try {
 			const response = await AuthService.verifyEmail(token);
 			return response;
@@ -114,9 +114,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			console.error('Failed to verify email:', error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const forgotPassword = async (request: ForgotPasswordRequest): Promise<AuthInfoResponse> => {
+	const forgotPassword = useCallback(async (request: ForgotPasswordRequest): Promise<AuthInfoResponse> => {
 		try {
 			const response = await AuthService.forgotPassword(request);
 			return response;
@@ -124,9 +124,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			console.error('Failed to send forgot password request:', error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const resetPassword = async (token: string, request: ResetPasswordRequest): Promise<AuthInfoResponse> => {
+	const resetPassword = useCallback(async (token: string, request: ResetPasswordRequest): Promise<AuthInfoResponse> => {
 		try {
 			const response = await AuthService.resetPassword(token, request);
 			return response;
@@ -134,9 +134,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			console.error('Failed to reset password:', error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const login = async (credentials: LoginRequest): Promise<void> => {
+	const login = useCallback(async (credentials: LoginRequest): Promise<void> => {
 		try {
 			setAuthState((prev) => ({...prev, isLoading: true}));
 			const response = await AuthService.login(credentials);
@@ -161,18 +161,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			});
 			throw error;
 		}
-	};
+	}, [getProfile]);
 
-	const refreshUser = async (): Promise<void> => {
-		try {
-			await getProfile();
-		} catch (error) {
-			console.error('Failed to refresh user:', error);
-			await logout();
-		}
-	};
-
-	const logout = async (onLogoutComplete?: () => void): Promise<void> => {
+	const logout = useCallback(async (onLogoutComplete?: () => void): Promise<void> => {
 		try {
 			await AuthService.logout();
 		} catch (error) {
@@ -189,15 +180,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 				onLogoutComplete();
 			}
 		}
-	};
+	}, []);
 
-	const oAuthCallback = async (authToken: string): Promise<void> => {
+	const refreshUser = useCallback(async (): Promise<void> => {
+		try {
+			await getProfile();
+		} catch (error) {
+			console.error('Failed to refresh user:', error);
+			await logout();
+		}
+	}, [getProfile, logout]);
+
+	const oAuthCallback = useCallback(async (authToken: string, refreshToken?: string): Promise<void> => {
 		try {
 			setAuthState((prev) => ({...prev, isLoading: true}));
-			const response = await AuthService.oAuthCallback(authToken);
-			const {token, refreshToken} = response;
-			AuthStorage.setAccessToken(token);
-			AuthStorage.setRefreshToken(refreshToken);
+			// Direct token handling instead of calling backend callback again
+			AuthStorage.setAccessToken(authToken);
+			if (refreshToken) {
+				AuthStorage.setRefreshToken(refreshToken);
+			}
+			
 			setAuthState((prev) => ({
 				...prev,
 				isAuthenticated: true,
@@ -213,7 +215,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			});
 			throw error;
 		}
-	};
+	}, [getProfile]);
 
 	const value: AuthContextType = {
 		...authState,

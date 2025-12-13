@@ -8,6 +8,7 @@ const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage').th
 const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage').then((m) => ({default: m.default})));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
 const RedirectPage = lazy(() => import('./pages/RedirectPage').then((m) => ({default: m.default})));
+const OAuth2CallbackPage = lazy(() => import('./pages/OAuth2CallbackPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -35,6 +36,10 @@ export const routes: RouteConfig[] = [
 	{
 		path: '/verify-email',
 		element: <VerifyEmailPage />,
+	},
+	{
+		path: '/auth/oauth2/callback',
+		element: <OAuth2CallbackPage />,
 	},
 	{
 		path: '/dashboard',
