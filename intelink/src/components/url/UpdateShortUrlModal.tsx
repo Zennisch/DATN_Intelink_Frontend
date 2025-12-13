@@ -1,25 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Checkbox, Input, Modal } from "../primary";
 import {
 	AccessControlSection,
 	type AccessControlData,
 } from "./AccessControlSection";
 import { useShortUrl } from "../../hooks/useShortUrl";
-import type { CreateShortUrlRequest } from "../../dto/ShortUrlDTO";
+import type { UpdateShortUrlRequest, ShortUrlResponse } from "../../dto/ShortUrlDTO";
 import type { AccessControlMode } from "../../models/ShortUrl";
 
-interface CreateShortUrlModalProps {
+interface UpdateShortUrlModalProps {
 	open: boolean;
 	onClose: () => void;
 	onSuccess?: () => void;
+	shortUrl: ShortUrlResponse;
 }
 
-export const CreateShortUrlModal = ({
+export const UpdateShortUrlModal = ({
 	open,
 	onClose,
 	onSuccess,
-}: CreateShortUrlModalProps) => {
-	const { createShortUrl, isLoading } = useShortUrl();
+	shortUrl,
+}: UpdateShortUrlModalProps) => {
+	const { updateShortUrl, isLoading } = useShortUrl();
 	
 	const [isExtraExpanded, setIsExtraExpanded] = useState(false);
 	
@@ -32,9 +34,8 @@ export const CreateShortUrlModal = ({
 		originalUrl: "",
 		title: "",
 		description: "",
-		customCode: "",
-		availableDays: "30",
-		maxUsage: "100",
+		availableDays: "",
+		maxUsage: "",
 		password: "",
 	});
 
@@ -43,6 +44,43 @@ export const CreateShortUrlModal = ({
 		countries: [],
 		ipRanges: [],
 	});
+
+	useEffect(() => {
+		if (open && shortUrl) {
+			setFormData({
+				originalUrl: shortUrl.originalUrl || "",
+				title: shortUrl.title || "",
+				description: shortUrl.description || "",
+				availableDays: shortUrl.expiresAt 
+                    ? Math.ceil((new Date(shortUrl.expiresAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)).toString() 
+                    : "",
+				maxUsage: shortUrl.maxUsage?.toString() || "",
+				password: "", // Don't fill password for security
+			});
+
+			setHasAvailableDays(!!shortUrl.expiresAt);
+			setHasMaxUsage(!!shortUrl.maxUsage);
+			setHasPassword(shortUrl.hasPassword);
+
+			let mode: "allow" | "block" = "allow";
+			const currentMode = shortUrl.accessControlMode as string;
+			if (currentMode === 'WHITELIST' || currentMode === 'ALLOW') mode = 'allow';
+			else if (currentMode === 'BLACKLIST' || currentMode === 'BLOCK') mode = 'block';
+
+			setAccessControl({
+				mode: mode,
+				countries: shortUrl.accessControlGeographies || [],
+				ipRanges: shortUrl.accessControlCIDRs || [],
+			});
+            
+            // Expand extra settings if any are set
+            if (!!shortUrl.expiresAt || !!shortUrl.maxUsage || shortUrl.hasPassword || 
+                (shortUrl.accessControlGeographies && shortUrl.accessControlGeographies.length > 0) || 
+                (shortUrl.accessControlCIDRs && shortUrl.accessControlCIDRs.length > 0)) {
+                setIsExtraExpanded(true);
+            }
+		}
+	}, [open, shortUrl]);
 
 	const handleInputChange =
 		(field: keyof typeof formData) => (value: string) => {
@@ -61,72 +99,53 @@ export const CreateShortUrlModal = ({
 		}
 
 		// Build request matching DTO
-		const request: CreateShortUrlRequest = {
+		const request: UpdateShortUrlRequest = {
 			originalUrl: formData.originalUrl.trim(),
 		};
 
 		// Optional fields
-		if (formData.title.trim()) {
+		if (formData.title.trim() !== shortUrl.title) {
 			request.title = formData.title.trim();
 		}
-		if (formData.description.trim()) {
+		if (formData.description.trim() !== shortUrl.description) {
 			request.description = formData.description.trim();
-		}
-		if (formData.customCode.trim()) {
-			request.customCode = formData.customCode.trim();
 		}
 
 		// Conditional fields based on checkboxes
 		if (hasAvailableDays && formData.availableDays) {
 			request.availableDays = parseInt(formData.availableDays, 10);
 		}
+		
 		if (hasMaxUsage && formData.maxUsage) {
 			request.maxUsage = parseInt(formData.maxUsage, 10);
 		}
+		
 		if (hasPassword && formData.password.trim()) {
 			request.password = formData.password.trim();
 		}
 
 		// Access control mapping
-		if (accessControl.countries.length > 0 || accessControl.ipRanges.length > 0) {
-			request.accessControlMode = accessControl.mode === 'allow' ? 'WHITELIST' : 'BLACKLIST';
-			if (accessControl.countries.length > 0) {
-				request.accessControlGeographies = accessControl.countries;
-			}
-			if (accessControl.ipRanges.length > 0) {
-				request.accessControlCIDRs = accessControl.ipRanges;
-			}
-		}
+        // Always send access control data if it's being updated, or if we want to clear it?
+        // The DTO says optional. If we don't send it, it might not update.
+        // If we want to update, we should send the current state of the form.
+        
+        request.accessControlMode = accessControl.mode === 'allow' ? 'WHITELIST' : 'BLACKLIST';
+        request.accessControlGeographies = accessControl.countries;
+        request.accessControlCIDRs = accessControl.ipRanges;
 
 		try {
-			await createShortUrl(request);
+			await updateShortUrl(shortUrl.shortCode, request);
 			handleClose();
 			onSuccess?.();
 		} catch (err) {
-			console.error('Failed to create short URL:', err);
-			setError(err instanceof Error ? err.message : 'Failed to create short URL');
+			console.error('Failed to update short URL:', err);
+			setError(err instanceof Error ? err.message : 'Failed to update short URL');
 		}
 	};
 
 	const handleClose = () => {
-		setFormData({
-			originalUrl: "",
-			title: "",
-			description: "",
-			customCode: "",
-			password: "",
-			availableDays: "30",
-			maxUsage: "100",
-		});
-		setAccessControl({
-			mode: "allow",
-			countries: [],
-			ipRanges: [],
-		});
-		setHasAvailableDays(false);
-		setHasMaxUsage(false);
-		setHasPassword(false);
-		setIsExtraExpanded(false);
+        // Reset form is handled by useEffect when opening with new shortUrl
+        // But we should clear error
 		setError(null);
 		onClose();
 	};
@@ -135,7 +154,7 @@ export const CreateShortUrlModal = ({
 		<Modal
 			open={open}
 			onClose={handleClose}
-			title={"Create Short URL"}
+			title={"Update Short URL"}
 			size="6xl"
 			className="transition-all duration-200 overflow-y-auto max-w-[90vw] max-h-[90vh]"
 		>
@@ -176,21 +195,11 @@ export const CreateShortUrlModal = ({
 									onChange={(e) =>
 										handleInputChange("title")(e.target.value)
 									}
-									wrapperClassName="w-1/2"
+									wrapperClassName="w-full"
 									inputClassName="w-full"
 									helpText="Optional title for your link"
 								/>
-								<Input
-									label="Custom Short Code"
-									placeholder="my-custom-link"
-									value={formData.customCode}
-									onChange={(e) =>
-										handleInputChange("customCode")(e.target.value)
-									}
-									wrapperClassName="w-1/2"
-									inputClassName="w-full"
-									helpText="Leave empty for auto-generated code"
-								/>
+                                {/* Custom Code is not editable */}
 							</div>
 							<Input
 								label="Description"
@@ -231,7 +240,7 @@ export const CreateShortUrlModal = ({
 											handleInputChange("availableDays")(e.target.value)
 										}
 										fullWidth
-										helpText="How many days this link will be active"
+										helpText="Update remaining days"
 									/>
 								</div>
 							</div>
@@ -267,9 +276,9 @@ export const CreateShortUrlModal = ({
 									className={`field-container p-1 ${hasPassword ? "expanded" : ""}`}
 								>
 									<Input
-										label="Password"
+										label="New Password"
 										type="password"
-										placeholder="Enter protection password"
+										placeholder={shortUrl.hasPassword ? "Enter new password to change" : "Enter protection password"}
 										value={formData.password}
 										onChange={(e) =>
 											handleInputChange("password")(e.target.value)
@@ -325,8 +334,8 @@ export const CreateShortUrlModal = ({
 						Cancel
 					</Button>
 					<Button type="submit" variant="primary" size="sm" loading={isLoading}>
-						<i className="fas fa-link mr-2"></i>
-						Create Short URL
+						<i className="fas fa-save mr-2"></i>
+						Update Short URL
 					</Button>
 				</div>
 			</form>

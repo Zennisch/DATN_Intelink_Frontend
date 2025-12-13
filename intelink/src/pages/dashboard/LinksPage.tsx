@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {useShortUrl} from '../../hooks/useShortUrl';
 import {CreateShortUrlModal} from '../../components/url/CreateShortUrlModal';
+import {UpdateShortUrlModal} from '../../components/url/UpdateShortUrlModal';
 import {Input, Button} from '../../components/primary';
 import type {ShortUrlResponse} from '../../dto/ShortUrlDTO';
 import {ShortUrlList} from '../../components/shorturl/ShortUrlList';
@@ -10,6 +11,8 @@ export default function LinksPage() {
 	const [statusFilter, setStatusFilter] = useState('');
 	const [currentPage, setCurrentPage] = useState(0);
 	const [showCreateModal, setShowCreateModal] = useState(false);
+	const [showUpdateModal, setShowUpdateModal] = useState(false);
+	const [selectedShortUrl, setSelectedShortUrl] = useState<ShortUrlResponse | null>(null);
 	const [shortUrls, setShortUrls] = useState<ShortUrlResponse[]>([]);
 	const [totalElements, setTotalElements] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
@@ -62,9 +65,16 @@ export default function LinksPage() {
 		fetchShortUrls(currentPage, searchQuery, statusFilter);
 	};
 
+	const handleUpdateSuccess = () => {
+		setShowUpdateModal(false);
+		setSelectedShortUrl(null);
+		// Refresh the list
+		fetchShortUrls(currentPage, searchQuery, statusFilter);
+	};
+
 	const handleEditShortUrl = (shortUrl: ShortUrlResponse) => {
-		// TODO: Implement edit functionality
-		console.log('Edit short URL:', shortUrl);
+		setSelectedShortUrl(shortUrl);
+		setShowUpdateModal(true);
 	};
 
 	const handleDeleteShortUrl = async (shortCode: string) => {
@@ -232,6 +242,17 @@ export default function LinksPage() {
 					onClose={() => setShowCreateModal(false)}
 					onSuccess={handleCreateSuccess}
 				/>
+				{selectedShortUrl && (
+					<UpdateShortUrlModal
+						open={showUpdateModal}
+						onClose={() => {
+							setShowUpdateModal(false);
+							setSelectedShortUrl(null);
+						}}
+						onSuccess={handleUpdateSuccess}
+						shortUrl={selectedShortUrl}
+					/>
+				)}
 			</div>
 		</div>
 	);
