@@ -228,7 +228,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 						</div>
 						
 						{/* Charts Grid */}
-						<div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+						<div className="grid grid-cols-1 gap-6">
 							{Object.entries(data).map(([dimensionType, dimensionData]) => {
 								if (dimensionData.data.length > 0) {
 									return (
