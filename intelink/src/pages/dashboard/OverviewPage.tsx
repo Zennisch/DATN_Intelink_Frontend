@@ -194,7 +194,7 @@ export default function OverviewPage() {
                         {/* Account Activity */}
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                             <h3 className="text-lg font-bold text-slate-900 mb-4">Account Activity</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Member Since</p>
                                     <p className="font-medium text-slate-700">{formatDate(user.createdAt)}</p>
@@ -202,10 +202,6 @@ export default function OverviewPage() {
                                 <div>
                                     <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Last Login</p>
                                     <p className="font-medium text-slate-700">{formatDate(user.lastLoginAt)}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Last Updated</p>
-                                    <p className="font-medium text-slate-700">{formatDate(user.updatedAt)}</p>
                                 </div>
                             </div>
                         </div>
