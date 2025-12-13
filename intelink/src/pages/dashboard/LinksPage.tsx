@@ -115,16 +115,16 @@ export default function LinksPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-6">
-			<div className="max-w-7xl mx-auto">
+		<div className="h-screen bg-gray-50 flex flex-col">
+			<div className="flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 overflow-hidden">
 				{/* Header */}
-				<div className="mb-8">
+				<div className="mb-8 flex-shrink-0">
 					<h1 className="text-3xl font-bold text-gray-900">My Links</h1>
 					<p className="text-gray-600 mt-2">Manage and monitor your shortened URLs</p>
 				</div>
 
 				{/* Search and Filters */}
-				<div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+				<div className="bg-white rounded-lg shadow-sm p-6 mb-6 flex-shrink-0">
 					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 						<div className="md:col-span-2">
 							<Input
@@ -168,8 +168,9 @@ export default function LinksPage() {
 				</div>
 
 				{/* URL List */}
-				<div className={!isLoading && urls.length > 0 ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' : 'space-y-4'}>
-					{isLoading ? (
+				<div className="flex-1 overflow-y-auto min-h-0 pr-2">
+					<div className={!isLoading && urls.length > 0 ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' : 'space-y-4'}>
+						{isLoading ? (
 						<div className="flex items-center justify-center py-12">
 							<i className="fas fa-spinner fa-spin text-4xl text-gray-400"></i>
 						</div>
@@ -317,11 +318,12 @@ export default function LinksPage() {
 							);
 						})
 					)}
+					</div>
 				</div>
 
 				{/* Pagination */}
 				{totalPages > 1 && (
-					<div className="mt-6 flex items-center justify-between bg-white rounded-lg shadow-sm p-4">
+					<div className="mt-6 flex-shrink-0 flex items-center justify-between bg-white rounded-lg shadow-sm p-4">
 						<div className="text-sm text-gray-600">
 							Showing {page * 10 + 1} to {Math.min((page + 1) * 10, totalElements)} of {totalElements} results
 						</div>
