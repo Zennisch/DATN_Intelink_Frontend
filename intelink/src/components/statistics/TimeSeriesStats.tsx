@@ -33,23 +33,17 @@ export default function TimeSeriesStats({ shortCode }: Props) {
     const [error, setError] = useState<string | null>(null);
     
     const [granularity, setGranularity] = useState<Granularity>('DAILY');
-    const [fromDate, setFromDate] = useState<string>(() => {
-        const d = new Date();
-        d.setDate(d.getDate() - 7);
-        return d.toISOString().slice(0, 16);
-    });
-    const [toDate, setToDate] = useState<string>(() => {
-        return new Date().toISOString().slice(0, 16);
-    });
+    const [fromDate, setFromDate] = useState<string>('');
+    const [toDate, setToDate] = useState<string>('');
 
     const fetchData = async () => {
         setLoading(true);
         try {
             const result = await getTimeSeriesStats(shortCode, {
                 granularity,
-                from: new Date(fromDate).toISOString(),
-                to: new Date(toDate).toISOString(),
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                from: fromDate || undefined,
+                to: toDate || undefined,
+                timezone: 'Z'
             });
             setData(result);
         } catch (err) {
@@ -106,7 +100,7 @@ export default function TimeSeriesStats({ shortCode }: Props) {
                     </div>
                     <div className="md:col-span-3">
                         <Input
-                            type="datetime-local"
+                            type="date"
                             label="From"
                             value={fromDate}
                             onChange={(e) => setFromDate(e.target.value)}
@@ -115,7 +109,7 @@ export default function TimeSeriesStats({ shortCode }: Props) {
                     </div>
                     <div className="md:col-span-3">
                         <Input
-                            type="datetime-local"
+                            type="date"
                             label="To"
                             value={toDate}
                             onChange={(e) => setToDate(e.target.value)}
@@ -138,60 +132,62 @@ export default function TimeSeriesStats({ shortCode }: Props) {
                     <p>No time series data available for this period</p>
                 </div>
             ) : (
-                <div className="flex-1 w-full min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                            data={data.data}
-                            margin={{
-                                top: 5,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                            <XAxis 
-                                dataKey="bucketStart" 
-                                tickFormatter={formatDate}
-                                tick={{ fontSize: 12, fill: '#6b7280' }}
-                                minTickGap={30}
-                            />
-                            <YAxis 
-                                tick={{ fontSize: 12, fill: '#6b7280' }}
-                            />
-                            <Tooltip 
-                                labelFormatter={(label) => formatDate(label as string)}
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                            />
-                            <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                            
-                            <Line 
-                                type="monotone" 
-                                dataKey="clicks" 
-                                name="Total Clicks" 
-                                stroke="#4f46e5" // Indigo-600
-                                strokeWidth={2}
-                                dot={{ r: 3, fill: '#4f46e5' }}
-                                activeDot={{ r: 6 }}
-                            />
-                            <Line 
-                                type="monotone" 
-                                dataKey="allowedClicks" 
-                                name="Allowed" 
-                                stroke="#10b981" // Emerald-500
-                                strokeWidth={2}
-                                dot={{ r: 3, fill: '#10b981' }}
-                            />
-                            <Line 
-                                type="monotone" 
-                                dataKey="blockedClicks" 
-                                name="Blocked" 
-                                stroke="#ef4444" // Red-500
-                                strokeWidth={2}
-                                dot={{ r: 3, fill: '#ef4444' }}
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
+                <div className="flex-1 w-full min-h-0 overflow-x-auto">
+                    <div style={{ minWidth: '100%', width: Math.max(1000, data.data.length * 50), height: '100%' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart
+                                data={data.data}
+                                margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                <XAxis 
+                                    dataKey="bucketStart" 
+                                    tickFormatter={formatDate}
+                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                    minTickGap={30}
+                                />
+                                <YAxis 
+                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                />
+                                <Tooltip 
+                                    labelFormatter={(label) => formatDate(label as string)}
+                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                                />
+                                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                                
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="clicks" 
+                                    name="Total Clicks" 
+                                    stroke="#4f46e5" // Indigo-600
+                                    strokeWidth={2}
+                                    dot={{ r: 3, fill: '#4f46e5' }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="allowedClicks" 
+                                    name="Allowed" 
+                                    stroke="#10b981" // Emerald-500
+                                    strokeWidth={2}
+                                    dot={{ r: 3, fill: '#10b981' }}
+                                />
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="blockedClicks" 
+                                    name="Blocked" 
+                                    stroke="#ef4444" // Red-500
+                                    strokeWidth={2}
+                                    dot={{ r: 3, fill: '#ef4444' }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             )}
         </div>
