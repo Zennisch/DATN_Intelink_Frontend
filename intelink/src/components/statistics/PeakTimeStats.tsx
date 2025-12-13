@@ -24,6 +24,7 @@ const GRANULARITY_OPTIONS = [
     { value: 'DAILY', label: 'Daily' },
     { value: 'WEEKLY', label: 'Weekly' },
     { value: 'MONTHLY', label: 'Monthly' },
+    { value: 'YEARLY', label: 'Yearly' },
 ];
 
 export default function PeakTimeStats({ shortCode }: Props) {
@@ -44,7 +45,7 @@ export default function PeakTimeStats({ shortCode }: Props) {
                 from: fromDate || undefined,
                 to: toDate || undefined,
                 timezone: 'Z',
-                limit: 10 // Top 10 peak times
+                // limit: 10 // Removed limit to show all data like TimeSeries
             });
             setData(result);
         } catch (err) {
@@ -67,6 +68,12 @@ export default function PeakTimeStats({ shortCode }: Props) {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
         </div>
     );
+
+    // Format date for X-axis
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
 
     // Custom colors for the bars (Top 1 gets a special color)
     const getBarColor = (index: number) => {
@@ -130,38 +137,46 @@ export default function PeakTimeStats({ shortCode }: Props) {
                     <p>No peak time data available for this period</p>
                 </div>
             ) : (
-                <div className="flex-1 w-full min-h-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                            layout="vertical"
-                            data={data.data}
-                            margin={{
-                                top: 5,
-                                right: 30,
-                                left: 40, // More space for labels
-                                bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
-                            <XAxis type="number" hide />
-                            <YAxis 
-                                dataKey="time" 
-                                type="category" 
-                                width={100}
-                                tick={{ fontSize: 12, fill: '#4b5563', fontWeight: 500 }}
-                            />
-                            <Tooltip 
-                                cursor={{ fill: '#f3f4f6' }}
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                formatter={(value: number) => [`${value} clicks`, 'Traffic']}
-                            />
-                            <Bar dataKey="clicks" radius={[0, 4, 4, 0]} barSize={32}>
-                                {data.data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={getBarColor(index)} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                <div className="flex-1 w-full min-h-0 overflow-x-auto">
+                    <div style={{ minWidth: '100%', width: Math.max(1000, data.data.length * 50), height: '100%' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={data.data}
+                                margin={{
+                                    top: 5,
+                                    right: 30,
+                                    left: 20,
+                                    bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                                <XAxis 
+                                    dataKey="bucketStart" 
+                                    tickFormatter={formatDate}
+                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                    interval={0}
+                                    angle={-45}
+                                    textAnchor="end"
+                                    height={60}
+                                />
+                                <YAxis 
+                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                    allowDecimals={false}
+                                />
+                                <Tooltip 
+                                    labelFormatter={formatDate}
+                                    cursor={{ fill: '#f3f4f6' }}
+                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                                    formatter={(value: number) => [`${value} clicks`, 'Traffic']}
+                                />
+                                <Bar dataKey="clicks" radius={[4, 4, 0, 0]} barSize={32}>
+                                    {data.data.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={getBarColor(index)} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             )}
         </div>
