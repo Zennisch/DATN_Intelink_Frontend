@@ -9,6 +9,8 @@ const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage').then((
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
 const RedirectPage = lazy(() => import('./pages/RedirectPage').then((m) => ({default: m.default})));
 const OAuth2CallbackPage = lazy(() => import('./pages/OAuth2CallbackPage').then((m) => ({default: m.default})));
+const PlansPage = lazy(() => import('./pages/PlansPage').then((m) => ({default: m.default})));
+const SubscriptionCheckoutPage = lazy(() => import('./pages/SubscriptionCheckoutPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -51,6 +53,24 @@ export const routes: RouteConfig[] = [
 		requireAuth: true,
 	},
 	{
+		path: '/plans',
+		element: (
+			<RouteGuard requireAuth={true}>
+				<PlansPage />
+			</RouteGuard>
+		),
+		requireAuth: true,
+	},
+	{checkout/:planId',
+		element: (
+			<RouteGuard requireAuth={true}>
+				<SubscriptionCheckoutPage />
+			</RouteGuard>
+		),
+		requireAuth: true,
+	},
+	{
+		path: '/
 		path: '/:shortCode',
 		element: <RedirectPage />,
 	},
