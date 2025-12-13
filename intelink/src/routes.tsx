@@ -61,7 +61,8 @@ export const routes: RouteConfig[] = [
 		),
 		requireAuth: true,
 	},
-	{checkout/:planId',
+	{
+		path: '/checkout/:planId',
 		element: (
 			<RouteGuard requireAuth={true}>
 				<SubscriptionCheckoutPage />
@@ -70,7 +71,6 @@ export const routes: RouteConfig[] = [
 		requireAuth: true,
 	},
 	{
-		path: '/
 		path: '/:shortCode',
 		element: <RedirectPage />,
 	},

@@ -7,27 +7,16 @@ import PageSpinner from '../components/layout/PageSpinner';
 
 const PlansPage: React.FC = () => {
     const navigate = useNavigate();
-    const { getAllPlans, plans, isLoading: isPlansLoading, createSubscription } = useSubscription();
-    const { user, refreshUser } = useAuth();
+    const { getAllPlans, plans, isLoading: isPlansLoading } = useSubscription();
+    const { user } = useAuth();
     const [processingPlanId, setProcessingPlanId] = useState<number | null>(null);
 
     useEffect(() => {
         getAllPlans();
     }, []);
 
-    const handleSubscribe = async (planId: number) => {
-        try {
-            setProcessingPlanId(planId);
-            await createSubscription({ planId });
-            await refreshUser();
-            // Optionally show success message or redirect
-            navigate('/dashboard');
-        } catch (error) {
-            console.error('Subscription failed:', error);
-            // Handle error (toast, etc.)
-        } finally {
-            setProcessingPlanId(null);
-        }
+    const handleSubscribe = (planId: number) => {
+        navigate(`/checkout/${planId}`);
     };
 
     if (isPlansLoading && plans.length === 0) {
