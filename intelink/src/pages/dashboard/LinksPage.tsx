@@ -194,7 +194,7 @@ export default function LinksPage() {
 													}
 												>
 													{safety.status === 'SAFE' ? (
-														<i className="fas fa-shield-check mr-1"></i>
+														<i className="fas fa-check-circle mr-1"></i>
 													) : (
 														<i className="fas fa-exclamation-triangle mr-1"></i>
 													)}
