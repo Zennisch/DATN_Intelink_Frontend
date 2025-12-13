@@ -1,10 +1,12 @@
 import {useState, useEffect} from 'react';
+import {useAuth} from '../../hooks/useAuth';
 import {useShortUrl} from '../../hooks/useShortUrl';
 import {Button, Input, Select, Modal} from '../../components/primary';
 import type {ShortUrlResponse, ShortUrlAnalysisStatus} from '../../dto/ShortUrlDTO';
 import {Tooltip} from 'react-tooltip';
 
 export default function LinksPage() {
+	const {user} = useAuth();
 	const {getShortUrls, searchShortUrls, enableShortUrl, disableShortUrl, deleteShortUrl, isLoading, refreshSignal} = useShortUrl();
 
 	const [urls, setUrls] = useState<ShortUrlResponse[]>([]);
@@ -348,31 +350,33 @@ export default function LinksPage() {
 										</div>
 
 										{/* Stats Footer */}
-										<div className="bg-slate-50/80 border-t border-slate-100 p-1 rounded-b-xl">
-											<div className="grid grid-cols-3 gap-2 text-sm">
-												<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all">
-													<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Clicks</span>
-													<span className="font-bold text-slate-800 flex items-center gap-1.5">
-														<i className="fas fa-mouse-pointer text-indigo-400 text-xs"></i>
-														{url.totalClicks.toLocaleString()}
-													</span>
-												</div>
-												<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all border-l border-r border-slate-200/50">
-													<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Allowed</span>
-													<span className="font-bold text-emerald-600 flex items-center gap-1.5">
-														<i className="fas fa-check text-emerald-400 text-xs"></i>
-														{url.allowedClicks.toLocaleString()}
-													</span>
-												</div>
-												<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all">
-													<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Blocked</span>
-													<span className="font-bold text-rose-600 flex items-center gap-1.5">
-														<i className="fas fa-shield-alt text-rose-400 text-xs"></i>
-														{url.blockedClicks.toLocaleString()}
-													</span>
+										{user?.currentSubscription?.planDetails?.statisticsEnabled && (
+											<div className="bg-slate-50/80 border-t border-slate-100 p-1 rounded-b-xl">
+												<div className="grid grid-cols-3 gap-2 text-sm">
+													<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all">
+														<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Clicks</span>
+														<span className="font-bold text-slate-800 flex items-center gap-1.5">
+															<i className="fas fa-mouse-pointer text-indigo-400 text-xs"></i>
+															{url.totalClicks.toLocaleString()}
+														</span>
+													</div>
+													<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all border-l border-r border-slate-200/50">
+														<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Allowed</span>
+														<span className="font-bold text-emerald-600 flex items-center gap-1.5">
+															<i className="fas fa-check text-emerald-400 text-xs"></i>
+															{url.allowedClicks.toLocaleString()}
+														</span>
+													</div>
+													<div className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all">
+														<span className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Blocked</span>
+														<span className="font-bold text-rose-600 flex items-center gap-1.5">
+															<i className="fas fa-shield-alt text-rose-400 text-xs"></i>
+															{url.blockedClicks.toLocaleString()}
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
+										)}
 									</div>
 								);
 							})}
