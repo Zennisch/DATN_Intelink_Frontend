@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSubscription } from '../hooks/useSubscription';
+import { usePayment } from '../hooks/usePayment';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/primary';
 import type { CalculateCostResponse } from '../dto/SubscriptionDTO';
@@ -10,6 +11,7 @@ import { SubscriptionService } from '../services/SubscriptionService';
 const SubscriptionCheckoutPage: React.FC = () => {
     const { planId } = useParams<{ planId: string }>();
     const navigate = useNavigate();
+    const { createVNPayPayment } = usePayment();
     const { createSubscription } = useSubscription();
     const { refreshUser } = useAuth();
     
@@ -37,16 +39,29 @@ const SubscriptionCheckoutPage: React.FC = () => {
     }, [planId]);
 
     const handleConfirm = async () => {
-        if (!planId) return;
+        if (!planId || !costDetails) return;
         try {
             setIsSubmitting(true);
-            await createSubscription({ planId: parseInt(planId) });
-            await refreshUser();
-            navigate('/dashboard', { replace: true });
+            
+            // 1. Create Subscription
+            const subResponse = await createSubscription({ planId: parseInt(planId) });
+            
+            // 2. Create VNPay Payment
+            const paymentResponse = await createVNPayPayment({
+                subscriptionId: subResponse.id,
+                amount: costDetails.finalCost,
+                currency: 'VND'
+            });
+
+            // 3. Redirect to VNPay
+            if (paymentResponse.paymentUrl) {
+                window.location.href = paymentResponse.paymentUrl;
+            } else {
+                throw new Error('No payment URL returned');
+            }
         } catch (err) {
-            console.error('Subscription failed:', err);
+            console.error('Subscription process failed:', err);
             setError('Failed to process subscription. Please try again.');
-        } finally {
             setIsSubmitting(false);
         }
     };
@@ -100,7 +115,7 @@ const SubscriptionCheckoutPage: React.FC = () => {
                             </div>
                             <div className="sm:col-span-1">
                                 <dt className="text-sm font-medium text-gray-500">Price</dt>
-                                <dd className="mt-1 text-lg font-semibold text-gray-900">${costDetails.planPrice}</dd>
+                                <dd className="mt-1 text-lg font-semibold text-gray-900">{costDetails.planPrice.toLocaleString()}đ</dd>
                             </div>
                             
                             {costDetails.currentPlanType && (
@@ -109,7 +124,7 @@ const SubscriptionCheckoutPage: React.FC = () => {
                                     <div className="grid grid-cols-1 gap-y-2">
                                         <div className="flex justify-between">
                                             <span className="text-sm text-gray-500">Current Plan Credit ({costDetails.currentPlanType})</span>
-                                            <span className="text-sm font-medium text-green-600">-${costDetails.proratedCredit.toFixed(2)}</span>
+                                            <span className="text-sm font-medium text-green-600">-{costDetails.proratedCredit.toLocaleString()}đ</span>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +133,7 @@ const SubscriptionCheckoutPage: React.FC = () => {
                             <div className="sm:col-span-2 border-t border-gray-200 pt-4">
                                 <div className="flex justify-between items-center">
                                     <dt className="text-base font-bold text-gray-900">Total Due Today</dt>
-                                    <dd className="text-2xl font-bold text-blue-600">${costDetails.finalCost.toFixed(2)}</dd>
+                                    <dd className="text-2xl font-bold text-blue-600">{costDetails.finalCost.toLocaleString()}đ</dd>
                                 </div>
                                 {costDetails.message && (
                                     <p className="mt-2 text-sm text-gray-500 italic">

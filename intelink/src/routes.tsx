@@ -11,6 +11,7 @@ const RedirectPage = lazy(() => import('./pages/RedirectPage').then((m) => ({def
 const OAuth2CallbackPage = lazy(() => import('./pages/OAuth2CallbackPage').then((m) => ({default: m.default})));
 const PlansPage = lazy(() => import('./pages/PlansPage').then((m) => ({default: m.default})));
 const SubscriptionCheckoutPage = lazy(() => import('./pages/SubscriptionCheckoutPage').then((m) => ({default: m.default})));
+const PaymentCallbackPage = lazy(() => import('./pages/PaymentCallbackPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -66,6 +67,15 @@ export const routes: RouteConfig[] = [
 		element: (
 			<RouteGuard requireAuth={true}>
 				<SubscriptionCheckoutPage />
+			</RouteGuard>
+		),
+		requireAuth: true,
+	},
+	{
+		path: '/payments/payment-callback',
+		element: (
+			<RouteGuard requireAuth={true}>
+				<PaymentCallbackPage />
 			</RouteGuard>
 		),
 		requireAuth: true,

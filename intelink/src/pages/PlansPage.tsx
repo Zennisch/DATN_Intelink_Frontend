@@ -75,7 +75,7 @@ const PlansPage: React.FC = () => {
                                     </p>
                                     <div className="mt-8">
                                         <span className="text-4xl font-extrabold text-gray-900">
-                                            ${plan.price}
+                                            {plan.price.toLocaleString()}đ
                                         </span>
                                         <span className="text-base font-medium text-gray-500">
                                             /{plan.billingInterval.toLowerCase()}

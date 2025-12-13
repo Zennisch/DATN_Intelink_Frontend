@@ -71,6 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 			const profileResponse = await AuthService.getProfile();
 			setAuthState((prev) => ({
 				...prev,
+				isAuthenticated: true,
 				user: {
 					id: profileResponse.id,
 					username: profileResponse.username,

@@ -87,7 +87,7 @@ export const DashboardSidebar = ({
 	];
 
 	return (
-		<div className="flex flex-col w-52 bg-white p-4 gap-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-10">
+		<div className="flex flex-col w-64 bg-white p-4 gap-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-10">
 			{/* Navigation Buttons */}
 			<div className="flex flex-1 flex-col justify-between">
 				<div className="flex flex-col gap-2">
