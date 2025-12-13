@@ -107,6 +107,12 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		request: UpdateShortUrlRequest
 	): Promise<UpdateShortUrlResponse> => {
 		try {
+			setLoading(true);
+			const response = await ShortUrlService.updateShortUrl(shortCode, request);
+			// Update current short URL if it's the one being updated
+			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
+				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
+			}
 			triggerRefresh();
 			return response;
 		} catch (error) {
