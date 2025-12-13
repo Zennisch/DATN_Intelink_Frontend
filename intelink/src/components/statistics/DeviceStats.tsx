@@ -92,7 +92,7 @@ export default function DeviceStats({ shortCode }: Props) {
                                     fill="#8884d8"
                                     dataKey="clicks"
                                 >
-                                    {data.data.map((entry, index) => (
+                                    {data.data.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
@@ -110,7 +110,7 @@ export default function DeviceStats({ shortCode }: Props) {
                                 <Tooltip />
                                 <Legend />
                                 <Bar dataKey="clicks" fill="#4f46e5" name="Clicks" radius={[4, 4, 0, 0]}>
-                                    {data.data.map((entry, index) => (
+                                    {data.data.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Bar>

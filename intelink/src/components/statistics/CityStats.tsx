@@ -64,7 +64,7 @@ export default function CityStats({ shortCode }: Props) {
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px]">
-             <div className="p-6 border-b border-slate-100 flex-shrink-0">
+             <div className="p-6 border-b border-slate-100 shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h3 className="text-lg font-bold text-slate-800">City Statistics</h3>
@@ -128,7 +128,7 @@ export default function CityStats({ shortCode }: Props) {
                                     radius={[0, 4, 4, 0]} 
                                     barSize={24}
                                 >
-                                    {sortedData.map((entry, index) => (
+                                    {sortedData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={activeTab === 'allowed' ? '#10b981' : '#ef4444'} />
                                     ))}
                                 </Bar>

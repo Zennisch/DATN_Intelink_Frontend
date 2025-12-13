@@ -139,13 +139,13 @@ export default function LinksPage() {
 		<div className="h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
 			{/* Decorative background elements */}
 			<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
-			<div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-indigo-50/50 via-white/50 to-slate-50/0 pointer-events-none"></div>
+			<div className="absolute top-0 left-0 right-0 h-96 bg-linear-to-b from-indigo-50/50 via-white/50 to-slate-50/0 pointer-events-none"></div>
 			<div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none"></div>
 			<div className="absolute top-1/4 -left-24 w-64 h-64 bg-blue-100/40 rounded-full blur-3xl pointer-events-none"></div>
 
 			<div className="flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 sm:p-8 z-0 overflow-hidden relative">
 				{/* Header Section */}
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 flex-shrink-0 gap-4">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 shrink-0 gap-4">
 					<div className="flex items-baseline gap-4">
 						<h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">My Links</h1>
 						<p className="text-slate-500 text-sm sm:text-base">Manage, track, and secure your shortened URLs.</p>
@@ -257,7 +257,7 @@ export default function LinksPage() {
 											<div className="flex items-start justify-between mb-3">
 												{/* Header: Icon + Title */}
 												<div className="flex items-start gap-3 min-w-0 flex-1">
-													<div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center text-lg ${url.enabled ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
+													<div className={`w-10 h-10 rounded-lg shrink-0 flex items-center justify-center text-lg ${url.enabled ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>
 														<i className="fas fa-globe"></i>
 													</div>
 													<div className="min-w-0">
@@ -409,7 +409,7 @@ export default function LinksPage() {
 
 				{/* Pagination */}
 				{totalPages > 1 && (
-					<div className="mt-4 flex-shrink-0 flex items-center justify-between border-t border-slate-200 pt-4 bg-slate-50">
+					<div className="mt-4 shrink-0 flex items-center justify-between border-t border-slate-200 pt-4 bg-slate-50">
 						<div className="text-sm text-slate-500">
 							Showing <span className="font-medium text-slate-900">{page * 10 + 1}</span> to <span className="font-medium text-slate-900">{Math.min((page + 1) * 10, totalElements)}</span> of <span className="font-medium text-slate-900">{totalElements}</span> results
 						</div>
@@ -477,7 +477,7 @@ export default function LinksPage() {
 				}
 			>
 				<div className="flex items-start gap-4">
-					<div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+					<div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
 						<i className="fas fa-exclamation-triangle text-red-600"></i>
 					</div>
 					<div>
