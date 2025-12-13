@@ -1,11 +1,11 @@
 import {useState, useEffect} from 'react';
 import {useShortUrl} from '../../hooks/useShortUrl';
-import {Button, Input, Select} from '../../components/primary';
+import {Button, Input, Select, Modal} from '../../components/primary';
 import type {ShortUrlResponse, ShortUrlAnalysisStatus} from '../../dto/ShortUrlDTO';
 import {Tooltip} from 'react-tooltip';
 
 export default function LinksPage() {
-	const {getShortUrls, searchShortUrls, enableShortUrl, disableShortUrl, deleteShortUrl, isLoading} = useShortUrl();
+	const {getShortUrls, searchShortUrls, enableShortUrl, disableShortUrl, deleteShortUrl, isLoading, refreshSignal} = useShortUrl();
 
 	const [urls, setUrls] = useState<ShortUrlResponse[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +16,8 @@ export default function LinksPage() {
 	const [totalPages, setTotalPages] = useState(0);
 	const [totalElements, setTotalElements] = useState(0);
 	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
 
 	const fetchUrls = async () => {
 		try {
@@ -37,7 +39,7 @@ export default function LinksPage() {
 
 	useEffect(() => {
 		fetchUrls();
-	}, [page, sortBy, direction, statusFilter]);
+	}, [page, sortBy, direction, statusFilter, refreshSignal]);
 
 	const handleSearch = () => {
 		setPage(0);
@@ -62,11 +64,18 @@ export default function LinksPage() {
 		}
 	};
 
-	const handleDelete = async (shortCode: string) => {
-		if (window.confirm('Are you sure you want to delete this URL?')) {
+	const handleDelete = (shortCode: string) => {
+		setUrlToDelete(shortCode);
+		setDeleteModalOpen(true);
+	};
+
+	const confirmDelete = async () => {
+		if (urlToDelete) {
 			try {
-				await deleteShortUrl(shortCode);
+				await deleteShortUrl(urlToDelete);
 				fetchUrls();
+				setDeleteModalOpen(false);
+				setUrlToDelete(null);
 			} catch (error) {
 				console.error('Failed to delete URL:', error);
 			}
@@ -159,7 +168,7 @@ export default function LinksPage() {
 				</div>
 
 				{/* URL List */}
-				<div className="space-y-4">
+				<div className={!isLoading && urls.length > 0 ? 'grid grid-cols-1 lg:grid-cols-2 gap-4' : 'space-y-4'}>
 					{isLoading ? (
 						<div className="flex items-center justify-center py-12">
 							<i className="fas fa-spinner fa-spin text-4xl text-gray-400"></i>
@@ -351,6 +360,29 @@ export default function LinksPage() {
 					</div>
 				)}
 			</div>
+
+			<Modal
+				open={deleteModalOpen}
+				onClose={() => setDeleteModalOpen(false)}
+				title="Delete URL"
+				size="sm"
+				footer={
+					<>
+						<Button variant="ghost" onClick={() => setDeleteModalOpen(false)}>
+							Cancel
+						</Button>
+						<Button
+							variant="primary"
+							onClick={confirmDelete}
+							className="bg-red-600 hover:bg-red-700 border-red-600"
+						>
+							Delete
+						</Button>
+					</>
+				}
+			>
+				<p className="text-gray-600">Are you sure you want to delete this URL? This action cannot be undone.</p>
+			</Modal>
 		</div>
 	);
 }

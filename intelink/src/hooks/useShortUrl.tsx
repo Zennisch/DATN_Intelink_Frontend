@@ -12,6 +12,7 @@ import {ShortUrlService, type GetShortUrlsParams, type SearchShortUrlsParams} fr
 export interface ShortUrlState {
 	isLoading: boolean;
 	currentShortUrl: ShortUrlResponse | null;
+	refreshSignal: number;
 }
 
 export interface ShortUrlContextType extends ShortUrlState {
@@ -36,16 +37,22 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 	const [shortUrlState, setShortUrlState] = useState<ShortUrlState>({
 		isLoading: false,
 		currentShortUrl: null,
+		refreshSignal: 0,
 	});
 
 	const setLoading = (isLoading: boolean) => {
 		setShortUrlState((prev) => ({...prev, isLoading}));
 	};
 
+	const triggerRefresh = () => {
+		setShortUrlState((prev) => ({...prev, refreshSignal: prev.refreshSignal + 1}));
+	};
+
 	const createShortUrl = async (request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.createShortUrl(request);
+			triggerRefresh();
 			return response;
 		} catch (error) {
 			console.error('Failed to create short URL:', error);
@@ -100,12 +107,7 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		request: UpdateShortUrlRequest
 	): Promise<UpdateShortUrlResponse> => {
 		try {
-			setLoading(true);
-			const response = await ShortUrlService.updateShortUrl(shortCode, request);
-			// Update current short URL if it's the one being updated
-			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
-				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
-			}
+			triggerRefresh();
 			return response;
 		} catch (error) {
 			console.error('Failed to update short URL:', error);
@@ -123,6 +125,7 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
 				setShortUrlState((prev) => ({...prev, currentShortUrl: null}));
 			}
+			triggerRefresh();
 		} catch (error) {
 			console.error('Failed to delete short URL:', error);
 			throw error;
@@ -139,6 +142,7 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
 				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
 			}
+			triggerRefresh();
 			return response;
 		} catch (error) {
 			console.error('Failed to enable short URL:', error);
@@ -156,6 +160,7 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
 				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
 			}
+			triggerRefresh();
 			return response;
 		} catch (error) {
 			console.error('Failed to disable short URL:', error);
