@@ -62,8 +62,9 @@ export default function CountryStats({ shortCode }: Props) {
         
         if (value === 0) return "#F3F4F6"; // gray-100
 
-        // Calculate opacity: min 0.4, max 1.0
-        const opacity = 0.4 + (value / max) * 0.6;
+        // Calculate opacity: min 0.15, max 1.0
+        // Using a wider range to make the difference more visible
+        const opacity = 0.15 + (value / max) * 0.85;
         
         if (activeTab === 'allowed') {
             return `rgba(16, 185, 129, ${opacity})`; // emerald-500
@@ -202,6 +203,23 @@ export default function CountryStats({ shortCode }: Props) {
                         whiteSpace: "pre-line"
                     }}
                 />
+
+                {/* Legend */}
+                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-sm border border-slate-200">
+                    <div className="text-xs font-medium text-slate-500 mb-2">
+                        {activeTab === 'allowed' ? 'Allowed Clicks' : 'Blocked Clicks'}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-600">0</span>
+                        <div 
+                            className="h-3 w-32 rounded-full"
+                            style={{
+                                background: `linear-gradient(to right, ${activeTab === 'allowed' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}, ${activeTab === 'allowed' ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)'})`
+                            }}
+                        />
+                        <span className="text-xs text-slate-600">{activeTab === 'allowed' ? maxValues.allowed : maxValues.blocked}</span>
+                    </div>
+                </div>
 
                 {/* Zoom Controls */}
                 <div className="absolute bottom-4 right-4 flex flex-col gap-2">
