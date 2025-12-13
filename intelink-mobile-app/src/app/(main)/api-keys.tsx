@@ -45,6 +45,8 @@ export default function ApiKeysScreen() {
 	const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);
 	const [newKeyData, setNewKeyData] = useState<CreateApiKeyRequest>({
 		name: "",
+		rateLimitPerHour: 1000,
+		active: true,
 	});
 	const [toast, setToast] = useState<{
 		visible: boolean;
@@ -77,6 +79,8 @@ export default function ApiKeysScreen() {
 			setShowKeyModal(true);
 			setNewKeyData({
 				name: "",
+				rateLimitPerHour: 1000,
+				active: true,
 			});
 		} catch (err: any) {
 			setToast({
@@ -257,7 +261,7 @@ export default function ApiKeysScreen() {
 							<TextInput
 								label="Rate Limit Per Hour"
 								placeholder="1000"
-								value={newKeyData.rateLimitPerHour.toString()}
+								value={(newKeyData.rateLimitPerHour || 1000).toString()}
 								onChangeText={(text) => setNewKeyData(prev => ({ ...prev, rateLimitPerHour: parseInt(text) || 1000 }))}
 								keyboardType="numeric"
 								fullWidth

@@ -28,6 +28,13 @@ export default function MainLayout() {
 					}}
 				/>
 				<Tabs.Screen
+					name="statistics"
+					options={{
+						tabBarLabel: 'Statistics',
+						tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" color={color} size={size} />,
+					}}
+				/>
+				<Tabs.Screen
 					name="overview"
 					options={{
 						tabBarLabel: 'Overview',
@@ -49,13 +56,7 @@ export default function MainLayout() {
 					}}
 				/>
 				{/* Hide legacy/non-tab routes from the tab bar */}
-				<Tabs.Screen
-					name="statistics"
-					options={{
-						tabBarLabel: 'Statistics',
-						tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" color={color} size={size} />,
-					}}
-				/>
+				
 				<Tabs.Screen
 					name="analytics"
 					options={{
@@ -86,6 +87,13 @@ export default function MainLayout() {
 				/>
 				<Tabs.Screen
 					name="subscription-management"
+					options={{
+						href: null,
+						headerShown: false,
+					}}
+				/>
+				<Tabs.Screen
+					name="profile-info"
 					options={{
 						href: null,
 						headerShown: false,
