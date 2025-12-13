@@ -155,11 +155,11 @@ export default function LinksPage() {
 							<span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Usage</span>
 							<div className="flex items-baseline gap-1">
 								<span className={`font-bold ${
-									(user.totalShortUrls || 0) >= (user.currentSubscription.planDetails.maxShortUrls || 0)
+									(totalElements || 0) >= (user.currentSubscription.planDetails.maxShortUrls || 0)
 										? 'text-rose-600'
 										: 'text-indigo-600'
 								}`}>
-									{user.totalShortUrls || 0}
+									{totalElements || 0}
 								</span>
 								<span className="text-slate-400">/</span>
 								<span className="font-medium text-slate-600">
