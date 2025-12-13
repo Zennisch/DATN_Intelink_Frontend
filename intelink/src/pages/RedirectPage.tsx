@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ShortUrlService } from "../services/ShortUrlService";
 import { type RedirectResult, RedirectResultType } from "../models/Redirect";
@@ -15,9 +15,11 @@ const RedirectPage: React.FC = () => {
 	const [countdown, setCountdown] = useState(5);
 	const [password, setPassword] = useState("");
 	const [unlocking, setUnlocking] = useState(false);
+	const hasFetched = useRef(false);
 
 	useEffect(() => {
-		if (shortCode) {
+		if (shortCode && !hasFetched.current) {
+			hasFetched.current = true;
 			fetchRedirectInfo();
 		}
 	}, [shortCode]);
