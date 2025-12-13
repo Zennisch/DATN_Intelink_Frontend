@@ -7,6 +7,7 @@ const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage').
 const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage').then((m) => ({default: m.default})));
 const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage').then((m) => ({default: m.default})));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({default: m.default})));
+const RedirectPage = lazy(() => import('./pages/RedirectPage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -43,6 +44,10 @@ export const routes: RouteConfig[] = [
 			</RouteGuard>
 		),
 		requireAuth: true,
+	},
+	{
+		path: '/:shortCode',
+		element: <RedirectPage />,
 	},
   // {
 	// 	path: "/",

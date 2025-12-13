@@ -7,6 +7,7 @@ import type {
 	UpdateShortUrlResponse,
 } from '../dto/ShortUrlDTO';
 import type { PagedResponse } from '../dto/PagedResponse';
+import type { RedirectResult } from '../models/Redirect';
 
 export interface GetShortUrlsParams {
 	page?: number;
@@ -97,6 +98,18 @@ export class ShortUrlService {
 	 */
 	static async disableShortUrl(shortCode: string): Promise<ShortUrlResponse> {
 		const response = await axios.put<ShortUrlResponse>(`/url/${shortCode}/disable`);
+		return response.data;
+	}
+
+	/**
+	 * Access a short URL (redirect)
+	 */
+	static async accessShortUrl(shortCode: string, password?: string): Promise<RedirectResult> {
+		const backendUrl = import.meta.env.VITE_BACKEND_URL;
+		const response = await axios.get<RedirectResult>(`${backendUrl}/${shortCode}`, {
+			params: { password },
+			validateStatus: (status) => status < 500,
+		});
 		return response.data;
 	}
 }
