@@ -15,6 +15,7 @@ import { PieChart } from "../../components/ui/PieChart";
 import { CountryMap } from "../../components/ui/CountryMap";
 import { LineChart } from "../../components/ui/LineChart";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { buildPublicShortUrl } from "../../utils/UrlUtil";
 
 export default function StatisticsScreen() {
   const { user } = useAuth();
@@ -286,8 +287,17 @@ export default function StatisticsScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-1">
             <View className="flex-row">
               {shortUrls.map((u) => (
-                <TouchableOpacity key={u.shortCode} onPress={() => setSelectedShort(u.shortCode)} className={`mx-1 px-3 py-2 rounded-lg border ${selectedShort === u.shortCode ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-200'}`}>
-                  <Text className={`text-xs ${selectedShort === u.shortUrl ? 'text-blue-700' : 'text-gray-700'}`} numberOfLines={1}>{u.shortUrl}</Text>
+                <TouchableOpacity 
+                  key={u.shortCode} 
+                  onPress={() => setSelectedShort(u.shortCode)} 
+                  className={`mx-1 px-3 py-2 rounded-lg border ${selectedShort === u.shortCode ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-200'}`}
+                >
+                  <Text 
+                    className={`text-xs ${selectedShort === u.shortCode ? 'text-blue-700' : 'text-gray-700'}`} 
+                    numberOfLines={1}
+                  >
+                    {buildPublicShortUrl(u.shortCode, u.shortUrl)}
+                  </Text>
                   <Text className="text-[10px] text-gray-500" numberOfLines={1}>{u.totalClicks} clicks</Text>
                 </TouchableOpacity>
               ))}
