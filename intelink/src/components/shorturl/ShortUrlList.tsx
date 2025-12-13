@@ -121,7 +121,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 									rel="noopener noreferrer"
 									className="text-blue-600 hover:text-blue-800 font-medium truncate"
 								>
-									intelink.click/{shortUrl.shortCode}
+									{import.meta.env.VITE_FRONTEND_URL?.replace(/^https?:\/\//, '')}/{shortUrl.shortCode}
 								</a>
 								<button
 									onClick={() =>
