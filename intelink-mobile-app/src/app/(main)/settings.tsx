@@ -5,6 +5,8 @@ import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { Ionicons } from '@expo/vector-icons';
 import Button from "../../components/atoms/Button";
+import TextInput from "../../components/atoms/TextInput";
+import { AuthService } from "../../services/AuthService";
 
 export default function SettingsScreen() {
 	const router = useRouter();
@@ -12,6 +14,23 @@ export default function SettingsScreen() {
 	const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
 	const [darkMode, setDarkMode] = React.useState(false);
 	const [showProfileModal, setShowProfileModal] = useState(false);
+	const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const handleSendResetLink = async () => {
+		if (!user?.email) return;
+		
+		setLoading(true);
+		try {
+			await AuthService.forgotPassword({ email: user.email });
+			setShowResetConfirmModal(false);
+			Alert.alert("Success", "Password reset link sent. Please check your email.");
+		} catch (error: any) {
+			Alert.alert("Error", error.response?.data?.message || "Failed to send reset link");
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const InfoItem = ({ label, value, icon }: { label: string; value: string | number | undefined; icon: string }) => (
 		<View className="flex-row items-center p-4 bg-white border-b border-gray-100">
@@ -114,11 +133,7 @@ export default function SettingsScreen() {
 						icon="key"
 						title="Change Password"
 						subtitle="Update your password"
-						onPress={() => Alert.alert("Change Password", "To change your password, please log out and use the 'Forgot Password' feature.")}
-					/>
-						title="Change Password"
-						subtitle="Update your password"
-						onPress={() => router.push("/(auth)/forgot-password")}
+						onPress={() => setShowResetConfirmModal(true)}
 					/>
 					{/* <SettingItem
 						icon="shield-checkmark"
@@ -271,6 +286,43 @@ export default function SettingsScreen() {
 						</View>
 					)}
 				</SafeAreaView>
+			</Modal>
+
+			{/* Reset Password Confirmation Modal */}
+			<Modal
+				visible={showResetConfirmModal}
+				animationType="fade"
+				transparent={true}
+				onRequestClose={() => setShowResetConfirmModal(false)}
+			>
+				<View className="flex-1 bg-black/50 justify-center items-center p-4">
+					<View className="bg-white rounded-lg p-6 w-full max-w-sm">
+						<Text className="text-xl font-semibold text-gray-900 mb-2">
+							Reset Password
+						</Text>
+						<Text className="text-gray-600 mb-6">
+							We will send a password reset link to <Text className="font-bold">{user?.email}</Text>. Do you want to continue?
+						</Text>
+
+						<View className="flex-row space-x-3">
+							<Button
+								onPress={() => setShowResetConfirmModal(false)}
+								variant="outline"
+								className="flex-1"
+							>
+								Cancel
+							</Button>
+							<Button
+								onPress={handleSendResetLink}
+								variant="primary"
+								className="flex-1"
+								loading={loading}
+							>
+								Send Link
+							</Button>
+						</View>
+					</View>
+				</View>
 			</Modal>
 		</SafeAreaView>
 	);
