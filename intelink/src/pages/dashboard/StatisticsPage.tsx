@@ -228,8 +228,14 @@ export default function StatisticsPage() {
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-transparent rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:opacity-100 transition-opacity" />
 
                                     <div className="flex items-start justify-between mb-4 relative z-10">
-                                        <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                            <i className="fas fa-chart-area text-lg"></i>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                                <i className="fas fa-chart-area text-lg"></i>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Clicks</span>
+                                                <span className="text-lg font-bold text-slate-900 leading-none">{url.totalClicks || 0}</span>
+                                            </div>
                                         </div>
                                         <div className="text-slate-300 group-hover:text-indigo-400 transition-colors">
                                             <i className="fas fa-external-link-alt"></i>
@@ -254,9 +260,9 @@ export default function StatisticsPage() {
                                     </div>
                                     
                                     {/* Optional: Add Click count here if available in DTO later */}
-                                    <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
-                                        <i className="fas fa-mouse-pointer"></i> 1,234 clicks
-                                    </div>
+                                    {/* <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
+                                        <i className="fas fa-mouse-pointer"></i> {url.totalClicks || 0} Clicks
+                                    </div> */}
                                 </div>
                             ))}
                         </div>
