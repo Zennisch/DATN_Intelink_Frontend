@@ -136,9 +136,12 @@ export default function LinksPage() {
 	};
 
 	return (
-		<div className="h-screen bg-slate-50 flex flex-col font-sans">
-			{/* Decorative background accent */}
-			<div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-indigo-50 to-slate-50 pointer-events-none" />
+		<div className="h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
+			{/* Decorative background elements */}
+			<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+			<div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-indigo-50/50 via-white/50 to-slate-50/0 pointer-events-none"></div>
+			<div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none"></div>
+			<div className="absolute top-1/4 -left-24 w-64 h-64 bg-blue-100/40 rounded-full blur-3xl pointer-events-none"></div>
 
 			<div className="flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 sm:p-8 z-0 overflow-hidden relative">
 				{/* Header Section */}
@@ -147,6 +150,26 @@ export default function LinksPage() {
 						<h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">My Links</h1>
 						<p className="text-slate-500 text-sm sm:text-base">Manage, track, and secure your shortened URLs.</p>
 					</div>
+					{user?.currentSubscription?.planDetails && (
+						<div className="flex items-center gap-2 bg-white/60 px-4 py-1.5 rounded-full border border-slate-200 shadow-sm backdrop-blur-sm">
+							<span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Usage</span>
+							<div className="flex items-baseline gap-1">
+								<span className={`font-bold ${
+									(user.totalShortUrls || 0) >= (user.currentSubscription.planDetails.maxShortUrls || 0)
+										? 'text-rose-600'
+										: 'text-indigo-600'
+								}`}>
+									{user.totalShortUrls || 0}
+								</span>
+								<span className="text-slate-400">/</span>
+								<span className="font-medium text-slate-600">
+									{user.currentSubscription.planDetails.maxShortUrls === -1 
+										? '∞' 
+										: user.currentSubscription.planDetails.maxShortUrls}
+								</span>
+							</div>
+						</div>
+					)}
 				</div>
 
 				{/* Search and Filters Toolbar */}
