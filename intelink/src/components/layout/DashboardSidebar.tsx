@@ -82,14 +82,6 @@ export const DashboardSidebar = ({
 				setCurrentPage("apis");
 			},
 		},
-		{
-			text: "Domains",
-			icon: "🌐",
-			page: "domains",
-			onClick: () => {
-				setCurrentPage("domains");
-			},
-		},
 	];
 
 	return (

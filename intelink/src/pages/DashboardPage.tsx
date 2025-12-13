@@ -3,7 +3,7 @@ import { DashboardSidebar } from '../components/layout/DashboardSidebar';
 import { DashboardMain } from '../components/layout/DashboardContent';
 import { CreateShortUrlModal } from '../components/url';
 
-export type Page = 'overview' | 'links' | 'statistics' | 'apis' | 'domains';
+export type Page = 'overview' | 'links' | 'statistics' | 'apis';
 
 interface DashboardPageProps {}
 

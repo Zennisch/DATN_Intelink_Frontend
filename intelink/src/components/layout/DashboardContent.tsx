@@ -19,8 +19,6 @@ export const DashboardMain = ({ currentPage }: DashboardContentProps) => {
 				return <StatisticsPage />;
 			case "apis":
 				return <APIsPage />;
-			// case "domains":
-			// 	return <DomainsPage />;
 			default:
 				return <OverviewPage />;
 		}
