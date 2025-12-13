@@ -39,7 +39,7 @@ export default function SettingsScreen() {
 			</View>
 			<View className="flex-1">
 				<Text className="text-gray-500 text-sm mb-1">{label}</Text>
-				<Text className="text-gray-900 font-medium text-base">{value || "N/A"}</Text>
+				<Text className="text-gray-900 font-medium text-base">{value ?? "N/A"}</Text>
 			</View>
 		</View>
 	);
@@ -271,13 +271,13 @@ export default function SettingsScreen() {
 								<InfoItem label="Username" value={user.username} icon="person-outline" />
 								<InfoItem label="Email" value={user.email} icon="mail-outline" />
 								<InfoItem label="Account Status" value={user.status} icon="shield-checkmark-outline" />
-								<InfoItem label="Member Since" value={new Date(user.createdAt).toLocaleDateString()} icon="calendar-outline" />
+								<InfoItem label="Member Since" value={user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"} icon="calendar-outline" />
 							</View>
 
 							<View className="bg-white border-t border-b border-gray-200 mb-4">
-								<InfoItem label="Total Short URLs" value={user.totalShortUrls} icon="link-outline" />
-								<InfoItem label="Total Clicks" value={user.totalClicks} icon="stats-chart-outline" />
-								<InfoItem label="Balance" value={`${user.balance} ${user.currency}`} icon="wallet-outline" />
+								<InfoItem label="Total Short URLs" value={user.totalShortUrls ?? 0} icon="link-outline" />
+								<InfoItem label="Total Clicks" value={user.totalClicks ?? 0} icon="stats-chart-outline" />
+								<InfoItem label="Balance" value={`${user.balance ?? 0} ${user.currency || 'VND'}`} icon="wallet-outline" />
 							</View>
 						</ScrollView>
 					) : (
