@@ -28,9 +28,11 @@ interface SelectProps
 	options?: OptionItem[];
 	children?: ReactNode;
 	placeholder?: string;
+	label?: ReactNode;
 
 	// Layout props
 	fullWidth?: boolean;
+	labelSrOnly?: boolean;
 
 	// State props
 	error?: ReactNode;
@@ -50,9 +52,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 			options = [],
 			children,
 			placeholder,
+			label,
 			error,
 			helpText,
 			fullWidth = false,
+			labelSrOnly = false,
 			className,
 			wrapperClassName = "",
 			selectClassName = "",
@@ -90,6 +94,18 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
 		return (
 			<div className={cn(fullWidth ? "w-full" : "", wrapperClassName)}>
+				{label && (
+					<label
+						htmlFor={id}
+						className={
+							labelSrOnly
+								? "sr-only"
+								: `block ${SIZES.text.sm} font-medium ${COLORS.text.secondary} mb-2`
+						}
+					>
+						{label}
+					</label>
+				)}
 				<select
 					id={id}
 					ref={ref}
