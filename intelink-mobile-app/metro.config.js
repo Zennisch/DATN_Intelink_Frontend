@@ -10,7 +10,8 @@ config.server.enhanceMiddleware = (middleware, server) => {
 	const enhanced = (req, res, next) => {
 		// Only proxy API requests in web dev
 		if (req.url.startsWith('/api')) {
-			const target = 'http://localhost:8080';
+			const target = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+			console.log(`[Proxy] Forwarding ${req.url} to ${target}`);
 			const url = new URL(req.url, target);
 
 			// Rebuild request to target backend

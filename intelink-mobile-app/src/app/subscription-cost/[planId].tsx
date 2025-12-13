@@ -1,54 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSubscription } from '../../hooks/useSubscription';
+import { usePayment } from '../../hooks/usePayment';
 import Button from '../../components/atoms/Button';
-import Checkbox from '../../components/atoms/Checkbox';
+import type { CalculateCostResponse } from '../../dto/SubscriptionDTO';
 
 export default function SubscriptionCostScreen() {
 	const { planId } = useLocalSearchParams<{ planId: string }>();
 	const router = useRouter();
-	const { costInfo, loading, error, fetchCost, registerSubscription, clearError } = useSubscription();
-	const [applyImmediately, setApplyImmediately] = useState(false);
+	const { calculateCost, createSubscription } = useSubscription();
+	const { createVNPayPayment } = usePayment();
+	
+	const [costDetails, setCostDetails] = useState<CalculateCostResponse | null>(null);
+	const [loading, setLoading] = useState(true);
 	const [registering, setRegistering] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (planId) {
-			fetchCost(Number(planId), applyImmediately);
-		}
-	}, [planId, applyImmediately, fetchCost]);
+		const fetchCost = async () => {
+			if (!planId) return;
+			try {
+				setLoading(true);
+				const response = await calculateCost({ planId: Number(planId) });
+				setCostDetails(response);
+			} catch (err: any) {
+				console.error('Failed to calculate cost:', err);
+				setError(err.message || 'Failed to load subscription details');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchCost();
+	}, [planId, calculateCost]);
 
 	const handleRegister = async () => {
-		if (!planId) return;
+		if (!planId || !costDetails) return;
 
 		try {
 			setRegistering(true);
-			console.log('[SubscriptionCost] Registering subscription:', {
-				planId: Number(planId),
-				applyImmediately
+			
+			// 1. Create Subscription
+			const subResponse = await createSubscription({ planId: Number(planId) });
+			
+			// 2. Create VNPay Payment
+			const paymentResponse = await createVNPayPayment({
+				subscriptionId: subResponse.id,
+				amount: costDetails.finalCost,
+				currency: 'VND'
 			});
 			
-			const response = await registerSubscription(Number(planId), applyImmediately);
-			
-			console.log('[SubscriptionCost] Registration response:', response);
-			console.log('[SubscriptionCost] Payment URL:', response.paymentUrl);
-			
-			if (response.paymentUrl && response.paymentUrl !== '') {
-				// Mở VNPay trong browser
-				console.log('[SubscriptionCost] Opening VNPay URL...');
-				await Linking.openURL(response.paymentUrl);
-				// Quay về dashboard
+			if (paymentResponse.paymentUrl) {
+				// Open VNPay in browser
+				await Linking.openURL(paymentResponse.paymentUrl);
+				// Return to dashboard
 				router.replace('/dashboard');
 			} else {
-				// Không cần thanh toán, quay về dashboard
-				console.log('[SubscriptionCost] No payment needed, returning to dashboard');
-				router.replace('/dashboard');
+				Alert.alert('Error', 'No payment URL returned');
 			}
 		} catch (err: any) {
-			console.error('[SubscriptionCost] Registration error:', err);
-			console.error('[SubscriptionCost] Error response:', err.response?.data);
+			console.error('Registration error:', err);
+			Alert.alert('Error', err.message || 'Failed to process subscription');
 		} finally {
 			setRegistering(false);
 		}
@@ -83,116 +98,67 @@ export default function SubscriptionCostScreen() {
 				{error && (
 					<View className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex-row items-center justify-between">
 						<Text className="text-red-700 flex-1">{error}</Text>
-						<TouchableOpacity onPress={clearError} className="ml-2">
+						<TouchableOpacity onPress={() => setError(null)} className="ml-2">
 							<Ionicons name="close" size={20} color="#DC2626" />
 						</TouchableOpacity>
 					</View>
 				)}
 
-				{/* Apply Immediately Option */}
-				<View className="bg-white rounded-xl shadow-sm p-4 mb-4 border border-gray-200">
-					<View className="flex-row items-center">
-						<Checkbox
-							checked={applyImmediately}
-							onChange={setApplyImmediately}
-							disabled={loading}
-						/>
-						<Text className="ml-3 text-gray-700 flex-1">
-							Apply immediately (cancel current subscription)
-						</Text>
-					</View>
-					<Text className="text-sm text-gray-500 mt-2 ml-9">
-						If checked, your current subscription will be cancelled and the new plan will start immediately.
-					</Text>
-				</View>
-
-				{/* Loading State */}
 				{loading ? (
-					<View className="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
-						<Text className="text-center text-gray-500">Loading cost information...</Text>
+					<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
+						<Text className="text-center text-gray-500">Loading details...</Text>
 					</View>
-				) : costInfo ? (
-					<View className="space-y-4">
-						{/* Cost Breakdown */}
-						<View className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-							<Text className="text-xl font-bold text-gray-900 mb-4">
-								Cost Breakdown
-							</Text>
-
-							<View className="space-y-3">
-								<View className="flex-row justify-between py-2 border-b border-gray-100">
-									<Text className="text-gray-600">Plan Price</Text>
-									<Text className="font-semibold text-gray-900">
-										{costInfo.planPrice.toLocaleString()} {costInfo.currency}
-									</Text>
-								</View>
-
-								<View className="flex-row justify-between py-2 border-b border-gray-100">
-									<Text className="text-gray-600">Pro-rate Value</Text>
-									<Text className="font-semibold text-gray-900">
-										{costInfo.proRateValue.toLocaleString()} {costInfo.currency}
-									</Text>
-								</View>
-
-								<View className="flex-row justify-between py-2 border-b border-gray-100">
-									<Text className="text-gray-600">Your Credit Balance</Text>
-									<Text className="font-semibold text-green-600">
-										{costInfo.creditBalance.toLocaleString()} {costInfo.currency}
-									</Text>
-								</View>
-
-								<View className="flex-row justify-between py-3 bg-blue-50 px-4 rounded-lg mt-2">
-									<Text className="text-lg font-bold text-gray-900">Amount to Pay</Text>
-									<Text className="text-lg font-bold text-blue-600">
-										{costInfo.amountToPay.toLocaleString()} {costInfo.currency}
-									</Text>
-								</View>
+				) : costDetails ? (
+					<View className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6">
+						<Text className="text-xl font-bold text-gray-900 mb-4">
+							{costDetails.planType} Plan
+						</Text>
+						
+						<View className="space-y-3">
+							<View className="flex-row justify-between">
+								<Text className="text-gray-600">Plan Price</Text>
+								<Text className="font-medium text-gray-900">
+									{costDetails.planPrice.toLocaleString()} VND
+								</Text>
 							</View>
-						</View>
-
-						{/* Additional Info */}
-						<View className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-							<View className="flex-row items-start mb-3">
-								<Ionicons name="calendar" size={20} color="#3B82F6" style={{ marginRight: 12, marginTop: 2 }} />
-								<View className="flex-1">
-									<Text className="text-gray-600 text-sm mb-1">Start Date</Text>
-									<Text className="font-semibold text-gray-900">{costInfo.startDate}</Text>
-								</View>
+							
+							<View className="flex-row justify-between">
+								<Text className="text-gray-600">Duration</Text>
+								<Text className="font-medium text-gray-900">
+									{costDetails.durationDays} days
+								</Text>
 							</View>
 
-							{costInfo.message && (
-								<View className="flex-row items-start">
-									<Ionicons name="information-circle" size={20} color="#3B82F6" style={{ marginRight: 12, marginTop: 2 }} />
-									<View className="flex-1">
-										<Text className="text-gray-600 text-sm mb-1">Note</Text>
-										<Text className="text-gray-900">{costInfo.message}</Text>
-									</View>
+							{costDetails.proratedCredit > 0 && (
+								<View className="flex-row justify-between">
+									<Text className="text-green-600">Unused Credit</Text>
+									<Text className="font-medium text-green-600">
+										-{costDetails.proratedCredit.toLocaleString()} VND
+									</Text>
 								</View>
 							)}
-						</View>
 
-						{/* Payment Notice */}
-						<View className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-							<View className="flex-row items-start">
-								<Ionicons name="warning" size={20} color="#F59E0B" style={{ marginRight: 12, marginTop: 2 }} />
-								<Text className="flex-1 text-sm text-yellow-800">
-									You will be redirected to VNPay to complete the payment. After successful payment, you will be returned to the app.
+							<View className="h-px bg-gray-200 my-2" />
+
+							<View className="flex-row justify-between items-center">
+								<Text className="text-lg font-bold text-gray-900">Total</Text>
+								<Text className="text-2xl font-bold text-blue-600">
+									{costDetails.finalCost.toLocaleString()} VND
 								</Text>
 							</View>
 						</View>
-
-						{/* Register Button */}
-						<Button
-							onPress={handleRegister}
-							disabled={registering || loading}
-							loading={registering}
-							variant="primary"
-							className="w-full"
-						>
-							{registering ? 'Processing...' : 'Proceed to Payment'}
-						</Button>
 					</View>
 				) : null}
+
+				<Button
+					onPress={handleRegister}
+					loading={registering}
+					disabled={loading || !!error || !costDetails}
+					variant="primary"
+					className="w-full"
+				>
+					Proceed to Payment
+				</Button>
 			</ScrollView>
 		</SafeAreaView>
 	);

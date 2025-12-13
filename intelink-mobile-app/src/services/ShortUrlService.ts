@@ -1,241 +1,115 @@
-import api from './AxiosConfig';
-// Align types with intelink-project legacy
-export interface CreateShortUrlRequest {
-	originalUrl: string;
-	customCode?: string;
-	password?: string;
-	description?: string;
-	maxUsage?: number;
-	availableDays: number;
-}
+import axios from 'axios';
+import type {
+	CreateShortUrlRequest,
+	CreateShortUrlResponse,
+	ShortUrlResponse,
+	UpdateShortUrlRequest,
+	UpdateShortUrlResponse,
+} from '../dto/ShortUrlDTO';
+import type { PagedResponse } from '../dto/PagedResponse';
+import type { RedirectResult } from '../models/Redirect';
 
-export interface UpdateShortUrlRequest {
-	description?: string;
-	maxUsage?: number;
-	availableDays?: number;
-}
-
-export interface CreateShortUrlResponse {
-	id: number;
-	shortCode: string;
-	originalUrl: string;
-	hasPassword: boolean;
-	description?: string;
-	status: string;
-	maxUsage?: number;
-	expiresAt: string;
-	createdAt: string;
-	updatedAt: string;
-	shortUrl: string;
-}
-
-export interface ShortUrlListResponse {
-	id: number;
-	shortCode: string;
-	originalUrl: string;
-	hasPassword: boolean;
-	description?: string;
-	status: string;
-	maxUsage?: number;
-	totalClicks: number;
-	expiresAt: string;
-	createdAt: string;
-	shortUrl: string;
-}
-
-export interface ShortUrlDetailResponse {
-	id: number;
-	shortCode: string;
-	originalUrl: string;
-	hasPassword: boolean;
-	description?: string;
-	status: string;
-	maxUsage?: number;
-	totalClicks: number;
-	expiresAt: string;
-	createdAt: string;
-	updatedAt: string;
-	shortUrl: string;
-}
-
-export interface UpdateShortUrlResponse {
-	message: string;
-	shortCode?: string;
-	success: boolean;
-}
-
-export interface SearchShortUrlRequest {
-	query?: string;
-	status?: string;
-	sortBy?: string;
-	sortDirection?: string;
+export interface GetShortUrlsParams {
 	page?: number;
 	size?: number;
 }
 
-export interface PagedResponse<T> {
-	content: T[];
-	page: number;
-	size: number;
-	totalElements: number;
-	totalPages: number;
-	first: boolean;
-	last: boolean;
-	empty?: boolean;
+export interface SearchShortUrlsParams {
+	query?: string;
+	status?: string;
+	sortBy?: string;
+	direction?: 'asc' | 'desc';
+	page?: number;
+	size?: number;
 }
-
-export interface UnlockUrlResponse {
-	success: boolean;
-	message: string;
-	redirectUrl?: string;
-	shortCode: string;
-}
-
-const buildParams = (search: Partial<SearchShortUrlRequest>) => {
-	const params = new URLSearchParams();
-	Object.entries(search).forEach(([key, value]) => {
-		if (value !== undefined) {
-			params.append(key, value.toString());
-		}
-	});
-	return params.toString();
-};
-
 
 export class ShortUrlService {
+	/**
+	 * Create a new short URL (supports both authenticated and guest users)
+	 */
 	static async createShortUrl(request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> {
-		const response = await api.post<CreateShortUrlResponse>('/api/v1/url', request);
+		const response = await axios.post<CreateShortUrlResponse>('/url', request);
 		return response.data;
 	}
 
-	static async getShortUrls(search: SearchShortUrlRequest = {}): Promise<PagedResponse<ShortUrlListResponse>> {
-		const params = buildParams({ page: search.page, size: search.size });
-		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/api/v1/url?${params}`);
+	/**
+	 * Get paginated list of short URLs for authenticated user
+	 */
+	static async getShortUrls(params?: GetShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> {
+		const response = await axios.get<PagedResponse<ShortUrlResponse>>('/url', {
+			params: {
+				page: params?.page ?? 0,
+				size: params?.size ?? 10,
+			},
+		});
 		return response.data;
 	}
 
-	static async searchShortUrls(search: SearchShortUrlRequest): Promise<PagedResponse<ShortUrlListResponse>> {
-		const params = buildParams(search);
-		const response = await api.get<PagedResponse<ShortUrlListResponse>>(`/api/v1/url/search?${params}`);
+	/**
+	 * Search short URLs with filters
+	 */
+	static async searchShortUrls(params?: SearchShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> {
+		const response = await axios.get<PagedResponse<ShortUrlResponse>>('/url/search', {
+			params: {
+				query: params?.query,
+				status: params?.status,
+				sortBy: params?.sortBy ?? 'createdAt',
+				direction: params?.direction ?? 'desc',
+				page: params?.page ?? 0,
+				size: params?.size ?? 10,
+			},
+		});
 		return response.data;
 	}
 
-
-	static async getShortUrlByCode(shortCode: string): Promise<ShortUrlDetailResponse> {
-		const response = await api.get<ShortUrlDetailResponse>(`/api/v1/url/${shortCode}`);
+	/**
+	 * Get a specific short URL by short code
+	 */
+	static async getShortUrl(shortCode: string): Promise<ShortUrlResponse> {
+		const response = await axios.get<ShortUrlResponse>(`/url/${shortCode}`);
 		return response.data;
 	}
 
+	/**
+	 * Update a short URL
+	 */
 	static async updateShortUrl(shortCode: string, request: UpdateShortUrlRequest): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}`, request);
+		const response = await axios.put<UpdateShortUrlResponse>(`/url/${shortCode}`, request);
 		return response.data;
 	}
 
-	static async deleteShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.delete<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}`);
+	/**
+	 * Delete a short URL (soft delete)
+	 */
+	static async deleteShortUrl(shortCode: string): Promise<void> {
+		await axios.delete(`/url/${shortCode}`);
+	}
+
+	/**
+	 * Enable a disabled short URL
+	 */
+	static async enableShortUrl(shortCode: string): Promise<ShortUrlResponse> {
+		const response = await axios.put<ShortUrlResponse>(`/url/${shortCode}/enable`);
 		return response.data;
 	}
 
-	static async enableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/enable`);
+	/**
+	 * Disable an enabled short URL
+	 */
+	static async disableShortUrl(shortCode: string): Promise<ShortUrlResponse> {
+		const response = await axios.put<ShortUrlResponse>(`/url/${shortCode}/disable`);
 		return response.data;
 	}
 
-	static async disableShortUrl(shortCode: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/disable`);
-		return response.data;
-	}
-
-	static async updatePassword(shortCode: string, currentPassword: string, newPassword: string): Promise<UpdateShortUrlResponse> {
-		const response = await api.put<UpdateShortUrlResponse>(`/api/v1/url/${shortCode}/password`, {
-			currentPassword,
-			newPassword,
+	/**
+	 * Access a short URL (redirect)
+	 */
+	static async accessShortUrl(shortCode: string, password?: string): Promise<RedirectResult> {
+		const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.intelink.click';
+		const response = await axios.get<RedirectResult>(`${backendUrl}/${shortCode}`, {
+			params: { password },
+			validateStatus: (status) => status < 500,
 		});
 		return response.data;
-	}
-
-static async getUnlockInfo(shortCode: string): Promise<UnlockUrlResponse> {
-    const response = await api.get<UnlockUrlResponse>(`/${shortCode}/unlock`);
-    return response.data;
-}
-
-static async unlockUrl(shortCode: string, password: string): Promise<UnlockUrlResponse> {
-    const response = await api.post<UnlockUrlResponse>(`/${shortCode}/unlock`, { password });
-    return response.data;
-}
-}
-
-
-// Statistics
-export const DimensionType = {
-	REFERRER: 'REFERRER',
-	REFERRER_TYPE: 'REFERRER_TYPE',
-	UTM_SOURCE: 'UTM_SOURCE',
-	UTM_MEDIUM: 'UTM_MEDIUM',
-	UTM_CAMPAIGN: 'UTM_CAMPAIGN',
-	UTM_TERM: 'UTM_TERM',
-	UTM_CONTENT: 'UTM_CONTENT',
-	COUNTRY: 'COUNTRY',
-	REGION: 'REGION',
-	CITY: 'CITY',
-	TIMEZONE: 'TIMEZONE',
-	BROWSER: 'BROWSER',
-	OS: 'OS',
-	DEVICE_TYPE: 'DEVICE_TYPE',
-	ISP: 'ISP',
-	LANGUAGE: 'LANGUAGE',
-	CUSTOM: 'CUSTOM',
-} as const;
-
-export type DimensionTypeT = (typeof DimensionType)[keyof typeof DimensionType];
-
-export interface StatisticsData {
-	name: string;
-	clicks: number;
-	percentage: number;
-}
-
-export interface StatisticsResponse {
-	data: StatisticsData[];
-	totalClicks: number;
-	category: string;
-}
-
-export class StatisticsService {
-	static async getByDimension(shortcode: string, type: DimensionTypeT): Promise<StatisticsResponse> {
-		const response = await api.get<StatisticsResponse>(`/api/v1/statistics/${shortcode}/dimension`, {
-			params: { type },
-		});
-		return response.data;
-	}
-}
-
-// Time-series statistics
-export type TimeGranularity = 'HOURLY' | 'DAILY' | 'MONTHLY' | 'YEARLY';
-
-export interface TimeBucket { time: string; clicks: number }
-export interface TimeSeriesResponse {
-	granularity: TimeGranularity;
-	from: string;
-	to: string;
-	totalClicks: number;
-	buckets: TimeBucket[];
-}
-
-export interface TopPeakTimesResponse {
-	granularity: TimeGranularity;
-	total: number;
-	topPeakTimes: { time: string; clicks: number }[];
-}
-
-export class TimeStatisticsService {
-	static async getTimeSeries(shortcode: string, params: { customFrom?: string; customTo?: string; granularity: TimeGranularity }): Promise<TimeSeriesResponse> {
-		const res = await api.get<TimeSeriesResponse>(`/api/v1/statistics/${shortcode}/time`, { params });
-		return res.data;
-	}
-
-	static async getTopPeakTimes(shortcode: string, granularity: TimeGranularity): Promise<TopPeakTimesResponse> {
-		const res = await api.get<TopPeakTimesResponse>(`/api/v1/statistics/${shortcode}/top-peak-times`, { params: { granularity: granularity.toLowerCase?.() || granularity } as any });
-		return res.data;
 	}
 }

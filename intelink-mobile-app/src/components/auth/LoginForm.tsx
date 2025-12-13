@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import Button from "../atoms/Button";
 import TextInput from "../atoms/TextInput";
 import Checkbox from "../atoms/Checkbox";
-import type { LoginRequest } from "../../dto/request/UserRequest";
+import type { LoginRequest } from "../../dto/UserDTO";
 import { useForm } from "../../hooks/useForm";
 import { Ionicons } from '@expo/vector-icons';
 

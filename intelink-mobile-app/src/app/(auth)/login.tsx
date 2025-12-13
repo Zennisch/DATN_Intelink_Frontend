@@ -8,7 +8,10 @@ import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import Checkbox from "../../components/atoms/Checkbox";
 import { Ionicons } from '@expo/vector-icons';
-import type { LoginRequest } from "../../dto/request/UserRequest";
+import type { LoginRequest } from "../../dto/UserDTO";
+
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 
 export default function LoginScreen() {
 	const { login } = useAuth();
@@ -77,11 +80,9 @@ export default function LoginScreen() {
 			setLoading(true);
 			setError(null);
 			
-			// For demo purposes, allow any username/password combination
-			// In real app, this would call the actual login API
 			await login({
-				username: formData.username || "demo_user",
-				password: formData.password || "demo123"
+				username: formData.username,
+				password: formData.password
 			});
 			
 			router.replace("/(main)/dashboard");
@@ -93,24 +94,21 @@ export default function LoginScreen() {
 		}
 	};
 
-	const handleOAuth2Login = (provider: "google" | "github") => {
+	const handleOAuth2Login = async (provider: "google" | "github") => {
 		setLoading(true);
-		// For mobile, we'll use WebBrowser for OAuth
-		// This is a simplified implementation
-		Alert.alert(
-			"OAuth Login",
-			`Redirecting to ${provider} login...`,
-			[
-				{
-					text: "OK",
-					onPress: () => {
-						// In a real app, you would use WebBrowser.openBrowserAsync
-						// and handle the callback URL
-						setLoading(false);
-					}
-				}
-			]
-		);
+		try {
+			const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.intelink.click';
+			const redirectUri = Linking.createURL('/(auth)/oauth-callback');
+			const authUrl = `${backendUrl}/auth/oauth2/authorize/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+			
+			await WebBrowser.openBrowserAsync(authUrl);
+			// The callback will be handled by the deep link listener in the app
+		} catch (err) {
+			console.error("OAuth error:", err);
+			setError("Failed to initiate login");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleGoogleLogin = () => {

@@ -31,14 +31,7 @@ export default function MainLayout() {
 					name="overview"
 					options={{
 						tabBarLabel: 'Overview',
-						tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" color={color} size={size} />,
-					}}
-				/>
-				<Tabs.Screen
-					name="statistics"
-					options={{
-						tabBarLabel: 'Statistics',
-						tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" color={color} size={size} />,
+						tabBarIcon: ({ color, size }) => <Ionicons name="globe" color={color} size={size} />,
 					}}
 				/>
 				<Tabs.Screen
@@ -56,6 +49,13 @@ export default function MainLayout() {
 					}}
 				/>
 				{/* Hide legacy/non-tab routes from the tab bar */}
+				<Tabs.Screen
+					name="statistics"
+					options={{
+						tabBarLabel: 'Statistics',
+						tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" color={color} size={size} />,
+					}}
+				/>
 				<Tabs.Screen
 					name="analytics"
 					options={{
@@ -92,7 +92,6 @@ export default function MainLayout() {
 					}}
 				/>
 			</Tabs>
-			
 		</RouteGuard>
 	);
 }

@@ -3,19 +3,19 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, Modal } from "react-na
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
+import { useApiKey } from "../../hooks/useApiKey";
 import { canAccessAPI } from "../../utils/subscriptionUtils";
 import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
 import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
-import { ApiKeyService, type ApiKeyResponse, type CreateApiKeyRequest } from "../../services/ApiKeyService";
+import type { ApiKeyResponse, CreateApiKeyRequest } from "../../dto/ApiKeyDTO";
 
 export default function ApiKeysScreen() {
 	const router = useRouter();
 	const { user } = useAuth();
-	const [apiKeys, setApiKeys] = useState<ApiKeyResponse[]>([]);
-	const [loading, setLoading] = useState(false);
+	const { apiKeys, isLoading: loading, error, fetchApiKeys, createApiKey, deleteApiKey } = useApiKey();
 
 	// Permission check for API access
 	const apiPermission = canAccessAPI(user);
@@ -45,8 +45,6 @@ export default function ApiKeysScreen() {
 	const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);
 	const [newKeyData, setNewKeyData] = useState<CreateApiKeyRequest>({
 		name: "",
-		rateLimitPerHour: 1000,
-		active: true,
 	});
 	const [toast, setToast] = useState<{
 		visible: boolean;
@@ -58,26 +56,9 @@ export default function ApiKeysScreen() {
 		type: "info",
 	});
 
-	const fetchApiKeys = async () => {
-		setLoading(true);
-		try {
-			const data = await ApiKeyService.list();
-			data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-			setApiKeys(data);
-		} catch (err: any) {
-			setToast({
-				visible: true,
-				message: err.message || "Failed to load API keys",
-				type: "error",
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	useEffect(() => {
 		fetchApiKeys();
-	}, []);
+	}, [fetchApiKeys]);
 
 	const handleCreate = async () => {
 		if (!newKeyData.name.trim()) {
@@ -90,16 +71,13 @@ export default function ApiKeysScreen() {
 		}
 
 		try {
-			const response = await ApiKeyService.create(newKeyData);
+			const response = await createApiKey(newKeyData);
 			setShowCreateModal(false);
 			setCreatedKey(response);
 			setShowKeyModal(true);
 			setNewKeyData({
 				name: "",
-				rateLimitPerHour: 1000,
-				active: true,
 			});
-			await fetchApiKeys();
 		} catch (err: any) {
 			setToast({
 				visible: true,
@@ -120,13 +98,12 @@ export default function ApiKeysScreen() {
 					style: "destructive",
 					onPress: async () => {
 						try {
-							await ApiKeyService.delete(id);
+							await deleteApiKey(id);
 							setToast({
 								visible: true,
 								message: "API key deleted successfully!",
 								type: "success",
 							});
-							await fetchApiKeys();
 						} catch (err: any) {
 							setToast({
 								visible: true,

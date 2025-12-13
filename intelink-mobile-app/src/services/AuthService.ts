@@ -1,101 +1,67 @@
-import api from './AxiosConfig';
+import axios from 'axios';
 import type {
 	LoginRequest,
 	RegisterRequest,
 	ResetPasswordRequest,
 	ForgotPasswordRequest,
-} from "../dto/request/UserRequest";
-import type {
-	LoginResponse,
+	AuthTokenResponse,
+	AuthInfoResponse,
 	RegisterResponse,
-	ResetPasswordResponse,
-	LogoutResponse,
 	UserProfileResponse,
-	VerifyEmailResponse,
-	ForgotPasswordResponse,
-} from "../dto/response/UserResponse";
+} from '../dto/UserDTO.tsx';
 
 export class AuthService {
-	static async register(
-		credentials: RegisterRequest,
-	): Promise<RegisterResponse> {
-		console.log("🚀 AuthService.register - Credentials received:", credentials);
-		console.log("🚀 AuthService.register - Stringified:", JSON.stringify(credentials, null, 2));
-		const response = await api.post<RegisterResponse>(
-			"/api/v1/auth/register",
-			credentials,
-		);
+	static async register(credentials: RegisterRequest): Promise<RegisterResponse> {
+		const response = await axios.post<RegisterResponse>('/auth/register', credentials);
 		return response.data;
 	}
 
-	static async login(credentials: LoginRequest): Promise<LoginResponse> {
-		const response = await api.post<LoginResponse>(
-			"/api/v1/auth/login",
-			credentials,
-		);
+	static async verifyEmail(token: string): Promise<AuthInfoResponse> {
+		const response = await axios.post<AuthInfoResponse>(`/auth/verify-email?token=${token}`);
 		return response.data;
 	}
 
-	static async refresh(refreshToken: string): Promise<LoginResponse> {
-		const response = await api.post<LoginResponse>(
-			"/api/v1/auth/refresh",
+	static async forgotPassword(request: ForgotPasswordRequest): Promise<AuthInfoResponse> {
+		const response = await axios.post<AuthInfoResponse>('/auth/forgot-password', request);
+		return response.data;
+	}
+
+	static async resetPassword(token: string, request: ResetPasswordRequest): Promise<AuthInfoResponse> {
+		const response = await axios.post<AuthInfoResponse>(`/auth/reset-password?token=${token}`, request);
+		return response.data;
+	}
+
+	static async login(credentials: LoginRequest): Promise<AuthTokenResponse> {
+		const response = await axios.post<AuthTokenResponse>('/auth/login', credentials);
+		return response.data;
+	}
+
+	static async refresh(refreshToken: string): Promise<AuthTokenResponse> {
+		const response = await axios.post<AuthTokenResponse>(
+			'/auth/refresh',
 			{},
 			{
 				headers: {
 					Authorization: `Bearer ${refreshToken}`,
 				},
-			},
+			}
 		);
+		return response.data;
+	}
+
+	static async logout(): Promise<AuthInfoResponse> {
+		const response = await axios.post<AuthInfoResponse>('/auth/logout');
 		return response.data;
 	}
 
 	static async getProfile(): Promise<UserProfileResponse> {
-		const response = await api.get<UserProfileResponse>("/api/v1/auth/profile");
-		console.log("🔍 [AuthService] Full API response:", JSON.stringify(response.data, null, 2));
-		console.log("🔍 [AuthService] currentSubscription:", response.data.currentSubscription);
-		if (response.data.currentSubscription) {
-			console.log("🔍 [AuthService] subscriptionPlan:", response.data.currentSubscription.subscriptionPlan);
-		}
+		const response = await axios.get<UserProfileResponse>('/auth/profile');
+		console.log('User profile response:', response.data);
 		return response.data;
 	}
 
-	static async logout(): Promise<LogoutResponse> {
-		const response = await api.post<LogoutResponse>("/api/v1/auth/logout");
-		return response.data;
-	}
-
-	static async resetPassword(
-		token: string,
-		request: ResetPasswordRequest,
-	): Promise<ResetPasswordResponse> {
-		const response = await api.post<ResetPasswordResponse>(
-			`/api/v1/auth/reset-password?token=${token}`,
-			request,
-		);
-		return response.data;
-	}
-
-	static async oAuthCallback(token: string): Promise<LoginResponse> {
-		const response = await api.get<LoginResponse>(
-			`/api/v1/auth/oauth/callback?token=${token}`,
-		);
-		return response.data;
-	}
-
-	static async verifyEmail(token: string): Promise<VerifyEmailResponse> {
-		const response = await api.post<VerifyEmailResponse>(
-			`/api/v1/auth/verify-email?token=${token}`,
-		);
-		return response.data;
-	}
-
-	static async forgotPassword(
-		request: ForgotPasswordRequest,
-	): Promise<ForgotPasswordResponse> {
-		const response = await api.post<ForgotPasswordResponse>(
-			"/api/v1/auth/forgot-password",
-			request,
-		);
+	static async oAuthCallback(token: string): Promise<AuthTokenResponse> {
+		const response = await axios.get<AuthTokenResponse>(`/auth/oauth/callback?token=${token}`);
 		return response.data;
 	}
 }

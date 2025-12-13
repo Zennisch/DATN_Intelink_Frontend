@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -12,11 +12,27 @@ export default function SubscriptionManagementScreen() {
 	const { user, refreshUser } = useAuth();
 	const { 
 		cancelSubscription,
-		clearError 
+		getAllSubscriptions,
+		subscriptions: historySubscriptions
 	} = useSubscription();
 	const [cancellingId, setCancellingId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [historyLoading, setHistoryLoading] = useState(false);
+
+	useEffect(() => {
+		const fetchHistory = async () => {
+			try {
+				setHistoryLoading(true);
+				await getAllSubscriptions();
+			} catch (err) {
+				console.error('Failed to fetch subscription history', err);
+			} finally {
+				setHistoryLoading(false);
+			}
+		};
+		fetchHistory();
+	}, []);
 
 	// Get current subscription from user object
 	const currentSubscription = user?.currentSubscription;
@@ -257,13 +273,17 @@ export default function SubscriptionManagementScreen() {
 					</View>
 				)}
 
-				{/* Subscription History - Commented out until backend supports it
+				{/* Subscription History */}
 				<View className="mb-6">
 					<Text className="text-xl font-bold text-gray-900 mb-4">
 						Subscription History
 					</Text>
 
-					{allSubscriptions.length === 0 ? (
+					{historyLoading ? (
+						<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
+							<Text className="text-center text-gray-500">Loading history...</Text>
+						</View>
+					) : historySubscriptions.length === 0 ? (
 						<View className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
 							<Text className="text-center text-gray-500">
 								No subscription history
@@ -271,15 +291,15 @@ export default function SubscriptionManagementScreen() {
 						</View>
 					) : (
 						<View className="space-y-3">
-							{allSubscriptions.map((subscription) => (
+							{historySubscriptions.map((subscription) => (
 								<View
-									key={subscription.subscriptionId}
+									key={subscription.id}
 									className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
 								>
-							<View className="flex-row items-center justify-between mb-3">
-								<Text className="font-semibold text-gray-900">
-									{subscription.planType || 'Unknown Plan'}
-								</Text>
+									<View className="flex-row items-center justify-between mb-3">
+										<Text className="font-semibold text-gray-900">
+											{subscription.planType || 'Unknown Plan'}
+										</Text>
 										<View className={`px-3 py-1 rounded-full ${getStatusColor(subscription.status).bg}`}>
 											<Text className={`text-xs font-semibold ${getStatusColor(subscription.status).text}`}>
 												{subscription.status}
@@ -291,7 +311,7 @@ export default function SubscriptionManagementScreen() {
 										<View className="flex-row justify-between">
 											<Text className="text-sm text-gray-600">Start Date:</Text>
 											<Text className="text-sm text-gray-900">
-												{formatDate(subscription.startsAt)}
+												{subscription.activatedAt ? formatDate(subscription.activatedAt) : '-'}
 											</Text>
 										</View>
 
@@ -301,22 +321,21 @@ export default function SubscriptionManagementScreen() {
 												<Text className="text-sm text-gray-900">
 													{formatDate(subscription.expiresAt)}
 												</Text>
-									</View>
-								)}
+											</View>
+										)}
 
-							<View className="flex-row justify-between">
-								<Text className="text-sm text-gray-600">Price:</Text>
-								<Text className="text-sm font-medium text-green-600">
-									{subscription.maxShortUrls === -1 ? 'Contact Sales' : '0 VND'}
-								</Text>
-							</View>
-								</View>
+										<View className="flex-row justify-between">
+											<Text className="text-sm text-gray-600">Price:</Text>
+											<Text className="text-sm font-medium text-green-600">
+												{subscription.planDetails?.price ? `${subscription.planDetails.price.toLocaleString()} VND` : 'Free'}
+											</Text>
+										</View>
+									</View>
 								</View>
 							))}
 						</View>
 					)}
 				</View>
-				*/}
 			</ScrollView>
 		</SafeAreaView>
 	);

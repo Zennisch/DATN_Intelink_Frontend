@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Linking } from "react-native";
 import Button from "../atoms/Button";
 import TextInput from "../atoms/TextInput";
 import Checkbox from "../atoms/Checkbox";
-import type { RegisterRequest } from "../../dto/request/UserRequest";
+import type { RegisterRequest } from "../../dto/UserDTO";
 import { useForm } from "../../hooks/useForm";
 import { Ionicons } from '@expo/vector-icons';
 

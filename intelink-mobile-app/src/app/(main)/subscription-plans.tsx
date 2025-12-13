@@ -10,11 +10,21 @@ import Button from '../../components/atoms/Button';
 export default function SubscriptionPlansScreen() {
 	const router = useRouter();
 	const { user } = useAuth();
-	const { plans, loading, error, fetchPlans, clearError } = useSubscription();
+	const { plans, isLoading: loading, getAllPlans } = useSubscription();
+	const [error, setError] = React.useState<string | null>(null);
 
 	useEffect(() => {
-		fetchPlans();
-	}, [fetchPlans]);
+		const load = async () => {
+			try {
+				await getAllPlans();
+			} catch (e: any) {
+				setError(e.message || "Failed to load plans");
+			}
+		};
+		load();
+	}, [getAllPlans]);
+
+	const clearError = () => setError(null);
 
 	const currentPlanType = user?.currentSubscription?.subscriptionPlan?.type;
 

@@ -6,7 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "../../hooks/useForm";
 import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
-import type { ForgotPasswordRequest } from "../../dto/request/UserRequest";
+import type { ForgotPasswordRequest } from "../../dto/UserDTO";
 
 const validateForgotPassword = (values: ForgotPasswordRequest): Partial<ForgotPasswordRequest> => {
 	const errors: Partial<ForgotPasswordRequest> = {};

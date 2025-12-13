@@ -93,11 +93,15 @@ export default function SettingsScreen() {
 					<SettingItem
 						icon="person"
 						title="Personal Information"
-						subtitle="Update your profile details"
-						onPress={() => Alert.alert("Coming Soon", "Profile editing will be available soon")}
+						subtitle="View your profile details"
+						onPress={() => router.push("/(main)/profile-info")}
 					/>
 					<SettingItem
 						icon="key"
+						title="Change Password"
+						subtitle="Update your password"
+						onPress={() => Alert.alert("Change Password", "To change your password, please log out and use the 'Forgot Password' feature.")}
+					/>
 						title="Change Password"
 						subtitle="Update your password"
 						onPress={() => router.push("/(auth)/forgot-password")}

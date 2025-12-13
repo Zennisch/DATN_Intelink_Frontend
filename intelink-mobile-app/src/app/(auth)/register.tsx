@@ -5,7 +5,9 @@ import { useRouter } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { RegisterForm, SocialLoginSection } from "../../components/auth";
 import Button from "../../components/atoms/Button";
-import type { RegisterRequest } from "../../dto/request/UserRequest";
+import type { RegisterRequest } from "../../dto/UserDTO";
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 
 export default function RegisterScreen() {
 	const { register } = useAuth();
@@ -57,20 +59,21 @@ export default function RegisterScreen() {
 		}
 	};
 
-	const handleOAuth2Login = (provider: "google" | "github") => {
+	const handleOAuth2Login = async (provider: "google" | "github") => {
 		setLoading(true);
-		Alert.alert(
-			"OAuth Login",
-			`Redirecting to ${provider} login...`,
-			[
-				{
-					text: "OK",
-					onPress: () => {
-						setLoading(false);
-					}
-				}
-			]
-		);
+		try {
+			const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.intelink.click';
+			const redirectUri = Linking.createURL('/(auth)/oauth-callback');
+			const authUrl = `${backendUrl}/auth/oauth2/authorize/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+			
+			await WebBrowser.openBrowserAsync(authUrl);
+			// The callback will be handled by the deep link listener in the app
+		} catch (err) {
+			console.error("OAuth error:", err);
+			setError("Failed to initiate login");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleGoogleLogin = () => {

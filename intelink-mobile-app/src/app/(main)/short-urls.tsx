@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -13,7 +13,8 @@ import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import { useAuth } from "../../hooks/useAuth";
 import { canCreateShortUrl, canCustomizeShortCode } from "../../utils/subscriptionUtils";
-import type { SearchShortUrlRequest, CreateShortUrlRequest } from "../../services/ShortUrlService";
+import type { SearchShortUrlsParams } from "../../services/ShortUrlService";
+import type { CreateShortUrlRequest, ShortUrlResponse } from "../../dto/ShortUrlDTO";
 
 export default function ShortUrlsScreen() {
 	// const [unlockModalVisible, setUnlockModalVisible] = useState(false);
@@ -40,28 +41,45 @@ export default function ShortUrlsScreen() {
 	});
 
 	const {
-		shortUrls,
-		totalElements,
-		totalPages,
-		loading,
-		error,
-		fetchShortUrls,
+		searchShortUrls,
 		createShortUrl,
 		deleteShortUrl,
 		enableShortUrl,
 		disableShortUrl,
-		clearError,
 	} = useShortUrl();
+
+	const [shortUrls, setShortUrls] = useState<ShortUrlResponse[]>([]);
+	const [totalElements, setTotalElements] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const fetchShortUrls = useCallback(async (params: SearchShortUrlsParams) => {
+		setLoading(true);
+		setError(null);
+		try {
+			const response = await searchShortUrls(params);
+			setShortUrls(response.content);
+			setTotalElements(response.totalElements);
+			setTotalPages(response.totalPages);
+		} catch (err: any) {
+			setError(err.message || "Failed to fetch short URLs");
+		} finally {
+			setLoading(false);
+		}
+	}, [searchShortUrls]);
+
+	const clearError = () => setError(null);
 
 	// Fetch short URLs on component mount and when filters change
 	useEffect(() => {
-		const searchParams: SearchShortUrlRequest = {
+		const searchParams: SearchShortUrlsParams = {
 			page: currentPage,
 			size: 10,
 			query: searchQuery || undefined,
 			status: statusFilter || undefined,
 			sortBy: "createdAt",
-			sortDirection: "desc",
+			direction: "desc",
 		};
 		fetchShortUrls(searchParams);
 	}, [currentPage, searchQuery, statusFilter, fetchShortUrls]);
@@ -76,13 +94,13 @@ export default function ShortUrlsScreen() {
 				type: "success",
 			});
 			// Refresh list
-			const searchParams: SearchShortUrlRequest = {
+			const searchParams: SearchShortUrlsParams = {
 				page: currentPage,
 				size: 10,
 				query: searchQuery || undefined,
 				status: statusFilter || undefined,
 				sortBy: "createdAt",
-				sortDirection: "desc",
+				direction: "desc",
 			};
 			await fetchShortUrls(searchParams);
 			setModalVisible(false);
@@ -115,13 +133,13 @@ export default function ShortUrlsScreen() {
 								type: "success",
 							});
 							// Refresh the list
-							const searchParams: SearchShortUrlRequest = {
+							const searchParams: SearchShortUrlsParams = {
 								page: currentPage,
 								size: 10,
 								query: searchQuery || undefined,
 								status: statusFilter || undefined,
 								sortBy: "createdAt",
-								sortDirection: "desc",
+								direction: "desc",
 							};
 							await fetchShortUrls(searchParams);
 						} catch {
@@ -151,13 +169,13 @@ export default function ShortUrlsScreen() {
 				type: "success",
 			});
 			// Refresh the list
-			const searchParams: SearchShortUrlRequest = {
+			const searchParams: SearchShortUrlsParams = {
 				page: currentPage,
 				size: 10,
 				query: searchQuery || undefined,
 				status: statusFilter || undefined,
 				sortBy: "createdAt",
-				sortDirection: "desc",
+				direction: "desc",
 			};
 			await fetchShortUrls(searchParams);
 		} catch {
@@ -191,13 +209,13 @@ export default function ShortUrlsScreen() {
 
 	const handleSearch = () => {
 		setCurrentPage(0);
-		const searchParams: SearchShortUrlRequest = {
+		const searchParams: SearchShortUrlsParams = {
 			page: 0,
 			size: 10,
 			query: searchQuery || undefined,
 			status: statusFilter || undefined,
 			sortBy: "createdAt",
-			sortDirection: "desc",
+			direction: "desc",
 		};
 		fetchShortUrls(searchParams);
 	};

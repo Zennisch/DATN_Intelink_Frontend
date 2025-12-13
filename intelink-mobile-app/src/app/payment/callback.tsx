@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -11,11 +11,18 @@ export default function PaymentCallbackScreen() {
 	const params = useLocalSearchParams();
 	const { refreshUser } = useAuth();
 	const [status, setStatus] = useState<'processing' | 'success' | 'failed'>('processing');
+	const processedRef = useRef(false);
 
 	useEffect(() => {
+		if (processedRef.current) return;
+
 		// Parse VNPay response parameters
 		const vnpResponseCode = params.vnp_ResponseCode as string;
 		const vnpTransactionStatus = params.vnp_TransactionStatus as string;
+
+		if (!vnpResponseCode || !vnpTransactionStatus) return;
+
+		processedRef.current = true;
 
 		// VNPay response codes:
 		// 00: Success

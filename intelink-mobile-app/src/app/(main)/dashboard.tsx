@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuth";
+import { useShortUrl } from "../../hooks/useShortUrl";
 
 export default function DashboardScreen() {
 	const { user, isLoading } = useAuth();
+	const { getShortUrls, refreshSignal } = useShortUrl();
+	const [totalUrls, setTotalUrls] = useState(0);
 	const router = useRouter();
+
+	useEffect(() => {
+		const fetchTotalUrls = async () => {
+			if (user) {
+				try {
+					const response = await getShortUrls({ page: 0, size: 1 });
+					setTotalUrls(response.totalElements);
+				} catch (error) {
+					console.error("Failed to fetch total urls", error);
+				}
+			}
+		};
+		fetchTotalUrls();
+	}, [user, refreshSignal, getShortUrls]);
 
 	if (isLoading) {
 		return (
@@ -41,7 +58,7 @@ export default function DashboardScreen() {
 						Dashboard
 					</Text>
 					<Text className="text-gray-600 text-center">
-						Welcome back, {user.displayName || user.username}!
+						Welcome back, {user.profileName || user.username}!
 					</Text>
 				</View>
 
@@ -53,7 +70,7 @@ export default function DashboardScreen() {
 					<View className="space-y-3">
 						<View className="flex-row justify-between py-2 border-b border-gray-100">
 							<Text className="text-gray-600">Total Links:</Text>
-							<Text className="font-medium text-gray-900">{user.totalShortUrls}</Text>
+							<Text className="font-medium text-gray-900">{totalUrls}</Text>
 						</View>
 						<View className="flex-row justify-between py-2 border-b border-gray-100">
 							<Text className="text-gray-600">Total Clicks:</Text>
@@ -62,7 +79,7 @@ export default function DashboardScreen() {
 						<View className="flex-row justify-between py-2">
 							<Text className="text-gray-600">Credit Balance:</Text>
 							<Text className="font-medium text-gray-900">
-								{user.creditBalance} {user.currency}
+								{user.balance} {user.currency}
 							</Text>
 						</View>
 					</View>

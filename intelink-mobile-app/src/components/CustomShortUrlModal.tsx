@@ -8,15 +8,8 @@ import type { User } from "../models/User";
 import { canCustomizeShortCode } from "../utils/subscriptionUtils";
 import { AccessControlSection, type AccessControlData } from "./AccessControlSection";
 import { ErrorSuppressor } from "./ErrorSuppressor";
-
-export interface CreateShortUrlRequest {
-  originalUrl: string;
-  customCode?: string;
-  password?: string;
-  description?: string;
-  maxUsage?: number;
-  availableDays: number;
-}
+import type { CreateShortUrlRequest } from "../dto/ShortUrlDTO";
+import type { AccessControlMode } from "../models/ShortUrl";
 
 interface CustomShortUrlModalProps {
   visible: boolean;
@@ -129,9 +122,16 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
         maxUsage: hasMaxUsage ? formData.maxUsage : undefined,
       };
       
-      // Log access control data for debugging (will be integrated with backend later)
-      console.log("Form Data:", requestData);
-      console.log("Access Control:", accessControl);
+      // Add access control data
+      if (accessControl.countries.length > 0 || accessControl.ipRanges.length > 0) {
+          requestData.accessControlMode = accessControl.mode.toUpperCase() as AccessControlMode;
+          if (accessControl.countries.length > 0) {
+              requestData.accessControlGeographies = accessControl.countries;
+          }
+          if (accessControl.ipRanges.length > 0) {
+              requestData.accessControlCIDRs = accessControl.ipRanges;
+          }
+      }
       
       await onSubmit(requestData);
       handleClose();

@@ -1,42 +1,18 @@
-import api from './AxiosConfig';
+import axios from "axios";
+import type { ApiKeyResponse, CreateApiKeyRequest } from "../dto/ApiKeyDTO";
 
-export interface ApiKey {
-	id: string;
-	name: string;
-	keyPrefix: string;
-	rawKey?: string;
-	rateLimitPerHour: number;
-	active: boolean;
-	createdAt: string;
-	updatedAt: string;
-}
+export const ApiKeyService = {
+    getApiKeys: async (): Promise<ApiKeyResponse[]> => {
+        const response = await axios.get<ApiKeyResponse[]>('/api-keys');
+        return response.data;
+    },
 
-export interface CreateApiKeyRequest {
-	name: string;
-	rateLimitPerHour: number;
-	active: boolean;
-}
+    createApiKey: async (request: CreateApiKeyRequest): Promise<ApiKeyResponse> => {
+        const response = await axios.post<ApiKeyResponse>('/api-keys', request);
+        return response.data;
+    },
 
-export type ApiKeyResponse = ApiKey;
-
-export class ApiKeyService {
-	static async list(): Promise<ApiKeyResponse[]> {
-		const response = await api.get<ApiKeyResponse[]>('/api/v1/api-keys');
-		return response.data;
-	}
-
-	static async create(request: CreateApiKeyRequest): Promise<ApiKeyResponse> {
-		const response = await api.post<ApiKeyResponse>('/api/v1/api-keys', request);
-		return response.data;
-	}
-
-	static async delete(id: string): Promise<{ success: boolean; message: string }> {
-		const response = await api.delete<{ success: boolean; message: string }>(`/api/v1/api-keys/${id}`);
-		return response.data;
-	}
-
-	static async update(id: string, request: Partial<CreateApiKeyRequest>): Promise<ApiKeyResponse> {
-		const response = await api.put<ApiKeyResponse>(`/api/v1/api-keys/${id}`, request);
-		return response.data;
-	}
-}
+    deleteApiKey: async (id: string): Promise<void> => {
+        await axios.delete(`/api-keys/${id}`);
+    }
+};
