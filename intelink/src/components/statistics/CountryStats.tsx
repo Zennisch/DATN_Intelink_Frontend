@@ -243,6 +243,75 @@ export default function CountryStats({ shortCode }: Props) {
                     </button>
                 </div>
             </div>
+
+            {/* Data Table */}
+            <div className="border-t border-slate-200">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-slate-200">
+                        <thead className="bg-slate-50">
+                            <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Country
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Total Clicks
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-emerald-600 uppercase tracking-wider">
+                                    Allowed
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-red-600 uppercase tracking-wider">
+                                    Blocked
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                    Percentage
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-slate-200">
+                            {data?.data.map((item, index) => {
+                                const country = getCountryByCode(item.name);
+                                return (
+                                    <tr key={index} className="hover:bg-slate-50 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                                            <div className="flex items-center gap-2">
+                                                <span>{country?.flag}</span>
+                                                <span>{country?.name || item.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                            {item.clicks.toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-medium">
+                                            {item.allowedClicks.toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">
+                                            {item.blockedClicks.toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                                    <div 
+                                                        className="bg-blue-500 h-1.5 rounded-full" 
+                                                        style={{ width: `${item.percentage}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span>{item.percentage.toFixed(1)}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            {(!data?.data || data.data.length === 0) && (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
+                                        No data available
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }
