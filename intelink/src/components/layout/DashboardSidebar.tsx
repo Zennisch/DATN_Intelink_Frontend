@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Page } from "../../pages/DashboardPage";
 import { Button } from "../primary";
 import { useAuth } from "../../hooks/useAuth";
+import { useShortUrl } from "../../hooks/useShortUrl";
 
 interface NavigationButton {
 	text: string;
@@ -22,9 +23,25 @@ export const DashboardSidebar = ({
 	setCreateNewModalOpen,
 }: DashboardSidebarProps) => {
 	const { user, logout } = useAuth();
+	const { getShortUrls, refreshSignal } = useShortUrl();
 	const navigate = useNavigate();
 	const [showUserMenu, setShowUserMenu] = useState(false);
+	const [totalUrls, setTotalUrls] = useState(0);
 	const menuRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const fetchTotalUrls = async () => {
+			if (user) {
+				try {
+					const response = await getShortUrls({ page: 0, size: 1 });
+					setTotalUrls(response.totalElements);
+				} catch (error) {
+					console.error("Failed to fetch total urls", error);
+				}
+			}
+		};
+		fetchTotalUrls();
+	}, [user, refreshSignal, getShortUrls]);
 
 	// Close menu when clicking outside
 	useEffect(() => {
@@ -127,7 +144,7 @@ export const DashboardSidebar = ({
 							{(() => {
 								const maxLinks = user.currentSubscription?.planDetails?.maxShortUrls || 10;
 								const isUnlimited = maxLinks === -1;
-								const isNearLimit = !isUnlimited && user.totalShortUrls >= maxLinks * 0.8;
+								const isNearLimit = !isUnlimited && totalUrls >= maxLinks * 0.8;
 								const isFreeUser = !user.currentSubscription || user.currentSubscription.planType === 'FREE';
 
 								// Show upgrade section for free users or users approaching limits (but not unlimited users)
@@ -138,8 +155,8 @@ export const DashboardSidebar = ({
 										<div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-3 text-white">
 											<div className="text-xs font-medium mb-1">
 												{isUnlimited
-													? `${user.totalShortUrls} links`
-													: `${user.totalShortUrls}/${maxLinks} links`
+													? `${totalUrls} links`
+													: `${totalUrls}/${maxLinks} links`
 												}
 											</div>
 											<div className="text-[10px] opacity-90 mb-2 line-clamp-2">
@@ -173,8 +190,8 @@ export const DashboardSidebar = ({
 													<span className="font-medium">Links:</span>
 													<span className="font-semibold">
 														{isUnlimited
-															? `${user.totalShortUrls} (Unlimited)`
-															: `${user.totalShortUrls}/${maxLinks}`
+															? `${totalUrls} (Unlimited)`
+															: `${totalUrls}/${maxLinks}`
 														}
 													</span>
 												</div>
@@ -204,7 +221,7 @@ export const DashboardSidebar = ({
 												<button
 													className="flex-1 bg-white/90 text-purple-600 text-xs font-semibold py-2 px-3 rounded-md hover:bg-white transition-all duration-200 shadow-sm hover:shadow-md"
 													onClick={() => {
-														navigate("/dashboard/subscriptions");
+														setCurrentPage("subscriptions");
 													}}
 												>
 													History

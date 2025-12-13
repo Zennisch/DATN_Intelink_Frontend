@@ -46,6 +46,7 @@ export interface SubscriptionResponse {
   expiresAt?: string;
   createdAt: string;
   updatedAt: string;
+  planDetails?: SubscriptionPlanResponse;
 }
 
 // Cost Calculation DTOs

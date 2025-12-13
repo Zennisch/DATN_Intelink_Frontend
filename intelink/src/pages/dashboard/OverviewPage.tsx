@@ -1,7 +1,25 @@
 import { useAuth } from "../../hooks/useAuth";
+import { useShortUrl } from "../../hooks/useShortUrl";
+import { useEffect, useState } from "react";
 
 const OverviewPage = () => {
 	const { user, isLoading } = useAuth();
+	const { getShortUrls, refreshSignal } = useShortUrl();
+	const [totalUrls, setTotalUrls] = useState(0);
+
+	useEffect(() => {
+		const fetchTotalUrls = async () => {
+			if (user) {
+				try {
+					const response = await getShortUrls({ page: 0, size: 1 });
+					setTotalUrls(response.totalElements);
+				} catch (error) {
+					console.error("Failed to fetch total urls", error);
+				}
+			}
+		};
+		fetchTotalUrls();
+	}, [user, refreshSignal, getShortUrls]);
 
 	if (isLoading) {
 		return (
@@ -43,7 +61,7 @@ const OverviewPage = () => {
 						<div className="space-y-2">
 							<div className="flex justify-between">
 								<span className="text-gray-600">Total Links:</span>
-								<span className="font-medium">{user.totalShortUrls}</span>
+								<span className="font-medium">{totalUrls}</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-gray-600">Total Clicks:</span>
@@ -105,8 +123,8 @@ const OverviewPage = () => {
 										const maxLinks = user.currentSubscription?.planDetails?.maxShortUrls || 10;
 										const isUnlimited = maxLinks === -1;
 										return isUnlimited 
-											? `${user.totalShortUrls} (Unlimited)` 
-											: `${user.totalShortUrls}/${maxLinks}`;
+											? `${totalUrls} (Unlimited)` 
+											: `${totalUrls}/${maxLinks}`;
 									})()}
 								</div>
 								<div className="text-gray-600">

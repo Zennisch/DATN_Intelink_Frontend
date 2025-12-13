@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, type ReactNode} from 'react';
+import {createContext, useContext, useState, useCallback, type ReactNode} from 'react';
 import type {
 	CreateShortUrlRequest,
 	CreateShortUrlResponse,
@@ -40,15 +40,15 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		refreshSignal: 0,
 	});
 
-	const setLoading = (isLoading: boolean) => {
+	const setLoading = useCallback((isLoading: boolean) => {
 		setShortUrlState((prev) => ({...prev, isLoading}));
-	};
+	}, []);
 
-	const triggerRefresh = () => {
+	const triggerRefresh = useCallback(() => {
 		setShortUrlState((prev) => ({...prev, refreshSignal: prev.refreshSignal + 1}));
-	};
+	}, []);
 
-	const createShortUrl = async (request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> => {
+	const createShortUrl = useCallback(async (request: CreateShortUrlRequest): Promise<CreateShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.createShortUrl(request);
@@ -60,9 +60,9 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading, triggerRefresh]);
 
-	const getShortUrls = async (params?: GetShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> => {
+	const getShortUrls = useCallback(async (params?: GetShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.getShortUrls(params);
@@ -73,9 +73,9 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const searchShortUrls = async (params?: SearchShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> => {
+	const searchShortUrls = useCallback(async (params?: SearchShortUrlsParams): Promise<PagedResponse<ShortUrlResponse>> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.searchShortUrls(params);
@@ -86,9 +86,9 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const getShortUrl = async (shortCode: string): Promise<ShortUrlResponse> => {
+	const getShortUrl = useCallback(async (shortCode: string): Promise<ShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.getShortUrl(shortCode);
@@ -100,19 +100,21 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading]);
 
-	const updateShortUrl = async (
+	const updateShortUrl = useCallback(async (
 		shortCode: string,
 		request: UpdateShortUrlRequest
 	): Promise<UpdateShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.updateShortUrl(shortCode, request);
-			// Update current short URL if it's the one being updated
-			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
-				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
-			}
+			setShortUrlState((prev) => {
+				if (prev.currentShortUrl?.shortCode === shortCode) {
+					return {...prev, currentShortUrl: response};
+				}
+				return prev;
+			});
 			triggerRefresh();
 			return response;
 		} catch (error) {
@@ -121,16 +123,18 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading, triggerRefresh]);
 
-	const deleteShortUrl = async (shortCode: string): Promise<void> => {
+	const deleteShortUrl = useCallback(async (shortCode: string): Promise<void> => {
 		try {
 			setLoading(true);
 			await ShortUrlService.deleteShortUrl(shortCode);
-			// Clear current short URL if it's the one being deleted
-			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
-				setShortUrlState((prev) => ({...prev, currentShortUrl: null}));
-			}
+			setShortUrlState((prev) => {
+				if (prev.currentShortUrl?.shortCode === shortCode) {
+					return {...prev, currentShortUrl: null};
+				}
+				return prev;
+			});
 			triggerRefresh();
 		} catch (error) {
 			console.error('Failed to delete short URL:', error);
@@ -138,16 +142,18 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading, triggerRefresh]);
 
-	const enableShortUrl = async (shortCode: string): Promise<ShortUrlResponse> => {
+	const enableShortUrl = useCallback(async (shortCode: string): Promise<ShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.enableShortUrl(shortCode);
-			// Update current short URL if it's the one being enabled
-			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
-				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
-			}
+			setShortUrlState((prev) => {
+				if (prev.currentShortUrl?.shortCode === shortCode) {
+					return {...prev, currentShortUrl: response};
+				}
+				return prev;
+			});
 			triggerRefresh();
 			return response;
 		} catch (error) {
@@ -156,16 +162,18 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading, triggerRefresh]);
 
-	const disableShortUrl = async (shortCode: string): Promise<ShortUrlResponse> => {
+	const disableShortUrl = useCallback(async (shortCode: string): Promise<ShortUrlResponse> => {
 		try {
 			setLoading(true);
 			const response = await ShortUrlService.disableShortUrl(shortCode);
-			// Update current short URL if it's the one being disabled
-			if (shortUrlState.currentShortUrl?.shortCode === shortCode) {
-				setShortUrlState((prev) => ({...prev, currentShortUrl: response}));
-			}
+			setShortUrlState((prev) => {
+				if (prev.currentShortUrl?.shortCode === shortCode) {
+					return {...prev, currentShortUrl: response};
+				}
+				return prev;
+			});
 			triggerRefresh();
 			return response;
 		} catch (error) {
@@ -174,11 +182,11 @@ export const ShortUrlProvider: React.FC<ShortUrlProviderProps> = ({children}) =>
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [setLoading, triggerRefresh]);
 
-	const setCurrentShortUrl = (shortUrl: ShortUrlResponse | null) => {
+	const setCurrentShortUrl = useCallback((shortUrl: ShortUrlResponse | null) => {
 		setShortUrlState((prev) => ({...prev, currentShortUrl: shortUrl}));
-	};
+	}, []);
 
 	const value: ShortUrlContextType = {
 		...shortUrlState,
