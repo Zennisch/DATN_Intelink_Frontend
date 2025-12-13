@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useStatistics } from '../../hooks/useStatistics';
-import { type PeakTimeStatResponse } from '../../dto/StatisticsDTO';
-import type { Granularity } from '../../services/StatisticsService';
-import { Select, Input, Button } from '../primary';
 import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    Cell
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts';
+import { type PeakTimeStatResponse } from '../../dto/StatisticsDTO';
+import { useStatistics } from '../../hooks/useStatistics';
+import type { Granularity } from '../../services/StatisticsService';
+import { Button, Input, Select } from '../primary';
 
 interface Props {
     shortCode: string;
@@ -45,7 +44,6 @@ export default function PeakTimeStats({ shortCode }: Props) {
                 from: fromDate || undefined,
                 to: toDate || undefined,
                 timezone: 'Z',
-                // limit: 10 // Removed limit to show all data like TimeSeries
             });
             setData(result);
         } catch (err) {
@@ -170,7 +168,7 @@ export default function PeakTimeStats({ shortCode }: Props) {
                                     formatter={(value: number) => [`${value} clicks`, 'Traffic']}
                                 />
                                 <Bar dataKey="clicks" radius={[4, 4, 0, 0]} barSize={32}>
-                                    {data.data.map((entry, index) => (
+                                    {data.data.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={getBarColor(index)} />
                                     ))}
                                 </Bar>
