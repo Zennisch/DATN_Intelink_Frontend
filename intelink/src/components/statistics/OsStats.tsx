@@ -83,11 +83,11 @@ export default function OsStats({ shortCode }: Props) {
                         {chartType === 'pie' ? (
                             <PieChart>
                                 <Pie
-                                    data={data.data}
+                                    data={data.data as any}
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                    label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
                                     outerRadius={100}
                                     fill="#8884d8"
                                     dataKey="clicks"
@@ -101,7 +101,7 @@ export default function OsStats({ shortCode }: Props) {
                             </PieChart>
                         ) : (
                             <BarChart
-                                data={data.data}
+                                data={data.data as any}
                                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
