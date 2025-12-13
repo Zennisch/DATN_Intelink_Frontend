@@ -51,7 +51,11 @@ export class AuthService {
 
 	static async getProfile(): Promise<UserProfileResponse> {
 		const response = await api.get<UserProfileResponse>("/api/v1/auth/profile");
-		console.log("User profile response:", response.data);
+		console.log("🔍 [AuthService] Full API response:", JSON.stringify(response.data, null, 2));
+		console.log("🔍 [AuthService] currentSubscription:", response.data.currentSubscription);
+		if (response.data.currentSubscription) {
+			console.log("🔍 [AuthService] subscriptionPlan:", response.data.currentSubscription.subscriptionPlan);
+		}
 		return response.data;
 	}
 

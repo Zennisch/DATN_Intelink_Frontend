@@ -15,14 +15,20 @@ export const useSubscription = () => {
 
 	const fetchCurrentSubscription = useCallback(async () => {
 		try {
+			console.log('🔍 [useSubscription] fetchCurrentSubscription called');
 			setLoading(true);
 			setError(null);
 			const response = await SubscriptionService.getCurrent();
+			console.log('🔍 [useSubscription] Current subscription response:', response);
 			if (response.success && response.subscription) {
+				console.log('🔍 [useSubscription] Setting current subscription:', response.subscription);
 				setCurrentSubscription(response.subscription);
+			} else {
+				console.warn('🔍 [useSubscription] No subscription in response or not successful:', response);
 			}
 		} catch (err: any) {
-			console.error('Error fetching current subscription:', err);
+			console.error('❌ [useSubscription] Error fetching current subscription:', err);
+			console.error('❌ [useSubscription] Error response:', err.response?.data);
 			setError(err.response?.data?.message || 'Failed to fetch current subscription');
 		} finally {
 			setLoading(false);
@@ -31,14 +37,20 @@ export const useSubscription = () => {
 
 	const fetchAllSubscriptions = useCallback(async () => {
 		try {
+			console.log('🔍 [useSubscription] fetchAllSubscriptions called');
 			setLoading(true);
 			setError(null);
 			const response = await SubscriptionService.getAll();
+			console.log('🔍 [useSubscription] All subscriptions response:', response);
 			if (response.success) {
+				console.log('🔍 [useSubscription] Setting subscriptions:', response.subscriptions?.length || 0, 'items');
 				setAllSubscriptions(response.subscriptions);
+			} else {
+				console.warn('🔍 [useSubscription] Response not successful:', response);
 			}
 		} catch (err: any) {
-			console.error('Error fetching subscriptions:', err);
+			console.error('❌ [useSubscription] Error fetching subscriptions:', err);
+			console.error('❌ [useSubscription] Error response:', err.response?.data);
 			setError(err.response?.data?.message || 'Failed to fetch subscriptions');
 		} finally {
 			setLoading(false);

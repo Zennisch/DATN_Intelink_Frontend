@@ -102,15 +102,15 @@ export default function SettingsScreen() {
 						subtitle="Update your password"
 						onPress={() => router.push("/(auth)/forgot-password")}
 					/>
-					<SettingItem
+					{/* <SettingItem
 						icon="shield-checkmark"
 						title="Privacy & Security"
 						subtitle="Manage your privacy settings"
 						onPress={() => Alert.alert("Coming Soon", "Privacy settings will be available soon")}
-					/>
+					/> */}
 				</View>
 
-				{/* Preferences Section */}
+				{/* Preferences Section
 				<View className="bg-white mt-4">
 					<View className="p-4 border-b border-gray-100">
 						<Text className="text-lg font-semibold text-gray-900 mb-2">
@@ -149,7 +149,7 @@ export default function SettingsScreen() {
 						subtitle="English"
 						onPress={() => Alert.alert("Coming Soon", "Language selection will be available soon")}
 					/>
-				</View>
+				</View> */}
 
 				{/* Account Section */}
 				<View className="bg-white mt-4">
@@ -162,9 +162,9 @@ export default function SettingsScreen() {
 						icon="card"
 						title="Subscription"
 						subtitle="Manage your subscription plan"
-						onPress={() => Alert.alert("Coming Soon", "Subscription management will be available soon")}
+						onPress={() => router.push('/subscription-management')}
 					/>
-					<SettingItem
+					{/* <SettingItem
 						icon="download"
 						title="Export Data"
 						subtitle="Download your data"
@@ -175,7 +175,7 @@ export default function SettingsScreen() {
 						title="Help & Support"
 						subtitle="Get help and contact support"
 						onPress={() => Alert.alert("Support", "Contact us at support@intelink.app")}
-					/>
+					/> */}
 				</View>
 
 				{/* Danger Zone */}

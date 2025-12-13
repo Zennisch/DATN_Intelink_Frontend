@@ -17,7 +17,7 @@ export const canCreateShortUrl = (user: User | null): { allowed: boolean; reason
 	const maxUrls = currentSubscription.maxShortUrls;
 	const currentUrls = user.totalShortUrls || 0;
 
-	if (currentUrls >= maxUrls) {
+	if (maxUrls !== -1 && currentUrls >= maxUrls) {
 		return { 
 			allowed: false, 
 			reason: `You have reached the limit of ${maxUrls} short URLs for your ${currentSubscription.planType} plan` 
@@ -142,5 +142,5 @@ export const isFreePlan = (user: User | null): boolean => {
 	if (!user || !user.currentSubscription) {
 		return true;
 	}
-	return user.currentSubscription.planType === SubscriptionPlanType.FREE;
+	return user.currentSubscription.planType === 'FREE' || user.currentSubscription.planType === SubscriptionPlanType.FREE;
 };

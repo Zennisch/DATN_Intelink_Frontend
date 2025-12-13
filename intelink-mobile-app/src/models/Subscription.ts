@@ -1,4 +1,4 @@
-import type { SubscriptionPlanType } from './SubscriptionPlan';
+import type { SubscriptionPlan } from './SubscriptionPlan';
 
 export enum SubscriptionStatus {
 	PENDING = "PENDING",
@@ -7,30 +7,30 @@ export enum SubscriptionStatus {
 	CANCELLED = "CANCELLED"
 }
 
+/**
+ * Subscription model - matches MOBILE backend API flat structure
+ * Backend returns properties directly, NOT nested in subscriptionPlan
+ */
 export interface Subscription {
-	// Key group
-	id: string;
-
-	// Plan information (flat structure from backend)
-	planId: number;
-	planType: SubscriptionPlanType;
-	planDescription?: string;
-	planPrice: number;
+	// IDs
+	subscriptionId: string;
+	
+	// Plan details (FLAT - directly in subscription object from API)
+	planType: string;
+	planDescription: string;
 	maxShortUrls: number;
+	
+	// Feature flags
 	shortCodeCustomizationEnabled: boolean;
 	statisticsEnabled: boolean;
 	customDomainEnabled: boolean;
 	apiAccessEnabled: boolean;
-
-	// Status group
-	status: SubscriptionStatus;
+	
+	// Status
+	status: SubscriptionStatus | string;
 	active: boolean;
-	creditUsed?: number;
-	proRateValue?: number;
-
-	// Audit group
-	createdAt: string;
+	
+	// Dates
 	startsAt: string;
-	activatedAt?: string;
 	expiresAt?: string;
 }

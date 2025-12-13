@@ -82,8 +82,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		try {
 			const userData = await AuthService.getProfile();
 			
-			console.log('[AuthContext] Full user data from API:', userData);
-			console.log('[AuthContext] currentSubscription:', userData.currentSubscription);
+			console.log('🔍 [AuthContext] Full user data from API:', JSON.stringify(userData, null, 2));
+			console.log('🔍 [AuthContext] currentSubscription:', userData.currentSubscription);
+			if (userData.currentSubscription) {
+				console.log('🔍 [AuthContext] subscriptionPlan object:', userData.currentSubscription.subscriptionPlan);
+				console.log('🔍 [AuthContext] planType:', userData.currentSubscription.subscriptionPlan?.planType);
+			}
 
 			setAuthState((prev) => ({
 				...prev,

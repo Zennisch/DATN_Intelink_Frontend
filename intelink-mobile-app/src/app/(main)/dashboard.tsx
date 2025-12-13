@@ -157,45 +157,43 @@ export default function DashboardScreen() {
 					</View>
 				</View>
 
-				{/* Upgrade Plan Card - Show if no subscription or free plan */}
-				{(!user.currentSubscription || user.currentSubscription.planType === 'FREE') && (
-					<TouchableOpacity
-						onPress={() => router.push('/subscription-plans')}
-						className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-md mb-4"
-						activeOpacity={0.8}
-					>
-						<View className="flex-row items-center justify-between">
-							<View className="flex-1">
-								<View className="flex-row items-center gap-2 mb-2">
-									<Ionicons name="rocket" size={24} color="white" />
-									<Text className="text-xl font-bold text-white">
-										Upgrade Your Plan
-									</Text>
-								</View>
-								<Text className="text-white text-sm mb-3">
-									Unlock premium features and boost your productivity
+			{/* Upgrade Plan Card - Show if no subscription or free plan */}
+			{(!user.currentSubscription || user.currentSubscription.planType === 'FREE') && (
+				<TouchableOpacity
+					onPress={() => router.push('/subscription-plans')}
+					className="bg-blue-600 p-6 rounded-xl shadow-lg mb-4 border-2 border-blue-400"
+					activeOpacity={0.8}
+				>
+					<View className="flex-row items-center justify-between">
+						<View className="flex-1">
+							<View className="flex-row items-center gap-2 mb-2">
+								<Ionicons name="rocket" size={24} color="#FFFFFF" />
+								<Text className="text-xl font-bold text-white">
+									Upgrade Your Plan
 								</Text>
-								<View className="space-y-1">
-									<View className="flex-row items-center gap-2">
-										<Ionicons name="checkmark-circle" size={16} color="white" />
-										<Text className="text-white text-xs">More short URLs</Text>
-									</View>
-									<View className="flex-row items-center gap-2">
-										<Ionicons name="checkmark-circle" size={16} color="white" />
-										<Text className="text-white text-xs">Custom domains</Text>
-									</View>
-									<View className="flex-row items-center gap-2">
-										<Ionicons name="checkmark-circle" size={16} color="white" />
-										<Text className="text-white text-xs">Advanced analytics</Text>
-									</View>
+							</View>
+							<Text className="text-blue-50 text-sm mb-3 font-medium">
+								Unlock premium features and boost your productivity
+							</Text>
+							<View className="space-y-1">
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">More short URLs</Text>
+								</View>
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">Custom domains</Text>
+								</View>
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">Advanced analytics</Text>
 								</View>
 							</View>
-							<Ionicons name="chevron-forward" size={24} color="white" />
 						</View>
-					</TouchableOpacity>
-				)}
-
-				{/* Manage Subscription Button - Show if has active subscription */}
+						<Ionicons name="chevron-forward" size={28} color="#FFFFFF" />
+					</View>
+				</TouchableOpacity>
+			)}				{/* Manage Subscription Button - Show if has active subscription */}
 				{user.currentSubscription && user.currentSubscription.planType !== 'FREE' && (
 					<TouchableOpacity
 						onPress={() => router.push('/subscription-management')}
@@ -260,43 +258,43 @@ export default function DashboardScreen() {
 
 						{/* Features */}
 						<View className="space-y-2">
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
-									Custom Short Codes
-								</Text>
-							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
-									Statistics
-								</Text>
-							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.customDomainEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
+								Custom Short Codes
+							</Text>
+						</View>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
+								Statistics
+							</Text>
+						</View>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.subscriptionPlan?.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.subscriptionPlan?.customDomainEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
 									Custom Domain
 								</Text>
 							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.subscriptionPlan?.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.subscriptionPlan?.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
 									API Access
 								</Text>
 							</View>

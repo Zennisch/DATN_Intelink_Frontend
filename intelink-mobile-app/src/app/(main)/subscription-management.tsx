@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -9,23 +9,17 @@ import Button from '../../components/atoms/Button';
 
 export default function SubscriptionManagementScreen() {
 	const router = useRouter();
-	const { refreshUser } = useAuth();
+	const { user, refreshUser } = useAuth();
 	const { 
-		currentSubscription, 
-		allSubscriptions,
-		loading, 
-		error, 
-		fetchCurrentSubscription,
-		fetchAllSubscriptions,
 		cancelSubscription,
 		clearError 
 	} = useSubscription();
 	const [cancellingId, setCancellingId] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		fetchCurrentSubscription();
-		fetchAllSubscriptions();
-	}, [fetchCurrentSubscription, fetchAllSubscriptions]);
+	// Get current subscription from user object
+	const currentSubscription = user?.currentSubscription;
 
 	const handleCancelSubscription = (subscriptionId: string) => {
 		Alert.alert(
@@ -160,17 +154,10 @@ export default function SubscriptionManagementScreen() {
 								</View>
 							)}
 
-							<View className="flex-row justify-between py-2 border-b border-gray-100">
-								<Text className="text-gray-600">Credit Used</Text>
-								<Text className="font-medium text-gray-900">
-									{currentSubscription.creditUsed} VND
-					</Text>
-				</View>
-
 				<View className="flex-row justify-between py-2">
-					<Text className="text-gray-600">Price</Text>
+					<Text className="text-gray-600">Max URLs</Text>
 					<Text className="font-semibold text-green-600">
-						{currentSubscription.planPrice.toLocaleString()} VND
+						{currentSubscription.maxShortUrls === -1 ? 'Unlimited' : currentSubscription.maxShortUrls}
 					</Text>
 				</View>
 			</View>			{/* Features */}
@@ -216,13 +203,25 @@ export default function SubscriptionManagementScreen() {
 				</View>
 			</View>						{/* Actions */}
 						<View className="space-y-3">
-							<Button
-								onPress={() => router.push('/subscription-plans')}
-								variant="primary"
-								className="w-full"
-							>
-								Upgrade Plan
-							</Button>
+							{/* Disable upgrade if already have active non-FREE subscription */}
+							{currentSubscription.status === 'ACTIVE' && currentSubscription.planType !== 'FREE' ? (
+								<View className="bg-gray-100 rounded-lg p-4">
+									<Text className="text-gray-600 text-center font-medium">
+										You already have an active {currentSubscription.planType} plan
+									</Text>
+									<Text className="text-gray-500 text-center text-sm mt-1">
+										Expires: {currentSubscription.expiresAt ? formatDate(currentSubscription.expiresAt) : 'Never'}
+									</Text>
+								</View>
+							) : (
+								<Button
+									onPress={() => router.push('/subscription-plans')}
+									variant="primary"
+									className="w-full"
+								>
+									Upgrade Plan
+								</Button>
+							)}
 							
 						{currentSubscription.status === 'ACTIVE' && currentSubscription.planType !== 'FREE' && (
 							<Button
@@ -258,7 +257,7 @@ export default function SubscriptionManagementScreen() {
 					</View>
 				)}
 
-				{/* Subscription History */}
+				{/* Subscription History - Commented out until backend supports it
 				<View className="mb-6">
 					<Text className="text-xl font-bold text-gray-900 mb-4">
 						Subscription History
@@ -274,13 +273,13 @@ export default function SubscriptionManagementScreen() {
 						<View className="space-y-3">
 							{allSubscriptions.map((subscription) => (
 								<View
-									key={subscription.id}
+									key={subscription.subscriptionId}
 									className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
 								>
-								<View className="flex-row items-center justify-between mb-3">
-									<Text className="font-semibold text-gray-900">
-										{subscription.planType || 'Unknown Plan'}
-									</Text>
+							<View className="flex-row items-center justify-between mb-3">
+								<Text className="font-semibold text-gray-900">
+									{subscription.planType || 'Unknown Plan'}
+								</Text>
 										<View className={`px-3 py-1 rounded-full ${getStatusColor(subscription.status).bg}`}>
 											<Text className={`text-xs font-semibold ${getStatusColor(subscription.status).text}`}>
 												{subscription.status}
@@ -302,21 +301,22 @@ export default function SubscriptionManagementScreen() {
 												<Text className="text-sm text-gray-900">
 													{formatDate(subscription.expiresAt)}
 												</Text>
-										</View>
-									)}
-
-									<View className="flex-row justify-between">
-										<Text className="text-sm text-gray-600">Price:</Text>
-										<Text className="text-sm font-medium text-green-600">
-											{subscription.planPrice.toLocaleString()} VND
-										</Text>
 									</View>
+								)}
+
+							<View className="flex-row justify-between">
+								<Text className="text-sm text-gray-600">Price:</Text>
+								<Text className="text-sm font-medium text-green-600">
+									{subscription.maxShortUrls === -1 ? 'Contact Sales' : '0 VND'}
+								</Text>
+							</View>
 								</View>
 								</View>
 							))}
 						</View>
 					)}
 				</View>
+				*/}
 			</ScrollView>
 		</SafeAreaView>
 	);

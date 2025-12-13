@@ -9,12 +9,16 @@ import type {
 
 export class SubscriptionService {
 	static async getAll(): Promise<GetAllSubscriptionsResponse> {
+		console.log('🔍 [SubscriptionService] Fetching all subscriptions...');
 		const response = await api.get<GetAllSubscriptionsResponse>('/api/v1/subscription');
+		console.log('🔍 [SubscriptionService] All subscriptions response:', JSON.stringify(response.data, null, 2));
 		return response.data;
 	}
 
 	static async getCurrent(): Promise<SubscriptionResponse> {
+		console.log('🔍 [SubscriptionService] Fetching current subscription...');
 		const response = await api.get<SubscriptionResponse>('/api/v1/subscription/current');
+		console.log('🔍 [SubscriptionService] Current subscription response:', JSON.stringify(response.data, null, 2));
 		return response.data;
 	}
 
