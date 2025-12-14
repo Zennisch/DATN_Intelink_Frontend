@@ -5,6 +5,7 @@ import { Button } from "../primary";
 import { useAuth } from "../../hooks/useAuth";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import type { SubscriptionPlanType } from '../../models/Subscription';
+import { AccountSettingsModal } from "../dashboard/AccountSettingsModal";
 
 interface NavigationButton {
 	text: string;
@@ -28,6 +29,7 @@ export const DashboardSidebar = ({
 	const { getShortUrls, refreshSignal } = useShortUrl();
 	const navigate = useNavigate();
 	const [showUserMenu, setShowUserMenu] = useState(false);
+	const [showAccountSettings, setShowAccountSettings] = useState(false);
 	const [totalUrls, setTotalUrls] = useState(0);
 	const menuRef = useRef<HTMLDivElement>(null);
 
@@ -274,7 +276,13 @@ export const DashboardSidebar = ({
 									</div>
 								</div>
 								<div className="p-1.5">
-									<button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
+									<button 
+										className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3"
+										onClick={() => {
+											setShowUserMenu(false);
+											setShowAccountSettings(true);
+										}}
+									>
 										<i className="fas fa-user-cog w-4 text-center"></i> Account Settings
 									</button>
 									{/* <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors flex items-center gap-3">
@@ -315,6 +323,11 @@ export const DashboardSidebar = ({
 					</div>
 				</div>
 			</div>
+			
+			<AccountSettingsModal 
+				open={showAccountSettings} 
+				onClose={() => setShowAccountSettings(false)} 
+			/>
 		</div>
 	);
 };
