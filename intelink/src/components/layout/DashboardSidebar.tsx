@@ -4,11 +4,13 @@ import type { Page } from "../../pages/DashboardPage";
 import { Button } from "../primary";
 import { useAuth } from "../../hooks/useAuth";
 import { useShortUrl } from "../../hooks/useShortUrl";
+import type { SubscriptionPlanType } from '../../models/Subscription';
 
 interface NavigationButton {
 	text: string;
 	icon: string;
 	onClick: () => void;
+	disabled?: Array<SubscriptionPlanType>;
 }
 
 interface DashboardSidebarProps {
@@ -76,6 +78,7 @@ export const DashboardSidebar = ({
 			onClick: () => {
 				setCurrentPage("overview");
 			},
+			disabled: [],
 		},
 		{
 			text: "Links",
@@ -84,6 +87,7 @@ export const DashboardSidebar = ({
 			onClick: () => {
 				setCurrentPage("links");
 			},
+			disabled: [],
 		},
 		{
 			text: "Dashboard",
@@ -91,7 +95,8 @@ export const DashboardSidebar = ({
 			page: "dashboard",
 			onClick: () => {
 				setCurrentPage("dashboard");
-			}
+			},
+			disabled: ['FREE'],
 		},
 		{
 			text: "Statistics",
@@ -100,6 +105,7 @@ export const DashboardSidebar = ({
 			onClick: () => {
 				setCurrentPage("statistics");
 			},
+			disabled: ['FREE'],
 		},
 		{
 			text: "APIs",
@@ -108,6 +114,7 @@ export const DashboardSidebar = ({
 			onClick: () => {
 				setCurrentPage("apis");
 			},
+			disabled: ['FREE', 'PRO'],
 		},
 	];
 
@@ -126,23 +133,29 @@ export const DashboardSidebar = ({
 						Create New
 					</Button>
 
-					{navigationButtons.map((button, index) => {
-						const isActive = currentPage === button.page;
-						return (
-							<Button
-								key={index}
-								size="sm"
-								variant="ghost"
-								className={`w-full justify-start ${
-									isActive ? "text-black bg-gray-200!" : ""
-								}`}
-								icon={<span>{button.icon}</span>}
-								onClick={button.onClick}
-							>
-								{button.text}
-							</Button>
-						);
-					})}
+					{navigationButtons
+						.filter((button) => {
+							const userPlan = (user?.currentSubscription?.planType ||
+								"FREE") as SubscriptionPlanType;
+							return !button.disabled?.includes(userPlan);
+						})
+						.map((button, index) => {
+							const isActive = currentPage === button.page;
+							return (
+								<Button
+									key={index}
+									size="sm"
+									variant="ghost"
+									className={`w-full justify-start ${
+										isActive ? "text-black bg-gray-200!" : ""
+									}`}
+									icon={<span>{button.icon}</span>}
+									onClick={button.onClick}
+								>
+									{button.text}
+								</Button>
+							);
+						})}
 				</div>
 
 				<div className="flex flex-col gap-4">
