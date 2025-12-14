@@ -2,12 +2,10 @@ import { Button } from "../primary";
 
 interface CreateShortUrlFooterProps {
 	onCancel: () => void;
-	onDebugLog?: () => void; // Optional debug function
 }
 
 export const CreateShortUrlFooter = ({
 	onCancel,
-	onDebugLog,
 }: CreateShortUrlFooterProps) => {
 	return (
 		<div className="flex items-center justify-end pt-6 border-t border-gray-200">

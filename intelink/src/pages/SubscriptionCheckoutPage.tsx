@@ -25,6 +25,7 @@ const SubscriptionCheckoutPage: React.FC = () => {
             if (!planId) return;
             try {
                 setIsLoading(true);
+                await refreshUser();
                 const response = await SubscriptionService.calculateCost({ planId: parseInt(planId) });
                 setCostDetails(response);
             } catch (err) {

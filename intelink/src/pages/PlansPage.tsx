@@ -9,7 +9,7 @@ const PlansPage: React.FC = () => {
     const navigate = useNavigate();
     const { getAllPlans, plans, isLoading: isPlansLoading } = useSubscription();
     const { user } = useAuth();
-    const [processingPlanId, setProcessingPlanId] = useState<number | null>(null);
+    const [processingPlanId] = useState<number | null>(null);
 
     useEffect(() => {
         getAllPlans();
