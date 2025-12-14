@@ -12,6 +12,7 @@ const OAuth2CallbackPage = lazy(() => import('./pages/OAuth2CallbackPage').then(
 const PlansPage = lazy(() => import('./pages/PlansPage').then((m) => ({default: m.default})));
 const SubscriptionCheckoutPage = lazy(() => import('./pages/SubscriptionCheckoutPage').then((m) => ({default: m.default})));
 const PaymentCallbackPage = lazy(() => import('./pages/PaymentCallbackPage').then((m) => ({default: m.default})));
+const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({default: m.default})));
 
 export interface RouteConfig {
 	path: string;
@@ -20,6 +21,10 @@ export interface RouteConfig {
 }
 
 export const routes: RouteConfig[] = [
+	{
+		path: '/',
+		element: <HomePage />,
+	},
 	{
 		path: '/login',
 		element: <LoginPage />,
