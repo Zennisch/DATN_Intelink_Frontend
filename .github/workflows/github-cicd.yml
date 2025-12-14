@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: intelink-project
+        working-directory: intelink
 
     steps:
       # 1️⃣ Checkout code
