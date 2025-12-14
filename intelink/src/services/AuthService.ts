@@ -8,6 +8,8 @@ import type {
 	AuthInfoResponse,
 	RegisterResponse,
 	UserProfileResponse,
+	UpdateProfileRequest,
+	UpdatePasswordRequest,
 } from '../dto/UserDTO.tsx';
 
 export class AuthService {
@@ -57,6 +59,16 @@ export class AuthService {
 	static async getProfile(): Promise<UserProfileResponse> {
 		const response = await axios.get<UserProfileResponse>('/auth/profile');
 		console.log('User profile response:', response.data);
+		return response.data;
+	}
+
+	static async updateProfile(request: UpdateProfileRequest): Promise<UserProfileResponse> {
+		const response = await axios.put<UserProfileResponse>('/auth/profile', request);
+		return response.data;
+	}
+
+	static async updatePassword(request: UpdatePasswordRequest): Promise<AuthInfoResponse> {
+		const response = await axios.put<AuthInfoResponse>('/auth/password', request);
 		return response.data;
 	}
 

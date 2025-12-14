@@ -6,6 +6,9 @@ import type {
 	RegisterRequest,
 	RegisterResponse,
 	ResetPasswordRequest,
+	UpdateProfileRequest,
+	UpdatePasswordRequest,
+	UserProfileResponse,
 } from '../dto/UserDTO';
 import type {User} from '../models/User';
 import {AuthService} from '../services/AuthService.ts';
@@ -26,6 +29,8 @@ export interface AuthContextType extends AuthState {
 	refreshUser: () => Promise<void>;
 	logout: (onLogoutComplete?: () => void) => Promise<void>;
 	oAuthCallback: (authToken: string, refreshToken?: string) => Promise<void>;
+	updateProfile: (request: UpdateProfileRequest) => Promise<UserProfileResponse>;
+	updatePassword: (request: UpdatePasswordRequest) => Promise<AuthInfoResponse>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -218,6 +223,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 		}
 	}, [getProfile]);
 
+	const updateProfile = useCallback(async (request: UpdateProfileRequest): Promise<UserProfileResponse> => {
+		try {
+			const response = await AuthService.updateProfile(request);
+			setAuthState((prev) => ({
+				...prev,
+				user: prev.user ? { ...prev.user, ...response } : null,
+			}));
+			return response;
+		} catch (error) {
+			console.error('Failed to update profile:', error);
+			throw error;
+		}
+	}, []);
+
+	const updatePassword = useCallback(async (request: UpdatePasswordRequest): Promise<AuthInfoResponse> => {
+		try {
+			const response = await AuthService.updatePassword(request);
+			return response;
+		} catch (error) {
+			console.error('Failed to update password:', error);
+			throw error;
+		}
+	}, []);
+
 	const value: AuthContextType = {
 		...authState,
 		register,
@@ -228,6 +257,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 		refreshUser,
 		logout,
 		oAuthCallback,
+		updateProfile,
+		updatePassword,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
