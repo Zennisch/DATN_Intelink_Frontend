@@ -4,7 +4,7 @@ import type { DimensionType, Granularity } from "../../services/StatisticsServic
 import type { GeographyStatResponse, TimeSeriesStatResponse, DimensionStatResponse } from "../../dto/StatisticsDTO";
 import { CountryMapChart } from "./CountryMapChart";
 import { LineChart } from "./LineChart";
-import { Button, Select } from "../primary";
+import { Select } from "../primary";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 

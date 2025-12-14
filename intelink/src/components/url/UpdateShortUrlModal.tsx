@@ -6,7 +6,6 @@ import {
 } from "./AccessControlSection";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import type { UpdateShortUrlRequest, ShortUrlResponse } from "../../dto/ShortUrlDTO";
-import type { AccessControlMode } from "../../models/ShortUrl";
 
 interface UpdateShortUrlModalProps {
 	open: boolean;
