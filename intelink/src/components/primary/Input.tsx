@@ -68,6 +68,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
 		TRANSITION,
 		FOCUS_STYLES,
 		"focus:border-transparent",
+		"disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500",
 		startAdornment ? "pl-10" : "",
 		endAdornment ? "pr-10" : "",
 	);

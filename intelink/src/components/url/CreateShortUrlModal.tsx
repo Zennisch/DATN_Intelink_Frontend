@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Checkbox, Input, Modal } from "../primary";
+import { useAuth } from "../../hooks/useAuth";
 import {
 	AccessControlSection,
 	type AccessControlData,
@@ -20,6 +21,7 @@ export const CreateShortUrlModal = ({
 	onSuccess,
 }: CreateShortUrlModalProps) => {
 	const { createShortUrl, isLoading } = useShortUrl();
+	const { user } = useAuth();
 	
 	const [isExtraExpanded, setIsExtraExpanded] = useState(false);
 	
@@ -189,7 +191,8 @@ export const CreateShortUrlModal = ({
 									}
 									wrapperClassName="w-1/2"
 									inputClassName="w-full"
-									helpText="Leave empty for auto-generated code"
+									helpText={(!user?.currentSubscription || user.currentSubscription.planType === 'FREE') ? "Upgrade to customize short code" : "Leave empty for auto-generated code"}
+									disabled={!user?.currentSubscription || user.currentSubscription.planType === 'FREE'}
 								/>
 							</div>
 							<Input
