@@ -42,7 +42,7 @@ jobs:
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      # 6️⃣ Build project với biến môi trường 123
+      # 6️⃣ Build project với biến môi trường
       - name: Build & Deploy to Vercel
         env:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
