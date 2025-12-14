@@ -15,7 +15,7 @@ import { setupAxios } from "./services/AxiosConfig.ts";
 setupAxios();
 
 createRoot(document.getElementById('root')!).render(
-	<StrictMode>
+	// <StrictMode>
 		<BrowserRouter>
 			<AuthProvider>
 				<ShortUrlProvider>
@@ -31,5 +31,5 @@ createRoot(document.getElementById('root')!).render(
 				</ShortUrlProvider>
 			</AuthProvider>
 		</BrowserRouter>
-	</StrictMode>
+	// </StrictMode>
 );
