@@ -2,11 +2,10 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./legacy/contexts/AuthContext.tsx";
+import { AuthProvider } from "./hooks/useAuth";
 import "./index.css";
-import { ShortUrlProvider } from "./legacy/contexts/ShortUrlContext.tsx";
-import { setupAxios } from "./legacy/services/AxiosConfig.ts";
-import { LoadingPage } from "./current/components/ui";
+import { ShortUrlProvider } from "./hooks/useShortUrl";
+import { setupAxios } from "./services/AxiosConfig.ts";
 
 setupAxios().then();
 
@@ -17,7 +16,7 @@ createRoot(document.getElementById("root")!).render(
 		<BrowserRouter>
 			<AuthProvider>
 				<ShortUrlProvider>
-					<Suspense fallback={<LoadingPage />}>
+					<Suspense>
 						<App />
 					</Suspense>
 				</ShortUrlProvider>
