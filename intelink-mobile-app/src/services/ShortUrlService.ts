@@ -102,6 +102,42 @@ export class ShortUrlService {
 	}
 
 	/**
+	 * Get unlock info for a protected URL
+	 */
+	static async getUnlockInfo(shortCode: string): Promise<{ success: boolean; message: string; shortCode: string }> {
+		const result = await this.accessShortUrl(shortCode);
+		if (result.type === 'PASSWORD_PROTECTED') {
+			return {
+				success: true,
+				message: result.message || 'Password required',
+				shortCode: result.shortCode || shortCode
+			};
+		}
+		return {
+			success: false,
+			message: result.message || 'Link does not require password',
+			shortCode: result.shortCode || shortCode
+		};
+	}
+
+	/**
+	 * Unlock a protected URL
+	 */
+	static async unlockUrl(shortCode: string, password: string): Promise<{ success: boolean; redirectUrl?: string; message?: string }> {
+		const result = await this.accessShortUrl(shortCode, password);
+		if (result.type === 'SUCCESS' && result.redirectUrl) {
+			return {
+				success: true,
+				redirectUrl: result.redirectUrl
+			};
+		}
+		return {
+			success: false,
+			message: result.message || 'Incorrect password'
+		};
+	}
+
+	/**
 	 * Access a short URL (redirect)
 	 */
 	static async accessShortUrl(shortCode: string, password?: string): Promise<RedirectResult> {

@@ -13,8 +13,8 @@ import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
 import { useAuth } from "../../hooks/useAuth";
 import { canCreateShortUrl, canCustomizeShortCode } from "../../utils/subscriptionUtils";
-import type { SearchShortUrlsParams } from "../../services/ShortUrlService";
-import type { CreateShortUrlRequest, ShortUrlResponse } from "../../dto/ShortUrlDTO";
+import type { SearchShortUrlRequest, CreateShortUrlRequest } from "../../services/ShortUrlService";
+import type { ShortUrlResponse } from "../../dto/ShortUrlDTO";
 
 export default function ShortUrlsScreen() {
 	// const [unlockModalVisible, setUnlockModalVisible] = useState(false);
@@ -54,7 +54,7 @@ export default function ShortUrlsScreen() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const fetchShortUrls = useCallback(async (params: SearchShortUrlsParams) => {
+	const fetchShortUrls = useCallback(async (params: SearchShortUrlRequest) => {
 		setLoading(true);
 		setError(null);
 		try {
@@ -73,13 +73,13 @@ export default function ShortUrlsScreen() {
 
 	// Fetch short URLs on component mount and when filters change
 	useEffect(() => {
-		const searchParams: SearchShortUrlsParams = {
+		const searchParams: SearchShortUrlRequest = {
 			page: currentPage,
 			size: 10,
 			query: searchQuery || undefined,
 			status: statusFilter || undefined,
 			sortBy: "createdAt",
-			direction: "desc",
+			sortDirection: "desc",
 		};
 		fetchShortUrls(searchParams);
 	}, [currentPage, searchQuery, statusFilter, fetchShortUrls]);
@@ -94,13 +94,13 @@ export default function ShortUrlsScreen() {
 				type: "success",
 			});
 			// Refresh list
-			const searchParams: SearchShortUrlsParams = {
+			const searchParams: SearchShortUrlRequest = {
 				page: currentPage,
 				size: 10,
 				query: searchQuery || undefined,
 				status: statusFilter || undefined,
 				sortBy: "createdAt",
-				direction: "desc",
+				sortDirection: "desc",
 			};
 			await fetchShortUrls(searchParams);
 			setModalVisible(false);
@@ -133,13 +133,13 @@ export default function ShortUrlsScreen() {
 								type: "success",
 							});
 							// Refresh the list
-							const searchParams: SearchShortUrlsParams = {
+							const searchParams: SearchShortUrlRequest = {
 								page: currentPage,
 								size: 10,
 								query: searchQuery || undefined,
 								status: statusFilter || undefined,
 								sortBy: "createdAt",
-								direction: "desc",
+								sortDirection: "desc",
 							};
 							await fetchShortUrls(searchParams);
 						} catch {
@@ -169,13 +169,13 @@ export default function ShortUrlsScreen() {
 				type: "success",
 			});
 			// Refresh the list
-			const searchParams: SearchShortUrlsParams = {
+			const searchParams: SearchShortUrlRequest = {
 				page: currentPage,
 				size: 10,
 				query: searchQuery || undefined,
 				status: statusFilter || undefined,
 				sortBy: "createdAt",
-				direction: "desc",
+				sortDirection: "desc",
 			};
 			await fetchShortUrls(searchParams);
 		} catch {
@@ -209,13 +209,13 @@ export default function ShortUrlsScreen() {
 
 	const handleSearch = () => {
 		setCurrentPage(0);
-		const searchParams: SearchShortUrlsParams = {
+		const searchParams: SearchShortUrlRequest = {
 			page: 0,
 			size: 10,
 			query: searchQuery || undefined,
 			status: statusFilter || undefined,
 			sortBy: "createdAt",
-			direction: "desc",
+			sortDirection: "desc",
 		};
 		fetchShortUrls(searchParams);
 	};
@@ -421,9 +421,10 @@ export default function ShortUrlsScreen() {
 										<TouchableOpacity
 											onPress={() => {
 												if (url.hasPassword) {
-													// Mở trang web unlock trong browser
-													const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
-													Linking.openURL(unlockUrl);
+													router.push({
+														pathname: '/(main)/UnlockUrlScreen',
+														params: { shortCode: url.shortCode }
+													});
 												} else {
 													router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } });
 												}
@@ -438,9 +439,10 @@ export default function ShortUrlsScreen() {
 										className="ml-2 p-1"
 										onPress={() => {
 											if (url.hasPassword) {
-												// Mở trang web unlock trong browser
-												const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
-												Linking.openURL(unlockUrl);
+												router.push({
+													pathname: '/(main)/UnlockUrlScreen',
+													params: { shortCode: url.shortCode }
+												});
 											} else {
 												Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
 											}

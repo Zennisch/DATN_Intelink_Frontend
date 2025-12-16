@@ -123,14 +123,22 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
       };
       
       // Add access control data
-      if (showAdvancedOptions) {
+      // Only apply access control if there are actual restrictions (countries or IPs)
+      if (accessControl.countries.length > 0 || accessControl.ipRanges.length > 0) {
           requestData.accessControlMode = accessControl.mode === 'allow' ? 'WHITELIST' : 'BLACKLIST';
+          
+          // Only add geographies if there are selected countries
           if (accessControl.countries.length > 0) {
               requestData.accessControlGeographies = accessControl.countries;
           }
+          
+          // Only add CIDRs if there are selected IP ranges
           if (accessControl.ipRanges.length > 0) {
               requestData.accessControlCIDRs = accessControl.ipRanges;
           }
+      } else {
+          // If no restrictions are defined, ensure mode is NONE
+          requestData.accessControlMode = 'NONE';
       }
       
       await onSubmit(requestData);
