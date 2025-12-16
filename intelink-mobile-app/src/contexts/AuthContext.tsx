@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useCallback } from "react";
 import { AuthStorage } from "../storages/AuthStorage";
 import { AuthService } from "../services/AuthService";
 import type { AuthState } from "../models/User";
@@ -9,13 +9,9 @@ import type {
 	RegisterRequest,
 	ResetPasswordRequest,
 	ForgotPasswordRequest,
-} from "../dto/request/UserRequest";
-import type {
 	RegisterResponse,
-	ResetPasswordResponse,
-	VerifyEmailResponse,
-	ForgotPasswordResponse,
-} from "../dto/response/UserResponse";
+	AuthInfoResponse,
+} from "../dto/UserDTO";
 
 export interface AuthContextType extends AuthState {
 	login: (credentials: LoginRequest) => Promise<void>;
@@ -25,12 +21,12 @@ export interface AuthContextType extends AuthState {
 	resetPassword: (
 		token: string,
 		request: ResetPasswordRequest,
-	) => Promise<ResetPasswordResponse>;
-	oAuthCallback: (token: string) => Promise<void>;
-	verifyEmail: (token: string) => Promise<VerifyEmailResponse>;
+	) => Promise<AuthInfoResponse>;
+	oAuthLogin: (token: string) => Promise<void>;
+	verifyEmail: (token: string) => Promise<AuthInfoResponse>;
 	forgotPassword: (
 		request: ForgotPasswordRequest,
-	) => Promise<ForgotPasswordResponse>;
+	) => Promise<AuthInfoResponse>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -78,9 +74,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		};
 	}, []);
 
-	const getProfile = async (): Promise<void> => {
+	const getProfile = useCallback(async (): Promise<void> => {
 		try {
 			const userData = await AuthService.getProfile();
+			
+			console.log('🔍 [AuthContext] Full user data from API:', JSON.stringify(userData, null, 2));
+			console.log('🔍 [AuthContext] currentSubscription:', userData.currentSubscription);
+			if (userData.currentSubscription) {
+				console.log('🔍 [AuthContext] subscriptionPlan object:', userData.currentSubscription.subscriptionPlan);
+				console.log('🔍 [AuthContext] planType:', userData.currentSubscription.subscriptionPlan?.planType);
+			}
 
 			setAuthState((prev) => ({
 				...prev,
@@ -101,7 +104,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					bio: userData.bio,
 					profilePictureUrl: userData.profilePictureUrl,
 					providerUserId: userData.providerUserId,
-					currentSubscription: userData.currentSubscription,
+					currentSubscription: userData.currentSubscription ? {
+						subscriptionId: userData.currentSubscription.id,
+						planType: userData.currentSubscription.planType,
+						planDescription: "", // Not available in DTO
+						maxShortUrls: userData.currentSubscription.planDetails.maxShortUrls,
+						shortCodeCustomizationEnabled: userData.currentSubscription.planDetails.shortCodeCustomizationEnabled,
+						statisticsEnabled: userData.currentSubscription.planDetails.statisticsEnabled,
+						customDomainEnabled: userData.currentSubscription.planDetails.customDomainEnabled || false,
+						apiAccessEnabled: userData.currentSubscription.planDetails.apiAccessEnabled,
+						status: userData.currentSubscription.status,
+						active: userData.currentSubscription.active,
+						startsAt: userData.currentSubscription.activatedAt || '',
+						expiresAt: userData.currentSubscription.expiresAt
+					} : undefined,
 					creditBalance: userData.creditBalance,
 					currency: userData.currency,
 				},
@@ -112,9 +128,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			console.error("Failed to fetch user profile:", error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const login = async (credentials: LoginRequest): Promise<void> => {
+	const login = useCallback(async (credentials: LoginRequest): Promise<void> => {
 		try {
 			setAuthState((prev) => ({ ...prev, isLoading: true }));
 
@@ -156,9 +172,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			});
 			throw error;
 		}
-	};
+	}, [getProfile]);
 
-	const logout = async (onLogoutComplete?: () => void): Promise<void> => {
+	const logout = useCallback(async (onLogoutComplete?: () => void): Promise<void> => {
 		try {
 			await AuthService.logout();
 		} catch (error) {
@@ -175,30 +191,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				onLogoutComplete();
 			}
 		}
-	};
+	}, []);
 
-	const refreshUser = async (): Promise<void> => {
+	const refreshUser = useCallback(async (): Promise<void> => {
 		try {
 			await getProfile();
 		} catch (error) {
 			console.error("Failed to refresh user:", error);
 			await logout();
 		}
-	};
+	}, [getProfile, logout]);
 
-	const register = async (
+	const register = useCallback(async (
 		credentials: RegisterRequest,
 	): Promise<RegisterResponse> => {
 		try {
+			console.log("🔐 AuthContext - Registering with credentials:", credentials);
+			console.log("🔐 AuthContext - Credentials type check:", {
+				username: typeof credentials.username,
+				email: typeof credentials.email,
+				password: typeof credentials.password,
+				confirmPassword: (credentials as any).confirmPassword ? 'EXISTS - SHOULD NOT!' : 'undefined (correct)'
+			});
 			const response = await AuthService.register(credentials);
 			return response;
 		} catch (error) {
 			console.error("Registration failed:", error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const resetPassword = async (
+	const resetPassword = useCallback(async (
 		token: string,
 		request: ResetPasswordRequest,
 	): Promise<ResetPasswordResponse> => {
@@ -209,9 +232,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			console.error("Reset password failed:", error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const oAuthCallback = async (token: string): Promise<void> => {
+	const oAuthLogin = useCallback(async (token: string): Promise<void> => {
 		try {
 			setAuthState((prev) => ({ ...prev, isLoading: true }));
 
@@ -259,9 +282,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			});
 			throw error;
 		}
-	};
+	}, [getProfile]);
 
-	const verifyEmail = async (token: string): Promise<VerifyEmailResponse> => {
+	const verifyEmail = useCallback(async (token: string): Promise<VerifyEmailResponse> => {
 		try {
 			const response = await AuthService.verifyEmail(token);
 			return response;
@@ -269,9 +292,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			console.error("Email verification failed:", error);
 			throw error;
 		}
-	};
+	}, []);
 
-	const forgotPassword = async (
+	const forgotPassword = useCallback(async (
 		request: ForgotPasswordRequest,
 	): Promise<ForgotPasswordResponse> => {
 		try {
@@ -281,7 +304,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			console.error("Forgot password failed:", error);
 			throw error;
 		}
-	};
+	}, []);
 
 	const value: AuthContextType = {
 		...authState,
@@ -290,7 +313,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		refreshUser,
 		register,
 		resetPassword,
-		oAuthCallback,
+		oAuthLogin,
 		verifyEmail,
 		forgotPassword,
 	};

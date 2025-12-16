@@ -1,7 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { OverviewStatisticsService, type Granularity, type CountryStatisticsResponse, type TimeSeriesResponse, type DimensionType, type DimensionStatisticsResponse } from "../../services/OverviewStatisticsService";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import { Ionicons } from '@expo/vector-icons';
+import Button from "../../components/atoms/Button";
+import { canAccessStatistics } from "../../utils/subscriptionUtils";
+import { OverviewStatisticsService, type Granularity, type DimensionType } from "../../services/OverviewStatisticsService";
+import type { GeographyStatResponse, TimeSeriesStatResponse, DimensionStatResponse } from "../../dto/StatisticsDTO";
 import { CountryMap } from "../../components/ui/CountryMap";
 import { LineChart } from "../../components/ui/LineChart";
 import { COUNTRY_NAMES } from "../../constants/constants";
@@ -10,10 +16,37 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 type TabType = "country" | "timeseries" | "dimension";
 
 export default function OverviewScreen() {
+	const router = useRouter();
+	const { user } = useAuth();
 	const [activeTab, setActiveTab] = useState<TabType>("country");
-	const [countryData, setCountryData] = useState<CountryStatisticsResponse | null>(null);
-	const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesResponse | null>(null);
-	const [dimensionData, setDimensionData] = useState<Map<DimensionType, DimensionStatisticsResponse>>(new Map());
+
+	// Permission check for statistics access
+	const statisticsPermission = canAccessStatistics(user);
+	if (!statisticsPermission.allowed) {
+		return (
+			<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+				<View className="flex-1 justify-center items-center px-4">
+					<Ionicons name="bar-chart" size={64} color="#9CA3AF" />
+					<Text className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+						Overview Statistics Locked
+					</Text>
+					<Text className="text-gray-600 text-center mb-6">
+						{statisticsPermission.reason}
+					</Text>
+					<Button
+						onPress={() => router.push('/subscription-plans')}
+						variant="primary"
+					>
+						Upgrade Plan
+					</Button>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	const [countryData, setCountryData] = useState<GeographyStatResponse | null>(null);
+	const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesStatResponse | null>(null);
+	const [dimensionData, setDimensionData] = useState<Map<DimensionType, DimensionStatResponse | GeographyStatResponse>>(new Map());
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -31,19 +64,10 @@ export default function OverviewScreen() {
 
 	const DIMENSION_OPTIONS: { value: DimensionType; label: string }[] = [
 		{ value: "COUNTRY", label: "Country" },
-		{ value: "REFERRER", label: "Referrer" },
-		{ value: "REFERRER_TYPE", label: "Referrer Type" },
-		{ value: "UTM_SOURCE", label: "UTM Source" },
-		{ value: "UTM_MEDIUM", label: "UTM Medium" },
-		{ value: "UTM_CAMPAIGN", label: "UTM Campaign" },
 		{ value: "BROWSER", label: "Browser" },
 		{ value: "OS", label: "OS" },
 		{ value: "DEVICE_TYPE", label: "Device Type" },
 		{ value: "CITY", label: "City" },
-		{ value: "REGION", label: "Region" },
-		{ value: "TIMEZONE", label: "Timezone" },
-		{ value: "ISP", label: "ISP" },
-		{ value: "LANGUAGE", label: "Language" },
 	];
 
 	// Auto-fetch when dates change
@@ -54,7 +78,7 @@ export default function OverviewScreen() {
 			try {
 				const from = `${startDate.toISOString().split("T")[0]}T00:00:00Z`;
 				const to = `${endDate.toISOString().split("T")[0]}T23:59:59Z`;
-				const data = await OverviewStatisticsService.getCountryStatistics(from, to, 10);
+				const data = await OverviewStatisticsService.getCountryStatistics(from, to);
 				setCountryData(data);
 			} catch (err) {
 				const error = err as { response?: { data?: { message?: string } } };
@@ -88,11 +112,11 @@ export default function OverviewScreen() {
 				const to = `${endDate.toISOString().split("T")[0]}T23:59:59Z`;
 				
 				const promises = selectedDimensions.map(dim =>
-					OverviewStatisticsService.getDimensionStatistics(dim, from, to, limit)
+					OverviewStatisticsService.getDimensionStatistics(dim, from, to)
 				);
 				const results = await Promise.all(promises);
 				
-				const newData = new Map<DimensionType, DimensionStatisticsResponse>();
+				const newData = new Map<DimensionType, DimensionStatResponse | GeographyStatResponse>();
 				results.forEach((result, idx) => {
 					newData.set(selectedDimensions[idx], result);
 				});
@@ -118,12 +142,12 @@ export default function OverviewScreen() {
 	const countryMapData = useMemo(() => {
 		if (!countryData) return [];
 		
-		const total = countryData.data.reduce((sum, d) => sum + d.views, 0);
+		const total = countryData.data.reduce((sum, d) => sum + d.clicks, 0);
 		
 		return countryData.data.map(item => ({
-			name: item.country,
-			clicks: item.views,
-			percentage: total > 0 ? (item.views / total) * 100 : 0
+			name: item.name,
+			clicks: item.clicks,
+			percentage: total > 0 ? (item.clicks / total) * 100 : 0
 		}));
 	}, [countryData]);
 
@@ -132,12 +156,12 @@ export default function OverviewScreen() {
 		if (!timeSeriesData) return [];
 		
 		return timeSeriesData.data.map(item => {
-			const clicks = item.views;
-			const allows = Math.floor(clicks * (0.7 + Math.random() * 0.2));
-			const blocks = Math.max(0, clicks - allows + Math.floor(Math.random() * clicks * 0.1));
+			const clicks = item.clicks;
+			const allows = item.allowedClicks;
+			const blocks = item.blockedClicks;
 			
 			return {
-				time: item.date,
+				time: item.bucketStart,
 				clicks,
 				allows,
 				blocks,
@@ -398,7 +422,7 @@ export default function OverviewScreen() {
 							/>
 							<StatCard
 								title="Total Views"
-								value={countryData.data.reduce((sum, d) => sum + d.views, 0).toLocaleString()}
+								value={countryData.data.reduce((sum, d) => sum + d.clicks, 0).toLocaleString()}
 								color="#10B981"
 							/>
 						</View>
@@ -418,21 +442,21 @@ export default function OverviewScreen() {
 							</Text>
 							<View className="space-y-2">
 								{countryData.data.slice(0, 10).map((item, index) => {
-									const total = countryData.data.reduce((sum, d) => sum + d.views, 0);
-									const percentage = ((item.views / total) * 100).toFixed(1);
+									const total = countryData.data.reduce((sum, d) => sum + d.clicks, 0);
+									const percentage = ((item.clicks / total) * 100).toFixed(1);
 									return (
-										<View key={item.country} className="flex-row items-center justify-between py-2 border-b border-gray-100">
+										<View key={item.name} className="flex-row items-center justify-between py-2 border-b border-gray-100">
 											<View className="flex-row items-center flex-1">
 												<Text className="text-gray-600 text-xs w-8">
 													#{index + 1}
 												</Text>
 												<Text className="text-gray-900 text-sm flex-1" numberOfLines={1}>
-													{COUNTRY_NAMES[item.country] || item.country}
+													{COUNTRY_NAMES[item.name] || item.name}
 												</Text>
 											</View>
 											<View className="flex-row items-center">
 												<Text className="text-gray-900 text-sm mr-2">
-													{item.views.toLocaleString()}
+													{item.clicks.toLocaleString()}
 												</Text>
 												<Text className="text-gray-500 text-xs">
 													({percentage}%)
@@ -582,9 +606,9 @@ export default function OverviewScreen() {
 									<View className="grid grid-cols-1 gap-4">
 										{selectedDimensions.map(dimension => {
 											const data = dimensionData.get(dimension);
-											if (!data || data.stats.length === 0) return null;
+											if (!data || data.data.length === 0) return null;
 
-											const total = data.stats.reduce((sum, s) => sum + s.clicks, 0);
+											const total = data.data.reduce((sum, s) => sum + s.clicks, 0);
 											const dimensionLabel = DIMENSION_OPTIONS.find(d => d.value === dimension)?.label || dimension;
 
 											return (
@@ -595,14 +619,14 @@ export default function OverviewScreen() {
 													
 													{/* Bar chart items */}
 													<View className="space-y-3">
-														{data.stats.map((stat, index) => {
+														{data.data.slice(0, limit).map((stat, index) => {
 															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
 															const displayValue = dimension === "COUNTRY" 
-																? (COUNTRY_NAMES[stat.value] || stat.value)
-																: stat.value;
+																? (COUNTRY_NAMES[stat.name] || stat.name)
+																: stat.name;
 
 															return (
-																<View key={stat.value} className="space-y-1.5">
+																<View key={stat.name} className="space-y-1.5">
 																	{/* Info row */}
 																	<View className="flex-row items-center gap-3">
 																		<Text className="text-gray-600 text-xs w-7">
@@ -654,9 +678,9 @@ export default function OverviewScreen() {
 									<View className="space-y-4">
 										{selectedDimensions.map(dimension => {
 											const data = dimensionData.get(dimension);
-											if (!data || data.stats.length === 0) return null;
+											if (!data || data.data.length === 0) return null;
 
-											const total = data.stats.reduce((sum, s) => sum + s.clicks, 0);
+											const total = data.data.reduce((sum, s) => sum + s.clicks, 0);
 											const dimensionLabel = DIMENSION_OPTIONS.find(d => d.value === dimension)?.label || dimension;
 
 											return (
@@ -689,15 +713,15 @@ export default function OverviewScreen() {
 														showsVerticalScrollIndicator={true}
 														nestedScrollEnabled={true}
 													>
-														{data.stats.map((stat, index) => {
+														{data.data.slice(0, limit).map((stat, index) => {
 															const percentage = total > 0 ? (stat.clicks / total) * 100 : 0;
 															const displayValue = dimension === "COUNTRY" 
-																? (COUNTRY_NAMES[stat.value] || stat.value)
-																: stat.value;
+																? (COUNTRY_NAMES[stat.name] || stat.name)
+																: stat.name;
 
 															return (
 																<View 
-																	key={stat.value} 
+																	key={stat.name} 
 																	className="flex-row px-4 py-2 border-b border-gray-100"
 																>
 																	<Text className="text-sm text-gray-600 w-12">

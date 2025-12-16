@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, ReactNode } from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -6,7 +6,7 @@ interface CheckboxProps {
 	id?: string;
 	checked: boolean;
 	onChange: (checked: boolean) => void;
-	label?: string;
+	label?: string | ReactNode;
 	disabled?: boolean;
 	color?: string;
 	size?: number;
@@ -58,7 +58,11 @@ const Checkbox = forwardRef<React.ComponentRef<typeof TouchableOpacity>, Checkbo
 				</View>
 				{label && (
 					<View className="ml-2">
-						<Text className="text-gray-700">{label}</Text>
+						{typeof label === 'string' ? (
+							<Text className="text-gray-700">{label}</Text>
+						) : (
+							label
+						)}
 					</View>
 				)}
 			</TouchableOpacity>

@@ -1,10 +1,30 @@
-import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuth";
+import { useShortUrl } from "../../hooks/useShortUrl";
 
 export default function DashboardScreen() {
 	const { user, isLoading } = useAuth();
+	const { getShortUrls, refreshSignal } = useShortUrl();
+	const [totalUrls, setTotalUrls] = useState(0);
+	const router = useRouter();
+
+	useEffect(() => {
+		const fetchTotalUrls = async () => {
+			if (user) {
+				try {
+					const response = await getShortUrls({ page: 0, size: 1 });
+					setTotalUrls(response.totalElements);
+				} catch (error) {
+					console.error("Failed to fetch total urls", error);
+				}
+			}
+		};
+		fetchTotalUrls();
+	}, [user, refreshSignal, getShortUrls]);
 
 	if (isLoading) {
 		return (
@@ -38,7 +58,7 @@ export default function DashboardScreen() {
 						Dashboard
 					</Text>
 					<Text className="text-gray-600 text-center">
-						Welcome back, {user.displayName || user.username}!
+						Welcome back, {user.profileName || user.username}!
 					</Text>
 				</View>
 
@@ -50,7 +70,7 @@ export default function DashboardScreen() {
 					<View className="space-y-3">
 						<View className="flex-row justify-between py-2 border-b border-gray-100">
 							<Text className="text-gray-600">Total Links:</Text>
-							<Text className="font-medium text-gray-900">{user.totalShortUrls}</Text>
+							<Text className="font-medium text-gray-900">{totalUrls}</Text>
 						</View>
 						<View className="flex-row justify-between py-2 border-b border-gray-100">
 							<Text className="text-gray-600">Total Clicks:</Text>
@@ -59,7 +79,7 @@ export default function DashboardScreen() {
 						<View className="flex-row justify-between py-2">
 							<Text className="text-gray-600">Credit Balance:</Text>
 							<Text className="font-medium text-gray-900">
-								{user.creditBalance} {user.currency}
+								{user.balance} {user.currency}
 							</Text>
 						</View>
 					</View>
@@ -154,6 +174,59 @@ export default function DashboardScreen() {
 					</View>
 				</View>
 
+			{/* Upgrade Plan Card - Show if no subscription or free plan */}
+			{(!user.currentSubscription || user.currentSubscription.planType === 'FREE') && (
+				<TouchableOpacity
+					onPress={() => router.push('/subscription-plans')}
+					className="bg-blue-600 p-6 rounded-xl shadow-lg mb-4 border-2 border-blue-400"
+					activeOpacity={0.8}
+				>
+					<View className="flex-row items-center justify-between">
+						<View className="flex-1">
+							<View className="flex-row items-center gap-2 mb-2">
+								<Ionicons name="rocket" size={24} color="#FFFFFF" />
+								<Text className="text-xl font-bold text-white">
+									Upgrade Your Plan
+								</Text>
+							</View>
+							<Text className="text-blue-50 text-sm mb-3 font-medium">
+								Unlock premium features and boost your productivity
+							</Text>
+							<View className="space-y-1">
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">More short URLs</Text>
+								</View>
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">Custom domains</Text>
+								</View>
+								<View className="flex-row items-center gap-2">
+									<Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+									<Text className="text-white text-sm">Advanced analytics</Text>
+								</View>
+							</View>
+						</View>
+						<Ionicons name="chevron-forward" size={28} color="#FFFFFF" />
+					</View>
+				</TouchableOpacity>
+			)}				{/* Manage Subscription Button - Show if has active subscription */}
+				{user.currentSubscription && user.currentSubscription.planType !== 'FREE' && (
+					<TouchableOpacity
+						onPress={() => router.push('/subscription-management')}
+						className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 flex-row items-center justify-between"
+						activeOpacity={0.7}
+					>
+						<View className="flex-row items-center gap-3">
+							<View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center">
+								<Ionicons name="settings" size={20} color="#3B82F6" />
+							</View>
+							<Text className="text-gray-900 font-medium">Manage Subscription</Text>
+						</View>
+						<Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+					</TouchableOpacity>
+				)}
+
 				{/* Current Subscription - if user has subscription */}
 				{user.currentSubscription && (
 					<View className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-4">
@@ -202,43 +275,43 @@ export default function DashboardScreen() {
 
 						{/* Features */}
 						<View className="space-y-2">
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
-									Custom Short Codes
-								</Text>
-							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
-									Statistics
-								</Text>
-							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.customDomainEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.shortCodeCustomizationEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.shortCodeCustomizationEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
+								Custom Short Codes
+							</Text>
+						</View>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.statisticsEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.statisticsEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
+								Statistics
+							</Text>
+						</View>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.subscriptionPlan?.customDomainEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.subscriptionPlan?.customDomainEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
 									Custom Domain
 								</Text>
 							</View>
-							<View className="flex-row items-center gap-2">
-								<View className={`w-2 h-2 rounded-full ${
-									user.currentSubscription.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'
-								}`} />
-								<Text className={`text-sm ${
-									user.currentSubscription.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'
-								}`}>
+						<View className="flex-row items-center gap-2">
+							<View className={`w-2 h-2 rounded-full ${
+								user.currentSubscription.subscriptionPlan?.apiAccessEnabled ? 'bg-green-500' : 'bg-gray-300'
+							}`} />
+							<Text className={`text-sm ${
+								user.currentSubscription.subscriptionPlan?.apiAccessEnabled ? 'text-green-700' : 'text-gray-500'
+							}`}>
 									API Access
 								</Text>
 							</View>

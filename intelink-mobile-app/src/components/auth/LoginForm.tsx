@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import Button from "../atoms/Button";
 import TextInput from "../atoms/TextInput";
 import Checkbox from "../atoms/Checkbox";
-import type { LoginRequest } from "../../dto/request/UserRequest";
+import type { LoginRequest } from "../../dto/UserDTO";
 import { useForm } from "../../hooks/useForm";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -32,12 +32,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading = false 
 	const [keepSignedIn, setKeepSignedIn] = useState(false);
 
 	const { formData, errors, handleInputChange, handleSubmit, isSubmitting } =
-		useForm<LoginRequest>(
-			{ username: "", password: "" },
-			validateLogin,
+		useForm<LoginRequest>({
+			initialValues: { username: "", password: "" },
+			validate: validateLogin,
 			onSubmit,
-			500,
-		);
+			debounceMs: 500,
+		});
 
 	// Add null checks to prevent crashes
 	if (!formData || !handleInputChange) {

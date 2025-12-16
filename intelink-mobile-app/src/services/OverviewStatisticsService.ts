@@ -1,87 +1,47 @@
-import axios from "./AxiosConfig";
-
-export interface CountryStatistic {
-	country: string;
-	views: number;
-}
-
-export interface CountryStatisticsResponse {
-	limit: number;
-	from: string;
-	to: string;
-	data: CountryStatistic[];
-}
-
-export interface TimeSeriesDataPoint {
-	date: string;
-	views: number;
-}
-
-export interface TimeSeriesResponse {
-	granularity: "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY";
-	from: string;
-	to: string;
-	totalViews: number;
-	data: TimeSeriesDataPoint[];
-}
-
-export type Granularity = "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY";
-
-export interface DimensionStatistic {
-	value: string;
-	clicks: number;
-}
-
-export interface DimensionStatisticsResponse {
-	dimension: string;
-	limit: number;
-	from: string | null;
-	to: string | null;
-	stats: DimensionStatistic[];
-}
+import axios from "axios";
+import type {
+	DimensionStatResponse,
+	GeographyStatResponse,
+	TimeSeriesStatResponse,
+} from "../dto/StatisticsDTO";
 
 export type DimensionType = 
-	| "COUNTRY" 
-	| "REFERRER" 
-	| "REFERRER_TYPE" 
-	| "UTM_SOURCE" 
-	| "UTM_MEDIUM" 
-	| "UTM_CAMPAIGN" 
 	| "BROWSER" 
 	| "OS" 
 	| "DEVICE_TYPE" 
-	| "CITY" 
-	| "REGION" 
-	| "TIMEZONE" 
-	| "ISP" 
-	| "LANGUAGE";
+	| "COUNTRY" 
+	| "CITY";
+
+export type Granularity = "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY";
 
 export class OverviewStatisticsService {
 	static async getCountryStatistics(
 		from?: string,
 		to?: string,
-		limit: number = 10
-	): Promise<CountryStatisticsResponse> {
+		timezone?: string
+	): Promise<GeographyStatResponse> {
 		const params = new URLSearchParams();
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
-		if (limit) params.append("limit", limit.toString());
+		if (timezone) params.append("timezone", timezone);
 
-		const response = await axios.get(`/api/v1/statistics/by-country?${params.toString()}`);
+		const response = await axios.get(`/statistics/country?${params.toString()}`);
 		return response.data;
 	}
 
 	static async getTimeSeriesStatistics(
 		granularity: Granularity = "DAILY",
 		from?: string,
-		to?: string
-	): Promise<TimeSeriesResponse> {
+		to?: string,
+		timezone?: string
+	): Promise<TimeSeriesStatResponse> {
 		const params = new URLSearchParams();
 		params.append("granularity", granularity);
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
+		if (timezone) params.append("timezone", timezone);
 
-		const response = await axios.get(`/api/v1/statistics/timeseries?${params.toString()}`);
+		const response = await axios.get(`/statistics/timeseries?${params.toString()}`);
 		return response.data;
 	}
 
@@ -89,17 +49,35 @@ export class OverviewStatisticsService {
 		dimension: DimensionType = "COUNTRY",
 		from?: string,
 		to?: string,
-		limit: number = 20,
-		shortCodes?: string
-	): Promise<DimensionStatisticsResponse> {
+		timezone?: string
+	): Promise<DimensionStatResponse | GeographyStatResponse> {
 		const params = new URLSearchParams();
-		params.append("dimension", dimension);
-		params.append("limit", limit.toString());
 		if (from) params.append("from", from);
 		if (to) params.append("to", to);
-		if (shortCodes) params.append("shortCodes", shortCodes);
+		if (timezone) params.append("timezone", timezone);
 
-		const response = await axios.get(`/api/v1/statistics/by-dimension?${params.toString()}`);
+		let endpoint = "";
+		switch (dimension) {
+			case "BROWSER":
+				endpoint = "/statistics/browser";
+				break;
+			case "OS":
+				endpoint = "/statistics/os";
+				break;
+			case "DEVICE_TYPE":
+				endpoint = "/statistics/device";
+				break;
+			case "COUNTRY":
+				endpoint = "/statistics/country";
+				break;
+			case "CITY":
+				endpoint = "/statistics/city";
+				break;
+			default:
+				throw new Error(`Unsupported dimension: ${dimension}`);
+		}
+
+		const response = await axios.get(`${endpoint}?${params.toString()}`);
 		return response.data;
 	}
 }

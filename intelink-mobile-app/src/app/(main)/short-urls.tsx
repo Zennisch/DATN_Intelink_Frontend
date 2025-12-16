@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -11,7 +11,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
 import { buildPublicShortUrl } from "../../utils/UrlUtil";
 import { useShortUrl } from "../../hooks/useShortUrl";
+import { useAuth } from "../../hooks/useAuth";
+import { canCreateShortUrl, canCustomizeShortCode } from "../../utils/subscriptionUtils";
 import type { SearchShortUrlRequest, CreateShortUrlRequest } from "../../services/ShortUrlService";
+import type { ShortUrlResponse } from "../../dto/ShortUrlDTO";
 
 export default function ShortUrlsScreen() {
 	// const [unlockModalVisible, setUnlockModalVisible] = useState(false);
@@ -19,10 +22,11 @@ export default function ShortUrlsScreen() {
 	// const [unlockError, setUnlockError] = useState<string | undefined>(undefined);
 	// const [unlockShortCode, setUnlockShortCode] = useState<string | undefined>(undefined);
 	// const [unlockShortUrl, setUnlockShortUrl] = useState<string | undefined>(undefined);
-	const FRONTEND_URL = process.env.VITE_FRONTEND_URL;
+	const FRONTEND_URL = process.env.EXPO_PUBLIC_FRONTEND_URL;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalLoading, setModalLoading] = useState(false);
 	const router = useRouter();
+	const { user } = useAuth();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -37,18 +41,35 @@ export default function ShortUrlsScreen() {
 	});
 
 	const {
-		shortUrls,
-		totalElements,
-		totalPages,
-		loading,
-		error,
-		fetchShortUrls,
+		searchShortUrls,
 		createShortUrl,
 		deleteShortUrl,
 		enableShortUrl,
 		disableShortUrl,
-		clearError,
 	} = useShortUrl();
+
+	const [shortUrls, setShortUrls] = useState<ShortUrlResponse[]>([]);
+	const [totalElements, setTotalElements] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const fetchShortUrls = useCallback(async (params: SearchShortUrlRequest) => {
+		setLoading(true);
+		setError(null);
+		try {
+			const response = await searchShortUrls(params);
+			setShortUrls(response.content);
+			setTotalElements(response.totalElements);
+			setTotalPages(response.totalPages);
+		} catch (err: any) {
+			setError(err.message || "Failed to fetch short URLs");
+		} finally {
+			setLoading(false);
+		}
+	}, [searchShortUrls]);
+
+	const clearError = () => setError(null);
 
 	// Fetch short URLs on component mount and when filters change
 	useEffect(() => {
@@ -216,6 +237,7 @@ export default function ShortUrlsScreen() {
 				onClose={() => setModalVisible(false)}
 				onSubmit={handleCreateShortUrl}
 				loading={modalLoading}
+				user={user}
 			/>
 
 			<ScrollView
@@ -293,7 +315,32 @@ export default function ShortUrlsScreen() {
 						Create New Short URL
 					</Text>
 					<Button
-						onPress={() => setModalVisible(true)}
+						onPress={() => {
+							console.log('[ShortUrls] User:', user);
+							console.log('[ShortUrls] currentSubscription:', user?.currentSubscription);
+							console.log('[ShortUrls] subscriptionPlan:', user?.currentSubscription?.subscriptionPlan);
+							console.log('[ShortUrls] totalShortUrls:', user?.totalShortUrls);
+							console.log('[ShortUrls] maxShortUrls:', user?.currentSubscription?.subscriptionPlan?.maxShortUrls);
+							
+							const checkResult = canCreateShortUrl(user);
+							console.log('[ShortUrls] Permission check result:', checkResult);
+							
+							if (!checkResult.allowed) {
+								Alert.alert(
+									'Feature Restricted',
+									checkResult.reason,
+									[
+										{ text: 'Cancel', style: 'cancel' },
+										{ 
+											text: 'Upgrade Plan', 
+											onPress: () => router.push('/subscription-plans')
+										}
+									]
+								);
+								return;
+							}
+							setModalVisible(true);
+						}}
 						variant="primary"
 						fullWidth
 					>
@@ -374,9 +421,10 @@ export default function ShortUrlsScreen() {
 										<TouchableOpacity
 											onPress={() => {
 												if (url.hasPassword) {
-													// Mở trang web unlock trong browser
-													const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
-													Linking.openURL(unlockUrl);
+													router.push({
+														pathname: '/(main)/UnlockUrlScreen',
+														params: { shortCode: url.shortCode }
+													});
 												} else {
 													router.push({ pathname: '/statistics', params: { shortcode: url.shortCode } });
 												}
@@ -391,9 +439,10 @@ export default function ShortUrlsScreen() {
 										className="ml-2 p-1"
 										onPress={() => {
 											if (url.hasPassword) {
-												// Mở trang web unlock trong browser
-												const unlockUrl = `${FRONTEND_URL}/${url.shortCode}/unlock`;
-												Linking.openURL(unlockUrl);
+												router.push({
+													pathname: '/(main)/UnlockUrlScreen',
+													params: { shortCode: url.shortCode }
+												});
 											} else {
 												Linking.openURL(getAbsoluteShortUrl(url.shortUrl, url.shortCode));
 											}

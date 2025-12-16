@@ -10,12 +10,14 @@ export default function Index() {
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated) {
+        // Use replace to avoid stacking history
         router.replace("/(main)/dashboard");
       } else {
+        // Use replace to avoid stacking history
         router.replace("/(auth)/login");
       }
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading]); // Removed router from dependency array to prevent loop
 
   return (
     <View className="flex-1 items-center justify-center bg-white">

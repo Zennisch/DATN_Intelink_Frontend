@@ -1,17 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import { useApiKey } from "../../hooks/useApiKey";
+import { canAccessAPI } from "../../utils/subscriptionUtils";
 import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import { Toast } from "../../components/ui";
 import { Ionicons } from '@expo/vector-icons';
 import { copyToClipboard } from "../../utils/clipboard";
-import { ApiKeyService, type ApiKeyResponse, type CreateApiKeyRequest } from "../../services/ApiKeyService";
+import type { ApiKeyResponse, CreateApiKeyRequest } from "../../dto/ApiKeyDTO";
 
 export default function ApiKeysScreen() {
-	const [apiKeys, setApiKeys] = useState<ApiKeyResponse[]>([]);
-	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+	const { user } = useAuth();
+	const { apiKeys, isLoading: loading, error, fetchApiKeys, createApiKey, deleteApiKey } = useApiKey();
+
+	// Permission check for API access
+	const apiPermission = canAccessAPI(user);
+	if (!apiPermission.allowed) {
+		return (
+			<SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+				<View className="flex-1 justify-center items-center px-4">
+					<Ionicons name="key-outline" size={64} color="#9CA3AF" />
+					<Text className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+						API Access Locked
+					</Text>
+					<Text className="text-gray-600 text-center mb-6">
+						{apiPermission.reason}
+					</Text>
+					<Button
+						onPress={() => router.push('/subscription-plans')}
+						variant="primary"
+					>
+						Upgrade Plan
+					</Button>
+				</View>
+			</SafeAreaView>
+		);
+	}
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [showKeyModal, setShowKeyModal] = useState(false);
 	const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);
@@ -30,26 +58,9 @@ export default function ApiKeysScreen() {
 		type: "info",
 	});
 
-	const fetchApiKeys = async () => {
-		setLoading(true);
-		try {
-			const data = await ApiKeyService.list();
-			data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-			setApiKeys(data);
-		} catch (err: any) {
-			setToast({
-				visible: true,
-				message: err.message || "Failed to load API keys",
-				type: "error",
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	useEffect(() => {
 		fetchApiKeys();
-	}, []);
+	}, [fetchApiKeys]);
 
 	const handleCreate = async () => {
 		if (!newKeyData.name.trim()) {
@@ -62,7 +73,7 @@ export default function ApiKeysScreen() {
 		}
 
 		try {
-			const response = await ApiKeyService.create(newKeyData);
+			const response = await createApiKey(newKeyData);
 			setShowCreateModal(false);
 			setCreatedKey(response);
 			setShowKeyModal(true);
@@ -71,7 +82,6 @@ export default function ApiKeysScreen() {
 				rateLimitPerHour: 1000,
 				active: true,
 			});
-			await fetchApiKeys();
 		} catch (err: any) {
 			setToast({
 				visible: true,
@@ -92,13 +102,12 @@ export default function ApiKeysScreen() {
 					style: "destructive",
 					onPress: async () => {
 						try {
-							await ApiKeyService.delete(id);
+							await deleteApiKey(id);
 							setToast({
 								visible: true,
 								message: "API key deleted successfully!",
 								type: "success",
 							});
-							await fetchApiKeys();
 						} catch (err: any) {
 							setToast({
 								visible: true,
@@ -252,7 +261,7 @@ export default function ApiKeysScreen() {
 							<TextInput
 								label="Rate Limit Per Hour"
 								placeholder="1000"
-								value={newKeyData.rateLimitPerHour.toString()}
+								value={(newKeyData.rateLimitPerHour || 1000).toString()}
 								onChangeText={(text) => setNewKeyData(prev => ({ ...prev, rateLimitPerHour: parseInt(text) || 1000 }))}
 								keyboardType="numeric"
 								fullWidth

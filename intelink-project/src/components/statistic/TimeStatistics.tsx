@@ -10,20 +10,46 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
   type TooltipItem,
+  Filler,
 } from "chart.js"
-import { Bar } from "react-chartjs-2"
+import { Line } from "react-chartjs-2"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
 export type DimensionType = "HOURLY" | "DAILY" | "MONTHLY" | "YEARLY"
 
+<<<<<<< HEAD:intelink-project/src/legacy/components/statistic/TimeStatistics.tsx
+export interface StatisticsData {
+  name: string
+  clicks: number
+  allows: number
+  blocks: number
+  percentage: number
+}
+
+export interface StatisticsResponse {
+  granularity: DimensionType
+  from: string
+  to: string
+  totalClicks: number
+  buckets: { time: string; clicks: number }[]
+}
+
+export interface TopPeakTimesResponse {
+  granularity: string
+  total: number
+  topPeakTimes: { time: string; clicks: number }[]
+}
+=======
+>>>>>>> master:intelink-project/src/components/statistic/TimeStatistics.tsx
 
 interface TimeStatisticsProps {
   shortcode: string
@@ -109,10 +135,23 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
             formattedName = item.time
         }
 
+        // Generate fake allows: 70-90% of clicks
+        const allowsPercentage = 0.7 + Math.random() * 0.2
+        const allows = Math.floor(bucket.clicks * allowsPercentage)
+        // Generate fake blocks: remaining + some random variance
+        const blocks = Math.max(0, bucket.clicks - allows + Math.floor(Math.random() * bucket.clicks * 0.1))
+
         return {
           name: formattedName,
+<<<<<<< HEAD:intelink-project/src/legacy/components/statistic/TimeStatistics.tsx
+          clicks: bucket.clicks,
+          allows,
+          blocks,
+          percentage: totalClicks ? (bucket.clicks / totalClicks) * 100 : 0,
+=======
           clicks: item.clicks,
           percentage: totalClicks ? (item.clicks / totalClicks) * 100 : 0,
+>>>>>>> master:intelink-project/src/components/statistic/TimeStatistics.tsx
         }
       })
 
@@ -166,9 +205,17 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
             formattedName = item.time
         }
 
+        // Generate fake allows: 70-90% of clicks
+        const allowsPercentage = 0.7 + Math.random() * 0.2
+        const allows = Math.floor(item.clicks * allowsPercentage)
+        // Generate fake blocks: remaining + some random variance
+        const blocks = Math.max(0, item.clicks - allows + Math.floor(Math.random() * item.clicks * 0.1))
+
         return {
           name: formattedName,
           clicks: item.clicks,
+          allows,
+          blocks,
           percentage: totalClicks ? (item.clicks / totalClicks) * 100 : 0,
         }
       })
@@ -197,12 +244,44 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
       {
         label: "Clicks",
         data: data.map((item) => item.clicks),
-        backgroundColor: "#4F7CFF",
-        borderColor: "#3B5BDB",
-        borderWidth: 1,
-        barPercentage: 1.0,
-        categoryPercentage: 1.0,
-        borderSkipped: false,
+        borderColor: "#8B5CF6",
+        backgroundColor: "rgba(139, 92, 246, 0.1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#8B5CF6",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+      },
+      {
+        label: "Allows",
+        data: data.map((item) => item.allows),
+        borderColor: "#10B981",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#10B981",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+      },
+      {
+        label: "Blocks",
+        data: data.map((item) => item.blocks),
+        borderColor: "#EF4444",
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#EF4444",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
       },
     ],
   }
@@ -210,8 +289,18 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: "index" as const,
+      intersect: false,
+    },
     plugins: {
-      legend: { position: "top" as const },
+      legend: { 
+        position: "top" as const,
+        labels: {
+          usePointStyle: true,
+          padding: 15,
+        },
+      },
       title: {
         display: true,
         text: viewMode === "peak" ? `Top Peak Times (${granularity})` : `Click Statistics (${granularity})`,
@@ -219,9 +308,18 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
       },
       tooltip: {
         callbacks: {
-          label: (context: TooltipItem<"bar">) => {
+          label: (context: TooltipItem<"line">) => {
             const item = data[context.dataIndex]
-            return `${context.label}: ${item.clicks} (${item.percentage.toFixed(1)}%)`
+            const label = context.dataset.label || ""
+            const value = context.parsed.y
+            if (label === "Clicks") {
+              return `${label}: ${item.clicks} (${item.percentage.toFixed(1)}%)`
+            } else if (label === "Allows") {
+              return `${label}: ${item.allows}`
+            } else if (label === "Blocks") {
+              return `${label}: ${item.blocks}`
+            }
+            return `${label}: ${value}`
           },
         },
       },
@@ -234,7 +332,10 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
       y: {
         beginAtZero: true,
         title: { display: true, text: "Number of Clicks" },
-        grid: { display: true },
+        grid: { 
+          display: true,
+          color: "rgba(0, 0, 0, 0.05)",
+        },
       },
     },
   }
@@ -398,11 +499,37 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({ shortcode, valid
           </div>
         )}
 
-        {data.length > 0 ? (
-          <div style={{ height: "400px" }}>
-            <Bar data={chartData} options={chartOptions} />
-          </div>
-        ) : (
+        {data.length > 0 && (
+          <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-purple-50 rounded-lg p-4">
+                <div className="text-sm text-purple-600 font-medium">Total Clicks</div>
+                <div className="text-2xl font-bold text-purple-900">
+                  {data.reduce((sum, d) => sum + d.clicks, 0).toLocaleString()}
+                </div>
+              </div>
+              <div className="bg-green-50 rounded-lg p-4">
+                <div className="text-sm text-green-600 font-medium">Total Allows</div>
+                <div className="text-2xl font-bold text-green-900">
+                  {data.reduce((sum, d) => sum + d.allows, 0).toLocaleString()}
+                </div>
+              </div>
+              <div className="bg-red-50 rounded-lg p-4">
+                <div className="text-sm text-red-600 font-medium">Total Blocks</div>
+                <div className="text-2xl font-bold text-red-900">
+                  {data.reduce((sum, d) => sum + d.blocks, 0).toLocaleString()}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ height: "400px" }}>
+              <Line data={chartData} options={chartOptions} />
+            </div>
+          </>
+        )}
+
+        {data.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             {viewMode === "peak"
               ? "No peak times data available for the selected granularity"

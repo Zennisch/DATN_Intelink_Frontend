@@ -8,7 +8,10 @@ import Button from "../../components/atoms/Button";
 import TextInput from "../../components/atoms/TextInput";
 import Checkbox from "../../components/atoms/Checkbox";
 import { Ionicons } from '@expo/vector-icons';
-import type { LoginRequest } from "../../dto/request/UserRequest";
+import type { LoginRequest } from "../../dto/UserDTO";
+
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 
 export default function LoginScreen() {
 	const { login } = useAuth();
@@ -77,11 +80,9 @@ export default function LoginScreen() {
 			setLoading(true);
 			setError(null);
 			
-			// For demo purposes, allow any username/password combination
-			// In real app, this would call the actual login API
 			await login({
-				username: formData.username || "demo_user",
-				password: formData.password || "demo123"
+				username: formData.username,
+				password: formData.password
 			});
 			
 			router.replace("/(main)/dashboard");
@@ -93,24 +94,21 @@ export default function LoginScreen() {
 		}
 	};
 
-	const handleOAuth2Login = (provider: "google" | "github") => {
+	const handleOAuth2Login = async (provider: "google" | "github") => {
 		setLoading(true);
-		// For mobile, we'll use WebBrowser for OAuth
-		// This is a simplified implementation
-		Alert.alert(
-			"OAuth Login",
-			`Redirecting to ${provider} login...`,
-			[
-				{
-					text: "OK",
-					onPress: () => {
-						// In a real app, you would use WebBrowser.openBrowserAsync
-						// and handle the callback URL
-						setLoading(false);
-					}
-				}
-			]
-		);
+		try {
+			const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.intelink.click';
+			const redirectUri = Linking.createURL('/(auth)/oauth-callback');
+			const authUrl = `${backendUrl}/auth/oauth2/authorize/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+			
+			await WebBrowser.openBrowserAsync(authUrl);
+			// The callback will be handled by the deep link listener in the app
+		} catch (err) {
+			console.error("OAuth error:", err);
+			setError("Failed to initiate login");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleGoogleLogin = () => {
@@ -124,6 +122,7 @@ export default function LoginScreen() {
 	};
 
 	const handleSignUp = () => {
+		console.log("🚀 Sign up button clicked - navigating to register");
 		router.push("/(auth)/register");
 	};
 
@@ -144,10 +143,10 @@ export default function LoginScreen() {
 							</View>
 						)}
 
-						<View className="space-y-6">
-							<View className="flex-1">
-								{/* Login Form */}
-								<View className="space-y-4">
+						<View>
+							{/* Login Form */}
+							<View>
+								<View className="mb-4">
 									<TextInput
 										label="Username"
 										placeholder="Username/Email"
@@ -156,7 +155,9 @@ export default function LoginScreen() {
 										error={errors.username}
 										fullWidth
 									/>
+								</View>
 
+								<View className="mb-4">
 									<TextInput
 										secureTextEntry={!showPassword}
 										label="Password"
@@ -180,7 +181,7 @@ export default function LoginScreen() {
 									/>
 								</View>
 
-								<View className="flex-row items-center justify-between my-4">
+								<View className="flex-row items-center justify-between mb-4">
 									<Checkbox
 										id="keep-signed-in"
 										checked={keepSignedIn}
@@ -188,44 +189,49 @@ export default function LoginScreen() {
 										label="Keep me signed in"
 									/>
 
-									<Text
+									<TouchableOpacity
 										onPress={() => router.push("/(auth)/forgot-password")}
-										className="text-sm text-blue-600"
 									>
-										Forget your password?
-									</Text>
+										<Text className="text-sm text-blue-600">
+											Forget your password?
+										</Text>
+									</TouchableOpacity>
 								</View>
 
-								<Button
-									onPress={handleLogin}
-									variant="primary"
-									fullWidth
-									size="lg"
-									loading={loading}
-								>
-									Log in
-								</Button>
+								<View className="mb-4">
+									<Button
+										onPress={handleLogin}
+										variant="primary"
+										fullWidth
+										size="lg"
+										loading={loading}
+									>
+										Log in
+									</Button>
+								</View>
 
-								<Text className="text-sm text-gray-600 my-4 text-center">
+								<Text className="text-sm text-gray-600 mb-3 text-center">
 									Don&apos;t have an account?
 								</Text>
-								<Button
-									variant="outline"
-									fullWidth
-									size="lg"
-									onPress={handleSignUp}
-								>
-									Sign up
-								</Button>
+								<View className="mb-6">
+									<Button
+										variant="outline"
+										fullWidth
+										size="lg"
+										onPress={handleSignUp}
+									>
+										Sign up
+									</Button>
+								</View>
 							</View>
 							
-							<View className="flex-row items-center justify-center">
+							<View className="flex-row items-center justify-center mb-6">
 								<View className="flex-1 h-px bg-gray-300" />
 								<Text className="px-4 text-gray-500">OR</Text>
 								<View className="flex-1 h-px bg-gray-300" />
 							</View>
 							
-							<View className="flex-1 justify-center">
+							<View>
 								<SocialLoginSection
 									onGoogleLogin={handleGoogleLogin}
 									onGitHubLogin={handleGitHubLogin}

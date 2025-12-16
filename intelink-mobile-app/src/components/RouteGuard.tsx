@@ -25,7 +25,7 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
 				router.replace(redirectTo || "/(main)/dashboard");
 			}
 		}
-	}, [isAuthenticated, isLoading, requireAuth, redirectTo, router]);
+	}, [isAuthenticated, isLoading, requireAuth, redirectTo]); // Removed router from dependency array
 
 	if (isLoading) {
 		return <LoadingPage />;

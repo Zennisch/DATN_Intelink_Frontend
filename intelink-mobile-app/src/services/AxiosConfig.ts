@@ -1,85 +1,97 @@
-import axios from 'axios';
-import { AuthStorage } from '../storages/AuthStorage';
-import { BACKEND_URL } from '../types/environment';
+import axios from "axios";
+import { AuthStorage } from "../storages/AuthStorage.ts";
+import { Platform } from "react-native";
 
-// Create axios instance
-if (__DEV__) {
-	// Surface where the app thinks the backend is (native/web differ)
-	console.log('[Axios] BACKEND_URL =', BACKEND_URL);
-}
-const api = axios.create({
-	baseURL: BACKEND_URL,
-	timeout: 15000,
-	headers: {
-		'Content-Type': 'application/json',
-	},
-	withCredentials: true,
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use(
-	async (config) => {
-			if (__DEV__) console.log('[Axios] →', (config.baseURL || ''), config.url);
-		const url = config.url || '';
-		const isAuthEndpoint = url.includes('/api/v1/auth/login') || url.includes('/api/v1/auth/register') || url.includes('/api/v1/auth/refresh') || url.includes('/api/v1/auth/forgot-password') || url.includes('/api/v1/auth/verify-email');
-
-		if (!isAuthEndpoint) {
-			const token = await AuthStorage.getAccessToken();
-			if (token) {
-				config.headers.Authorization = `Bearer ${token}`;
-			}
-		}
-		return config;
-	},
-	(error) => {
-		return Promise.reject(error);
+const getApi = () => {
+	if (Platform.OS === 'web') {
+		return '/api/v1';
 	}
-);
+	const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.intelink.click';
+	console.log("Backend URL:", backendUrl);
+	console.log("Full API URL:", `${backendUrl}/api/v1`);
+	return `${backendUrl}/api/v1`;
+};
 
-// Response interceptor to handle token refresh
-api.interceptors.response.use(
-	(response) => response,
-	async (error) => {
-			if (__DEV__) console.log('[Axios] ← error', {
-				url: error?.config?.url,
-				baseURL: error?.config?.baseURL,
-				code: error?.code,
-				status: error?.response?.status,
-				message: error?.message,
-			});
-		const originalRequest = error.config;
+const API_URL = getApi();
+const TIMEOUT = 30000;
 
-		if (error.response?.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
+export const setupAxios = async () => {
+	axios.defaults.baseURL = API_URL;
+	axios.defaults.headers.common["Content-Type"] = "application/json";
+	axios.defaults.headers.common["Accept"] = "application/json";
+	axios.defaults.withCredentials = true;
+	axios.defaults.timeout = TIMEOUT;
 
-			try {
-				const refreshToken = await AuthStorage.getRefreshToken();
-				if (refreshToken) {
-					const response = await axios.post(`${BACKEND_URL}/api/v1/auth/refresh`, {}, {
-						headers: {
-							Authorization: `Bearer ${refreshToken}`,
-						},
-					});
+	axios.interceptors.request.use(
+		async (config) => {
+			console.log(
+				`[Axios Request]: ${config.method?.toUpperCase()} ${config.url}`,
+			);
 
-					const { token, refreshToken: newRefreshToken } = response.data;
-					if (token) await AuthStorage.setAccessToken(token);
-					if (newRefreshToken) await AuthStorage.setRefreshToken(newRefreshToken);
+			// Skip adding token for auth endpoints
+			const isAuthEndpoint = config.url?.includes('/auth/login') || 
+								 config.url?.includes('/auth/register') ||
+								 config.url?.includes('/auth/refresh');
 
-					// Retry original request
-					originalRequest.headers.Authorization = `Bearer ${token}`;
-					return api(originalRequest);
+			if (!isAuthEndpoint) {
+				const accessToken = await AuthStorage.getAccessToken();
+				if (accessToken) {
+					config.headers.Authorization = `Bearer ${accessToken}`;
 				}
-			} catch (refreshError) {
-				// Refresh failed, clear tokens and redirect to login
-				try { await AuthStorage.clearTokens(); } catch {}
-				console.error('Token refresh failed:', refreshError);
 			}
-		}
-		if (error.response?.status === 403) {
-			console.warn('Access forbidden for', originalRequest?.url);
-		}
-		return Promise.reject(error);
-	}
-);
 
-export default api;
+			return config;
+		},
+		(error) => {
+			console.error(`[Axios Request Error]: ${error}`);
+			return Promise.reject(error);
+		},
+	);
+
+	axios.interceptors.response.use(
+		(response) => {
+			console.log(
+				`[Axios Response]: ${response.status} ${response.config.url}`,
+			);
+			return response;
+		},
+		(error) => {
+			console.log(
+				`[Axios Response Error]: ${error.response?.status} ${error.config?.url} - Message: ${error.message}`,
+			);
+
+			const originalRequest = error.config;
+
+			if (error.response?.status === 401 && !originalRequest._retry) {
+				originalRequest._retry = true;
+				const refreshToken = AuthStorage.getRefreshToken();
+				if (refreshToken) {
+					return axios
+						.post(
+							`${API_URL}/auth/refresh`,
+							{},
+							{
+								headers: {
+									Authorization: `Bearer ${refreshToken}`,
+								},
+							},
+						)
+						.then((response) => {
+							AuthStorage.setAccessToken(response.data.token);
+							originalRequest.headers.Authorization = `Bearer ${response.data.token}`;
+							return axios(originalRequest);
+						})
+						.catch((refreshError) => {
+							console.error(`[Axios Refresh Token Error]: ${refreshError}`);
+							AuthStorage.clearTokens();
+
+							window.location.href = "/login";
+
+							return Promise.reject(refreshError);
+						});
+				}
+			}
+			return Promise.reject(error);
+		},
+	);
+};
