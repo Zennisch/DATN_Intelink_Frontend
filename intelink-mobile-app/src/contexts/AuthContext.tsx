@@ -104,7 +104,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					bio: userData.bio,
 					profilePictureUrl: userData.profilePictureUrl,
 					providerUserId: userData.providerUserId,
-					currentSubscription: userData.currentSubscription,
+					currentSubscription: userData.currentSubscription ? {
+						subscriptionId: userData.currentSubscription.id,
+						planType: userData.currentSubscription.planType,
+						planDescription: "", // Not available in DTO
+						maxShortUrls: userData.currentSubscription.planDetails.maxShortUrls,
+						shortCodeCustomizationEnabled: userData.currentSubscription.planDetails.shortCodeCustomizationEnabled,
+						statisticsEnabled: userData.currentSubscription.planDetails.statisticsEnabled,
+						customDomainEnabled: userData.currentSubscription.planDetails.customDomainEnabled || false,
+						apiAccessEnabled: userData.currentSubscription.planDetails.apiAccessEnabled,
+						status: userData.currentSubscription.status,
+						active: userData.currentSubscription.active,
+						startsAt: userData.currentSubscription.activatedAt || '',
+						expiresAt: userData.currentSubscription.expiresAt
+					} : undefined,
 					creditBalance: userData.creditBalance,
 					currency: userData.currency,
 				},

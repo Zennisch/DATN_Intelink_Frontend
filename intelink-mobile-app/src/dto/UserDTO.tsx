@@ -54,6 +54,7 @@ export interface PlanDetails {
   shortCodeCustomizationEnabled: boolean;
   statisticsEnabled: boolean;
   apiAccessEnabled: boolean;
+  customDomainEnabled?: boolean;
 }
 
 export interface CurrentSubscription {

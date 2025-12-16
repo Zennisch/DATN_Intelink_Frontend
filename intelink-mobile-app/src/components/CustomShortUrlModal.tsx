@@ -123,8 +123,8 @@ const CustomShortUrlModal: React.FC<CustomShortUrlModalProps> = ({
       };
       
       // Add access control data
-      if (accessControl.countries.length > 0 || accessControl.ipRanges.length > 0) {
-          requestData.accessControlMode = accessControl.mode.toUpperCase() as AccessControlMode;
+      if (showAdvancedOptions) {
+          requestData.accessControlMode = accessControl.mode === 'allow' ? 'WHITELIST' : 'BLACKLIST';
           if (accessControl.countries.length > 0) {
               requestData.accessControlGeographies = accessControl.countries;
           }
