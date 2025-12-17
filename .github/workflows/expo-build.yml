@@ -56,24 +56,26 @@ jobs:
         id: build
         run: |
           echo "🔨 Building Expo Android APK..."
-
+      
           BUILD_JSON=$(eas build \
             --platform android \
             --profile production \
             --non-interactive \
+            --no-wait \
             --json)
-
+      
           echo "$BUILD_JSON"
-
-          BUILD_URL=$(echo "$BUILD_JSON" | jq -r '.[0].artifacts.buildUrl')
-
+      
+          BUILD_URL=$(echo "$BUILD_JSON" | jq -r '.[0].buildUrl')
+      
           if [ -z "$BUILD_URL" ] || [ "$BUILD_URL" = "null" ]; then
-            echo "❌ Could not extract build URL from EAS output"
+            echo "❌ Could not extract build URL"
             exit 1
           fi
-
+      
           echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
           echo "✅ Build URL: $BUILD_URL"
+
 
       # 7️⃣ Download latest APK
       - name: Download latest APK
