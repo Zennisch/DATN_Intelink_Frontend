@@ -18,12 +18,16 @@ interface DashboardSidebarProps {
 	currentPage: Page;
 	setCurrentPage: (page: Page) => void;
 	setCreateNewModalOpen: (open: boolean) => void;
+	isMobileOpen?: boolean;
+	onMobileClose?: () => void;
 }
 
 export const DashboardSidebar = ({
 	currentPage,
 	setCurrentPage,
 	setCreateNewModalOpen,
+	isMobileOpen = false,
+	onMobileClose,
 }: DashboardSidebarProps) => {
 	const { user, logout } = useAuth();
 	const { getShortUrls, refreshSignal } = useShortUrl();
@@ -121,9 +125,32 @@ export const DashboardSidebar = ({
 	];
 
 	return (
-		<div className="flex flex-col w-64 bg-white p-4 gap-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-10">
-			{/* Navigation Buttons */}
-			<div className="flex flex-1 flex-col justify-between">
+		<>
+			{/* Mobile Backdrop */}
+			{isMobileOpen && (
+				<div 
+					className="fixed inset-0 bg-black/50 z-[140] md:hidden"
+					onClick={onMobileClose}
+				/>
+			)}
+
+			<div className={`
+				flex flex-col bg-white p-4 gap-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-[150]
+				fixed inset-y-0 left-0 w-64 transition-transform duration-300 ease-in-out
+				md:relative md:translate-x-0 md:z-10
+				${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+			`}>
+				{/* Mobile Close Button */}
+				<div className="md:hidden flex justify-end mb-2">
+					<button onClick={onMobileClose} className="text-gray-500 hover:text-gray-700 p-1">
+						<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+
+				{/* Navigation Buttons */}
+				<div className="flex flex-1 flex-col justify-between">
 				<div className="flex flex-col gap-2">
 					<Button
 						variant="ghost"
@@ -328,6 +355,7 @@ export const DashboardSidebar = ({
 				open={showAccountSettings} 
 				onClose={() => setShowAccountSettings(false)} 
 			/>
-		</div>
+			</div>
+		</>
 	);
 };

@@ -18,6 +18,7 @@ export default function({}: DashboardPageProps) {
 		: 'overview';
 
 	const [currentPage, setCurrentPageState] = useState<Page>(initialPage);
+	const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
 	// Sync state with URL param if it changes externally (e.g. back button)
 	useEffect(() => {
@@ -36,6 +37,7 @@ export default function({}: DashboardPageProps) {
 	const setCurrentPage = (page: Page) => {
 		setCurrentPageState(page);
 		setSearchParams({ tab: page });
+		setIsMobileSidebarOpen(false);
 	};
 
 	const handleCreateSuccess = () => {
@@ -48,14 +50,17 @@ export default function({}: DashboardPageProps) {
 
 	return (
 		<>
-			<div className="flex flex-row min-h-screen">
+			<div className="flex flex-row min-h-screen relative">
 				<DashboardSidebar
 					currentPage={currentPage}
 					setCurrentPage={setCurrentPage}
 					setCreateNewModalOpen={setCreateNewModalOpen}
+					isMobileOpen={isMobileSidebarOpen}
+					onMobileClose={() => setIsMobileSidebarOpen(false)}
 				/>
 				<DashboardMain
 					currentPage={currentPage}
+					onOpenSidebar={() => setIsMobileSidebarOpen(true)}
 				/>
 			</div>
 			
