@@ -24,17 +24,18 @@ interface LineChartProps {
 
 export const LineChart: React.FC<LineChartProps> = ({ data, title }) => {
 	return (
-		<div className="bg-white rounded-lg shadow-md p-6">
+		<div className="bg-white rounded-lg shadow-md p-4 md:p-6">
 			{title && (
 				<h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
 					{title}
 				</h3>
 			)}
-			<ResponsiveContainer width="100%" height={400}>
-				<RechartsLineChart
-					data={data}
-					margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-				>
+			<div className="h-[300px] md:h-[400px]">
+				<ResponsiveContainer width="100%" height="100%">
+					<RechartsLineChart
+						data={data}
+						margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+					>
 					<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 					<XAxis
 						dataKey="time"
@@ -83,6 +84,7 @@ export const LineChart: React.FC<LineChartProps> = ({ data, title }) => {
 					/>
 				</RechartsLineChart>
 			</ResponsiveContainer>
+		</div>
 		</div>
 	);
 };

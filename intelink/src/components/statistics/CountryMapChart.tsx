@@ -110,7 +110,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 
 	if (!data || data.length === 0) {
 		return (
-			<div className="bg-white p-6 rounded-lg shadow-md">
+			<div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
 				<h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
 				<div className="flex items-center justify-center h-96 text-gray-500">
 					No data available
@@ -121,7 +121,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 
 	if (loading) {
 		return (
-			<div className="bg-white p-6 rounded-lg shadow-md">
+			<div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
 				<h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
 				<div className="flex items-center justify-center h-96">
 					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
@@ -132,7 +132,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 
 	if (error || !geoData) {
 		return (
-			<div className="bg-white p-6 rounded-lg shadow-md">
+			<div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
 				<h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
 				<div className="flex items-center justify-center h-96 text-red-500">
 					Failed to load map data
@@ -155,7 +155,7 @@ export const CountryMapChart: React.FC<CountryMapChartProps> = ({
 	};
 
 	return (
-		<div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
+		<div className="bg-white p-4 md:p-6 rounded-lg shadow-md h-full flex flex-col">
 			<h3 className="text-lg font-semibold mb-3 text-center">{title}</h3>
 			<div className="flex-1 relative border border-gray-100 rounded overflow-hidden bg-blue-50">
 				<ComposableMap

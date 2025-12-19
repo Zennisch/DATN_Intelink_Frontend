@@ -193,15 +193,15 @@ export const OverviewStatistics = () => {
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+		<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
 			{/* Controls Header */}
-			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-				<div className="flex bg-gray-100 p-1 rounded-lg">
+			<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+				<div className="flex bg-gray-100 p-1 rounded-lg w-full lg:w-auto overflow-x-auto no-scrollbar">
 					{(["country", "timeseries", "dimension"] as TabType[]).map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+							className={`flex-1 lg:flex-none px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap ${
 								activeTab === tab
 									? "bg-white text-indigo-600 shadow-sm"
 									: "text-gray-500 hover:text-gray-700"
@@ -212,55 +212,59 @@ export const OverviewStatistics = () => {
 					))}
 				</div>
 
-				<div className="flex flex-wrap items-center gap-2">
-					<div className="flex items-center gap-2 bg-gray-50 p-1 rounded-md border border-gray-200">
+				<div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 w-full lg:w-auto">
+					<div className="flex items-center gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 w-full sm:w-auto justify-between sm:justify-start">
 						<button
 							onClick={() => applyPreset(7)}
-							className="px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all"
+							className="flex-1 sm:flex-none px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all text-center"
 						>
 							7D
 						</button>
 						<button
 							onClick={() => applyPreset(30)}
-							className="px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all"
+							className="flex-1 sm:flex-none px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all text-center"
 						>
 							30D
 						</button>
 						<button
 							onClick={() => applyPreset(90)}
-							className="px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all"
+							className="flex-1 sm:flex-none px-3 py-1 text-xs font-medium text-gray-600 hover:bg-white hover:shadow-sm rounded transition-all text-center"
 						>
 							3M
 						</button>
 					</div>
 
-					<div className="flex items-center gap-2">
-						<DatePicker
-							selected={startDate}
-							onChange={(date) => date && setStartDate(date)}
-							selectsStart
-							startDate={startDate}
-							endDate={endDate}
-							className="w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-						/>
+					<div className="flex items-center gap-2 w-full sm:w-auto">
+						<div className="flex-1 sm:flex-none w-full">
+							<DatePicker
+								selected={startDate}
+								onChange={(date) => date && setStartDate(date)}
+								selectsStart
+								startDate={startDate}
+								endDate={endDate}
+								className="w-full sm:w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+							/>
+						</div>
 						<span className="text-gray-400">-</span>
-						<DatePicker
-							selected={endDate}
-							onChange={(date) => date && setEndDate(date)}
-							selectsEnd
-							startDate={startDate}
-							endDate={endDate}
-							minDate={startDate}
-							className="w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-						/>
+						<div className="flex-1 sm:flex-none w-full">
+							<DatePicker
+								selected={endDate}
+								onChange={(date) => date && setEndDate(date)}
+								selectsEnd
+								startDate={startDate}
+								endDate={endDate}
+								minDate={startDate}
+								className="w-full sm:w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* Additional Controls based on Tab */}
 			{activeTab === "timeseries" && (
-				<div className="mb-6 flex justify-end">
-					<div className="w-40">
+				<div className="mb-6 flex justify-end w-full">
+					<div className="w-full sm:w-40">
 						<Select
 							value={granularity}
 							onChange={(value) => setGranularity(value as Granularity)}
@@ -276,8 +280,8 @@ export const OverviewStatistics = () => {
 			)}
 
 			{activeTab === "dimension" && (
-				<div className="mb-6 flex justify-end">
-					<div className="w-60">
+				<div className="mb-6 flex justify-end w-full">
+					<div className="w-full sm:w-60">
 						<Select
 							value={selectedDimension}
 							onChange={(value) => setSelectedDimension(value as DimensionType)}
@@ -304,7 +308,7 @@ export const OverviewStatistics = () => {
 			)}
 
 			{!loading && !error && activeTab === "country" && (
-				<div className="h-[500px]">
+				<div className="h-[300px] md:h-[500px]">
 					<CountryMapChart data={countryMapData} title="Clicks by Country" />
 				</div>
 			)}
