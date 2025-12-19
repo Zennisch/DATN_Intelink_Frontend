@@ -6,6 +6,9 @@ import {
 import {
 	LineChart,
 	Line,
+	BarChart,
+	Bar,
+	Cell,
 	XAxis,
 	YAxis,
 	CartesianGrid,
@@ -52,6 +55,8 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 					to: endDate?.toISOString(),
 				});
 				responseData = response.data;
+				// Sort data by clicks descending for peak view
+				responseData.sort((a, b) => b.clicks - a.clicks);
 			}
 			setData(responseData);
 		} catch (err: unknown) {
@@ -86,6 +91,14 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 
 	const formatTooltipLabel = (label: string) => {
 		return new Date(label).toLocaleString();
+	};
+
+	// Custom colors for the bars (Top 1 gets a special color)
+	const getBarColor = (index: number) => {
+		if (index === 0) return '#4f46e5'; // Indigo-600 for #1
+		if (index === 1) return '#6366f1'; // Indigo-500
+		if (index === 2) return '#818cf8'; // Indigo-400
+		return '#a5b4fc'; // Indigo-300 for the rest
 	};
 
 	return (
@@ -225,38 +238,71 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 				) : data.length > 0 ? (
 					<div className="h-64 md:h-96">
 						<ResponsiveContainer width="100%" height="100%">
-							<LineChart
-								data={data}
-								margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-							>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis dataKey="bucketStart" tickFormatter={formatXAxis} />
-								<YAxis />
-								<Tooltip labelFormatter={formatTooltipLabel} />
-								<Legend />
-								<Line
-									type="monotone"
-									dataKey="clicks"
-									stroke="#3B82F6"
-									name="Total Clicks"
-									strokeWidth={2}
-									activeDot={{ r: 8 }}
-								/>
-								<Line
-									type="monotone"
-									dataKey="allowedClicks"
-									stroke="#10B981"
-									name="Allowed"
-									strokeWidth={2}
-								/>
-								<Line
-									type="monotone"
-									dataKey="blockedClicks"
-									stroke="#EF4444"
-									name="Blocked"
-									strokeWidth={2}
-								/>
-							</LineChart>
+							{viewMode === "regular" ? (
+								<LineChart
+									data={data}
+									margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+								>
+									<CartesianGrid strokeDasharray="3 3" />
+									<XAxis dataKey="bucketStart" tickFormatter={formatXAxis} />
+									<YAxis />
+									<Tooltip labelFormatter={formatTooltipLabel} />
+									<Legend />
+									<Line
+										type="monotone"
+										dataKey="clicks"
+										stroke="#3B82F6"
+										name="Total Clicks"
+										strokeWidth={2}
+										activeDot={{ r: 8 }}
+									/>
+									<Line
+										type="monotone"
+										dataKey="allowedClicks"
+										stroke="#10B981"
+										name="Allowed"
+										strokeWidth={2}
+									/>
+									<Line
+										type="monotone"
+										dataKey="blockedClicks"
+										stroke="#EF4444"
+										name="Blocked"
+										strokeWidth={2}
+									/>
+								</LineChart>
+							) : (
+								<BarChart
+									data={data}
+									margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+								>
+									<CartesianGrid strokeDasharray="3 3" vertical={false} />
+									<XAxis 
+										dataKey="bucketStart" 
+										tickFormatter={formatXAxis}
+										tick={{ fontSize: 12, fill: '#6b7280' }}
+										interval={0}
+										angle={-45}
+										textAnchor="end"
+										height={60}
+									/>
+									<YAxis 
+										tick={{ fontSize: 12, fill: '#6b7280' }}
+										allowDecimals={false}
+									/>
+									<Tooltip 
+										labelFormatter={formatTooltipLabel}
+										cursor={{ fill: '#f3f4f6' }}
+										contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+										formatter={(value: any) => [`${value}`, 'Total Clicks']}
+									/>
+									<Bar dataKey="clicks" radius={[4, 4, 0, 0]} barSize={32}>
+										{data.map((_, index) => (
+											<Cell key={`cell-${index}`} fill={getBarColor(index)} />
+										))}
+									</Bar>
+								</BarChart>
+							)}
 						</ResponsiveContainer>
 					</div>
 				) : (

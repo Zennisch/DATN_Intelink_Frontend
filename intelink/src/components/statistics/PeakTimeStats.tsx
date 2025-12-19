@@ -45,6 +45,12 @@ export default function PeakTimeStats({ shortCode }: Props) {
                 to: toDate || undefined,
                 timezone: 'Z',
             });
+
+            if (result && result.data) {
+                // Sort data by clicks descending
+                result.data.sort((a, b) => b.clicks - a.clicks);
+            }
+
             setData(result);
         } catch (err) {
             setError('Failed to load data');
@@ -165,7 +171,7 @@ export default function PeakTimeStats({ shortCode }: Props) {
                                     labelFormatter={formatDate}
                                     cursor={{ fill: '#f3f4f6' }}
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                    formatter={(value: any) => [`${value} clicks`, 'Traffic']}
+                                    formatter={(value: any) => [`${value}`, 'Total Clicks']}
                                 />
                                 <Bar dataKey="clicks" radius={[4, 4, 0, 0]} barSize={32}>
                                     {data.data.map((_, index) => (

@@ -235,18 +235,19 @@ export const OverviewStatistics = () => {
 					</div>
 
 					<div className="flex items-center gap-2 w-full sm:w-auto">
-						<div className="flex-1 sm:flex-none w-full">
+						<div className="flex-1 sm:flex-none min-w-0">
 							<DatePicker
 								selected={startDate}
 								onChange={(date) => date && setStartDate(date)}
 								selectsStart
 								startDate={startDate}
 								endDate={endDate}
-								className="w-full sm:w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+								className="w-full sm:w-28 px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+								wrapperClassName="w-full sm:w-auto"
 							/>
 						</div>
 						<span className="text-gray-400">-</span>
-						<div className="flex-1 sm:flex-none w-full">
+						<div className="flex-1 sm:flex-none min-w-0">
 							<DatePicker
 								selected={endDate}
 								onChange={(date) => date && setEndDate(date)}
@@ -254,7 +255,8 @@ export const OverviewStatistics = () => {
 								startDate={startDate}
 								endDate={endDate}
 								minDate={startDate}
-								className="w-full sm:w-24 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+								className="w-full sm:w-28 px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+								wrapperClassName="w-full sm:w-auto"
 							/>
 						</div>
 					</div>
