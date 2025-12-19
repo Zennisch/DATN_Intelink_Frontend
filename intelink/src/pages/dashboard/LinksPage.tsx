@@ -132,8 +132,8 @@ export default function LinksPage() {
 
 			{/* Search, Filters and Create Button in one row */}
 			<div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-				<div className="flex flex-col md:flex-row gap-4 items-end">
-					<div className="flex-1 md:flex-2">
+				<div className="flex flex-col md:flex-row gap-4 md:items-end">
+					<div className="w-full md:flex-1">
 						<Input
 							type="text"
 							placeholder="Search by original URL or short code..."
@@ -142,7 +142,7 @@ export default function LinksPage() {
 							className="w-full h-10"
 						/>
 					</div>
-					<div className="flex-1">
+					<div className="w-full md:w-48">
 						<select
 							value={statusFilter}
 							onChange={(e) => setStatusFilter(e.target.value)}
@@ -153,11 +153,11 @@ export default function LinksPage() {
 							<option value="DISABLED">Disabled</option>
 						</select>
 					</div>
-					<div className="flex gap-2">
-						<Button onClick={handleSearch} variant="primary" className="h-10 px-4">
+					<div className="flex gap-2 w-full md:w-auto">
+						<Button onClick={handleSearch} variant="primary" className="h-10 px-4 flex-1 md:flex-none justify-center">
 							Search
 						</Button>
-						<Button onClick={handleClearFilters} variant="secondary" className="h-10 px-4">
+						<Button onClick={handleClearFilters} variant="secondary" className="h-10 px-4 flex-1 md:flex-none justify-center">
 							Clear
 						</Button>
 					</div>
@@ -185,13 +185,13 @@ export default function LinksPage() {
 
 				{/* Pagination */}
 				{totalPages > 1 && (
-					<div className="pt-4 flex items-center justify-between border-t border-gray-200 flex-shrink-0">
-						<div className="text-sm text-gray-500">
+					<div className="pt-4 flex flex-col md:flex-row items-center justify-between border-t border-gray-200 flex-shrink-0 gap-4 md:gap-0">
+						<div className="text-sm text-gray-500 text-center md:text-left">
 							Showing {currentPage * 10 + 1} - {Math.min((currentPage + 1) * 10, totalElements)} of{' '}
 							{totalElements} results
 						</div>
 
-						<div className="flex gap-2">
+						<div className="flex gap-2 justify-center w-full md:w-auto">
 							<Button
 								variant="secondary"
 								size="sm"

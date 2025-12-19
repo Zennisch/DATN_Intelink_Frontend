@@ -157,7 +157,7 @@ export const ShortUrlList: React.FC<ShortUrlListProps> = ({
 							)}
 
 							{/* Stats and Info */}
-							<div className="flex items-center gap-4 text-xs text-gray-500">
+							<div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
 								<span className="flex items-center gap-1">
 									<i className="fas fa-eye w-3 h-3"></i>
 									{shortUrl.totalClicks} Clicks
