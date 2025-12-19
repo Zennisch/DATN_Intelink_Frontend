@@ -89,13 +89,13 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 	};
 
 	return (
-		<div className="p-2 space-y-6">
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<div className="flex items-center justify-between mb-4">
+		<div className="p-2 md:p-6 space-y-6">
+			<div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
+				<div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
 					<h3 className="text-lg font-semibold text-gray-900">
 						Time-based Analytics
 					</h3>
-					<div className="flex bg-gray-100 rounded-lg p-1">
+					<div className="flex bg-gray-100 rounded-lg p-1 self-start md:self-auto">
 						<button
 							onClick={() => setViewMode("regular")}
 							className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -205,11 +205,11 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 				)}
 
 				{loading ? (
-					<div className="h-96 flex items-center justify-center">
+					<div className="h-64 md:h-96 flex items-center justify-center">
 						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
 					</div>
 				) : error ? (
-					<div className="p-6">
+					<div className="p-4 md:p-6">
 						<div className="bg-red-50 border border-red-200 rounded-lg p-4">
 							<div className="flex items-center">
 								<span className="text-red-800">Error: {error}</span>
@@ -223,7 +223,7 @@ export const TimeStatistics: React.FC<TimeStatisticsProps> = ({
 						</div>
 					</div>
 				) : data.length > 0 ? (
-					<div className="h-96">
+					<div className="h-64 md:h-96">
 						<ResponsiveContainer width="100%" height="100%">
 							<LineChart
 								data={data}

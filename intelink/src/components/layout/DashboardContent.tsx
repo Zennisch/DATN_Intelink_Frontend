@@ -35,7 +35,7 @@ export const DashboardMain = ({ currentPage, onOpenSidebar }: DashboardContentPr
 		<div className="flex-1 bg-white relative">
 			{/* Mobile Sidebar Toggle Button */}
 			<button 
-				className="md:hidden fixed top-4 left-4 z-30 p-2 bg-white rounded-md shadow-md text-gray-600 border border-gray-200 hover:bg-gray-50"
+				className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md text-gray-600 border border-gray-200 hover:bg-gray-50"
 				onClick={onOpenSidebar}
 				aria-label="Open sidebar"
 			>

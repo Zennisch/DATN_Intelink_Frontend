@@ -6,6 +6,7 @@ interface StatisticsTabsProps {
 	activeTab: StatisticsTab;
 	onTabChange: (tab: StatisticsTab) => void;
 	selectedUrl: string | null;
+	onMenuClick?: () => void; // Kept for backward compatibility if needed, but unused
 }
 
 export const StatisticsTabs: React.FC<StatisticsTabsProps> = ({
@@ -66,7 +67,10 @@ export const StatisticsTabs: React.FC<StatisticsTabsProps> = ({
 
 	if (!selectedUrl) {
 		return (
-			<div className="bg-white border-b border-gray-200 px-6 py-4">
+			<div className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
+				<div className="flex items-center mb-4 md:hidden">
+					<h3 className="text-lg font-medium text-gray-900">Statistics</h3>
+				</div>
 				<div className="text-center py-8">
 					<svg
 						className="mx-auto h-12 w-12 text-gray-400 mb-4"
@@ -85,7 +89,7 @@ export const StatisticsTabs: React.FC<StatisticsTabsProps> = ({
 						Select a URL to View Statistics
 					</h3>
 					<p className="text-gray-500">
-						Choose a URL from the sidebar to see detailed analytics
+						Choose a URL from the list to see detailed analytics
 					</p>
 				</div>
 			</div>
@@ -93,15 +97,15 @@ export const StatisticsTabs: React.FC<StatisticsTabsProps> = ({
 	}
 
 	return (
-		<div className="bg-white border-b border-gray-200">
-			<div className="flex overflow-x-auto">
+		<div className="bg-white border-b border-gray-200 flex items-center">
+			<div className="flex overflow-x-auto flex-1 no-scrollbar">
 				{tabs.map((tab) => (
 					<button
 						key={tab.id}
 						onClick={() => !tab.disabled && onTabChange(tab.id)}
 						disabled={tab.disabled}
 						className={`
-							flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+							flex items-center px-4 md:px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
 							${
 								activeTab === tab.id
 									? "border-blue-500 text-blue-600"

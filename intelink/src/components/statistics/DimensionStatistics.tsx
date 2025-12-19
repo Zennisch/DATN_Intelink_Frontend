@@ -135,7 +135,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 	}
 
 	return (
-		<div className="p-2 space-y-6">
+		<div className="p-2 md:p-6 space-y-6">
 			{/* Collapsible Dimension Selector */}
 			<div className="bg-white rounded-lg border border-gray-200">
 				<div 
@@ -154,7 +154,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 						</span>
 					</div>
 					<div className="flex items-center space-x-2">
-						<span className="text-sm text-gray-500">
+						<span className="text-sm text-gray-500 hidden sm:inline">
 							{isFilterPanelOpen ? 'Hide' : 'Show'} Filters
 						</span>
 						<button 
@@ -184,7 +184,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 				</div>
 				
 				{isFilterPanelOpen && (
-					<div className="border-t border-gray-200 p-6 animate-in slide-in-from-top-2 duration-200">
+					<div className="border-t border-gray-200 p-4 md:p-6 animate-in slide-in-from-top-2 duration-200">
 						<DimensionSelector
 							selectedDimensions={selectedDimensions}
 							onDimensionChange={handleDimensionChange}
@@ -198,12 +198,12 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 			{data && Object.keys(data).length > 0 ? (
 				<>
 					{/* Chart Type Selector */}
-					<div className="bg-white rounded-lg border border-gray-200 p-6">
-						<div className="flex items-center justify-between mb-4">
+					<div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
+						<div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
 							<h3 className="text-lg font-semibold text-gray-900">
 								Visual Analytics
 							</h3>
-							<div className="flex bg-gray-100 rounded-lg p-1">
+							<div className="flex bg-gray-100 rounded-lg p-1 self-start sm:self-auto">
 								<button
 									onClick={() => setChartType("bar")}
 									className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
@@ -246,7 +246,7 @@ export const DimensionStatistics: React.FC<DimensionStatisticsProps> = ({
 					</div>
 
 					{/* Statistics Tables */}
-					<div className="bg-white rounded-lg border border-gray-200 p-6">
+					<div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6">
 						<h3 className="text-lg font-semibold text-gray-900 mb-4">
 							Detailed Statistics
 						</h3>

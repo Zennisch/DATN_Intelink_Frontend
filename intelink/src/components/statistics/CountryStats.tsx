@@ -93,8 +93,8 @@ export default function CountryStats({ shortCode }: Props) {
     if (error) return <div className="text-red-500 p-4">{error}</div>;
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-100">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden m-2 md:m-6">
+            <div className="p-4 md:p-6 border-b border-slate-100">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h3 className="text-lg font-bold text-slate-800">Geographic Distribution</h3>
@@ -126,7 +126,7 @@ export default function CountryStats({ shortCode }: Props) {
                 </div>
             </div>
 
-            <div className="relative h-[500px] bg-slate-50">
+            <div className="relative h-[300px] md:h-[500px] bg-slate-50">
                 <ComposableMap
                     projection="geoMercator"
                     projectionConfig={{

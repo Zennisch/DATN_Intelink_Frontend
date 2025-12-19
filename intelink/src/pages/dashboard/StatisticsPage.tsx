@@ -32,15 +32,25 @@ export default function StatisticsPage() {
     };
 
     return (
-        <div className="h-screen flex bg-gray-50 overflow-hidden">
-            {/* Left Sidebar - URL List */}
+        <div className="h-screen flex bg-gray-50 overflow-hidden relative">
+            {/* Left Sidebar - URL List (Desktop only) */}
             <UrlListSidebar
                 selectedUrl={selectedUrl}
                 onUrlSelect={handleUrlSelect}
+                className="hidden md:flex z-30 h-full"
+                variant="sidebar"
             />
 
             {/* Right Content - Statistics */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-hidden w-full">
+                {/* Mobile Horizontal URL List */}
+                <UrlListSidebar
+                    selectedUrl={selectedUrl}
+                    onUrlSelect={handleUrlSelect}
+                    className="md:hidden z-30 w-full pl-16"
+                    variant="horizontal"
+                />
+
                 {/* Header with Tabs */}
                 <StatisticsTabs
                     activeTab={activeTab}
@@ -53,11 +63,11 @@ export default function StatisticsPage() {
                     {selectedUrl ? (
                         renderTabContent()
                     ) : (
-                        <div className="p-6">
-                            <div className="bg-white rounded-lg border border-gray-200 p-8">
+                        <div className="p-4 md:p-6">
+                            <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8">
                                 <div className="text-center">
                                     <svg
-                                        className="mx-auto h-16 w-16 text-gray-400 mb-4"
+                                        className="mx-auto h-12 w-12 md:h-16 md:w-16 text-gray-400 mb-4"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -69,11 +79,11 @@ export default function StatisticsPage() {
                                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                                         />
                                     </svg>
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                    <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
                                         Welcome to Analytics Dashboard
                                     </h3>
-                                    <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                                        Select a URL from the sidebar to view detailed analytics including 
+                                    <p className="text-sm md:text-base text-gray-600 mb-6 max-w-md mx-auto">
+                                        Select a URL from the list above to view detailed analytics including 
                                         time series data and dimension breakdowns.
                                     </p>
                                 </div>
