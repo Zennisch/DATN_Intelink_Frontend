@@ -169,7 +169,7 @@ export const CreateShortUrlModal = ({
 								helpText="Enter the full URL you want to shorten"
 								required
 							/>
-							<div className="flex flex-row gap-4">
+							<div className="flex flex-col md:flex-row gap-4">
 								<Input
 									label="Title"
 									placeholder="My awesome link"
@@ -177,7 +177,7 @@ export const CreateShortUrlModal = ({
 									onChange={(e) =>
 										handleInputChange("title")(e.target.value)
 									}
-									wrapperClassName="w-1/2"
+									wrapperClassName="w-full md:w-1/2"
 									inputClassName="w-full"
 									helpText="Optional title for your link"
 								/>
@@ -188,7 +188,7 @@ export const CreateShortUrlModal = ({
 									onChange={(e) =>
 										handleInputChange("customCode")(e.target.value)
 									}
-									wrapperClassName="w-1/2"
+									wrapperClassName="w-full md:w-1/2"
 									inputClassName="w-full"
 									helpText={(!user?.currentSubscription || user.currentSubscription.planType === 'FREE') ? "Upgrade to customize short code" : "Leave empty for auto-generated code"}
 									disabled={!user?.currentSubscription || user.currentSubscription.planType === 'FREE'}
@@ -214,8 +214,8 @@ export const CreateShortUrlModal = ({
 								Extra Settings
 							</h3>
 						</div>
-						<div className="flex flex-row gap-4">
-							<div className="w-1/3 space-y-3">
+						<div className="flex flex-col md:flex-row gap-4">
+							<div className="w-full md:w-1/3 space-y-3">
 								<Checkbox
 									checked={hasAvailableDays}
 									onChange={setHasAvailableDays}
@@ -237,7 +237,7 @@ export const CreateShortUrlModal = ({
 									/>
 								</div>
 							</div>
-							<div className="w-1/3 space-y-3">
+							<div className="w-full md:w-1/3 space-y-3">
 								<Checkbox
 									checked={hasMaxUsage}
 									onChange={setHasMaxUsage}
@@ -259,7 +259,7 @@ export const CreateShortUrlModal = ({
 									/>
 								</div>
 							</div>
-							<div className="w-1/3 space-y-3">
+							<div className="w-full md:w-1/3 space-y-3">
 								<Checkbox
 									checked={hasPassword}
 									onChange={setHasPassword}

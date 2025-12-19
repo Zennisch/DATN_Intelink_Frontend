@@ -139,6 +139,7 @@ export const Modal = forwardRef<HTMLDivElement, Props>(function Modal(
 		positionClasses[position],
 		"justify-center",
 		"overflow-y-auto",
+		"p-4",
 		overlayClassName,
 	);
 
