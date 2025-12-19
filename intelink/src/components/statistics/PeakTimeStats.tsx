@@ -165,7 +165,7 @@ export default function PeakTimeStats({ shortCode }: Props) {
                                     labelFormatter={formatDate}
                                     cursor={{ fill: '#f3f4f6' }}
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                    formatter={(value: number) => [`${value} clicks`, 'Traffic']}
+                                    formatter={(value: number | string | Array<number | string>) => [`${value} clicks`, 'Traffic']}
                                 />
                                 <Bar dataKey="clicks" radius={[4, 4, 0, 0]} barSize={32}>
                                     {data.data.map((_, index) => (
